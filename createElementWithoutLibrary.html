@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Vanilla JS createElement + addEventListener</title>
+  <style>
+    .dynamic {
+      color: white;
+      background: purple;
+      padding: 8px;
+      margin-top: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <button id="addBtn">Create Paragraph</button>
+    <div id="container"></div>
+  </div>
+
+  <script>
+    const container = document.getElementById("container");
+    const addBtn = document.getElementById("addBtn");
+    let counter = 1;
+
+    addBtn.addEventListener("click", () => {
+      // 1. Create a new <p> element
+      const p = document.createElement("p");
+
+      // 2. Set id, class, and text
+      p.id = `para${counter}`;
+      p.classList.add("dynamic");
+      p.textContent = `This is paragraph #${counter}, created with plain JS.`;
+
+      // 3. Append to container
+      container.appendChild(p);
+
+      counter++;
+    });
+  </script>
+</body>
+</html>

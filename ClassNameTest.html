@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Collections.ClassName test</title>
+  <style>
+    .card { padding: 10px; margin: 5px; border:1px solid #ccc; cursor:pointer; }
+    .fancy { border:2px solid #333; border-radius:6px; }
+    .highlight { background: #ffeb3b; }
+    .active { transform: scale(1.05); background: lightgreen; }
+  </style>
+</head>
+<body>
+  <div class="card">Card 1</div>
+  <div class="card">Card 2</div>
+  <div class="card">Card 3</div>
+  <p id="status">Click a card...</p>
+
+  <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@latest/dist/dom-helpers.min.js"></script>
+  <script>
+    // Apply updates to all elements with class "card"
+    Collections.ClassName("card").update({
+      textContent: "I am a card ",
+      style: { color: "white", backgroundColor: "blue", padding: "15px" },
+      classList: { add: ["fancy", "highlight"] },
+
+      // use regular function so `this` is the clicked element
+      onclick: function() {
+        // Toggle "active" class on the clicked element
+        this.classList.toggle("active");
+        
+
+        // Update the status element
+        Elements.status.update({
+          textContent: `${this.textContent} was clicked!`
+        });
+      }
+    });
+  </script>
+</body>
+</html>
