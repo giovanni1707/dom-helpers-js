@@ -220,10 +220,9 @@ function protectClassList(element) {
         return;
       }
 
-      // 6. addEventListener - enhanced event handling
-      if (key === 'addEventListener' && Array.isArray(value) && value.length >= 2) {
-        const [eventType, handler, options] = value;
-        element.addEventListener(eventType, handler, options);
+      // 6. addEventListener - ENHANCED: Support for multiple events and e.target/this.update
+      if (key === 'addEventListener') {
+        handleEnhancedEventListener(element, value);
         return;
       }
 
@@ -270,6 +269,59 @@ function protectClassList(element) {
     } catch (error) {
       console.warn(`[DOM Helpers] Failed to apply update ${key}: ${error.message}`);
     }
+  }
+
+  /**
+   * Enhanced event listener handler with support for multiple events and e.target/this.update
+   */
+  function handleEnhancedEventListener(element, value) {
+    // Handle legacy array format: ['click', handler, options]
+    if (Array.isArray(value) && value.length >= 2) {
+      const [eventType, handler, options] = value;
+      const enhancedHandler = createEnhancedEventHandler(handler);
+      element.addEventListener(eventType, enhancedHandler, options);
+      return;
+    }
+
+    // Handle new object format for multiple events
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([eventType, handler]) => {
+        if (typeof handler === 'function') {
+          const enhancedHandler = createEnhancedEventHandler(handler);
+          element.addEventListener(eventType, enhancedHandler);
+        } else if (Array.isArray(handler) && handler.length >= 1) {
+          // Support [handlerFunction, options] format
+          const [handlerFunc, options] = handler;
+          if (typeof handlerFunc === 'function') {
+            const enhancedHandler = createEnhancedEventHandler(handlerFunc);
+            element.addEventListener(eventType, enhancedHandler, options);
+          }
+        }
+      });
+      return;
+    }
+
+    console.warn('[DOM Helpers] Invalid addEventListener value format');
+  }
+
+  /**
+   * Create an enhanced event handler that adds e.target.update() and this.update() support
+   */
+  function createEnhancedEventHandler(originalHandler) {
+    return function enhancedEventHandler(event) {
+      // Add update method to event.target if it doesn't exist
+      if (event.target && !event.target.update) {
+        enhanceElementWithUpdate(event.target);
+      }
+
+      // Add update method to 'this' context if it doesn't exist (for non-arrow functions)
+      if (this && this.nodeType === Node.ELEMENT_NODE && !this.update) {
+        enhanceElementWithUpdate(this);
+      }
+
+      // Call the original handler with the enhanced context
+      return originalHandler.call(this, event);
+    };
   }
 
   /**
@@ -805,14 +857,14 @@ function protectClassList(element) {
       }
 
       // Protect classList first
-  protectClassList(element);
+      protectClassList(element);
 
-      // Use UpdateUtility if available, otherwise create inline update method
-      if (UpdateUtility && UpdateUtility.enhanceElementWithUpdate) {
-        return UpdateUtility.enhanceElementWithUpdate(element);
+      // Use EnhancedUpdateUtility if available, otherwise create comprehensive inline update method
+      if (EnhancedUpdateUtility && EnhancedUpdateUtility.enhanceElementWithUpdate) {
+        return EnhancedUpdateUtility.enhanceElementWithUpdate(element);
       }
 
-      // Fallback: create update method inline
+      // Comprehensive fallback: create enhanced update method inline
       try {
         Object.defineProperty(element, 'update', {
           value: (updates = {}) => {
@@ -833,6 +885,82 @@ function protectClassList(element) {
                   return;
                 }
 
+                // Handle classList methods
+                if (key === 'classList' && typeof value === 'object' && value !== null) {
+                  Object.entries(value).forEach(([method, classes]) => {
+                    try {
+                      switch (method) {
+                        case 'add':
+                          if (Array.isArray(classes)) {
+                            element.classList.add(...classes);
+                          } else if (typeof classes === 'string') {
+                            element.classList.add(classes);
+                          }
+                          break;
+                        case 'remove':
+                          if (Array.isArray(classes)) {
+                            element.classList.remove(...classes);
+                          } else if (typeof classes === 'string') {
+                            element.classList.remove(classes);
+                          }
+                          break;
+                        case 'toggle':
+                          if (Array.isArray(classes)) {
+                            classes.forEach(cls => element.classList.toggle(cls));
+                          } else if (typeof classes === 'string') {
+                            element.classList.toggle(classes);
+                          }
+                          break;
+                        case 'replace':
+                          if (Array.isArray(classes) && classes.length === 2) {
+                            element.classList.replace(classes[0], classes[1]);
+                          }
+                          break;
+                      }
+                    } catch (error) {
+                      console.warn(`[DOM Helpers] Error in classList.${method}: ${error.message}`);
+                    }
+                  });
+                  return;
+                }
+
+                // Handle setAttribute
+                if (key === 'setAttribute' && Array.isArray(value) && value.length >= 2) {
+                  element.setAttribute(value[0], value[1]);
+                  return;
+                }
+
+                // Handle removeAttribute
+                if (key === 'removeAttribute') {
+                  if (Array.isArray(value)) {
+                    value.forEach(attr => element.removeAttribute(attr));
+                  } else if (typeof value === 'string') {
+                    element.removeAttribute(value);
+                  }
+                  return;
+                }
+
+                // Handle dataset
+                if (key === 'dataset' && typeof value === 'object' && value !== null) {
+                  Object.entries(value).forEach(([dataKey, dataValue]) => {
+                    element.dataset[dataKey] = dataValue;
+                  });
+                  return;
+                }
+
+                // Handle addEventListener - ENHANCED: Support for multiple events and e.target/this.update
+                if (key === 'addEventListener') {
+                  handleEnhancedEventListener(element, value);
+                  return;
+                }
+
+                // Handle removeEventListener
+                if (key === 'removeEventListener' && Array.isArray(value) && value.length >= 2) {
+                  const [eventType, handler, options] = value;
+                  element.removeEventListener(eventType, handler, options);
+                  return;
+                }
+
                 // Handle DOM methods
                 if (typeof element[key] === 'function') {
                   if (Array.isArray(value)) {
@@ -850,7 +978,7 @@ function protectClassList(element) {
                 }
 
                 // Fallback to setAttribute
-                if (typeof value === 'string' || typeof value === 'number') {
+                if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
                   element.setAttribute(key, value);
                 }
               });
@@ -873,7 +1001,7 @@ function protectClassList(element) {
           configurable: false
         });
       } catch (error) {
-        // Fallback: attach as regular property
+        // Fallback: attach as regular property with full functionality
         element.update = (updates = {}) => {
           if (!updates || typeof updates !== 'object') {
             console.warn('[DOM Helpers] .update() called with invalid updates object');
@@ -882,6 +1010,7 @@ function protectClassList(element) {
 
           try {
             Object.entries(updates).forEach(([key, value]) => {
+              // Handle style object
               if (key === 'style' && typeof value === 'object' && value !== null) {
                 Object.entries(value).forEach(([styleProperty, styleValue]) => {
                   if (styleValue !== null && styleValue !== undefined) {
@@ -891,6 +1020,52 @@ function protectClassList(element) {
                 return;
               }
 
+              // Handle classList methods
+              if (key === 'classList' && typeof value === 'object' && value !== null) {
+                Object.entries(value).forEach(([method, classes]) => {
+                  try {
+                    switch (method) {
+                      case 'add':
+                        if (Array.isArray(classes)) {
+                          element.classList.add(...classes);
+                        } else if (typeof classes === 'string') {
+                          element.classList.add(classes);
+                        }
+                        break;
+                      case 'remove':
+                        if (Array.isArray(classes)) {
+                          element.classList.remove(...classes);
+                        } else if (typeof classes === 'string') {
+                          element.classList.remove(classes);
+                        }
+                        break;
+                      case 'toggle':
+                        if (Array.isArray(classes)) {
+                          classes.forEach(cls => element.classList.toggle(cls));
+                        } else if (typeof classes === 'string') {
+                          element.classList.toggle(classes);
+                        }
+                        break;
+                      case 'replace':
+                        if (Array.isArray(classes) && classes.length === 2) {
+                          element.classList.replace(classes[0], classes[1]);
+                        }
+                        break;
+                    }
+                  } catch (error) {
+                    console.warn(`[DOM Helpers] Error in classList.${method}: ${error.message}`);
+                  }
+                });
+                return;
+              }
+
+              // Handle addEventListener - ENHANCED
+              if (key === 'addEventListener') {
+                handleEnhancedEventListener(element, value);
+                return;
+              }
+
+              // Handle DOM methods
               if (typeof element[key] === 'function') {
                 if (Array.isArray(value)) {
                   element[key](...value);
@@ -900,12 +1075,14 @@ function protectClassList(element) {
                 return;
               }
 
+              // Handle regular properties
               if (key in element) {
                 element[key] = value;
                 return;
               }
 
-              if (typeof value === 'string' || typeof value === 'number') {
+              // Fallback to setAttribute
+              if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
                 element.setAttribute(key, value);
               }
             });
@@ -1720,10 +1897,9 @@ function protectClassList(element) {
           return;
         }
 
-        // 5. addEventListener - enhanced event handling
-        if (key === 'addEventListener' && Array.isArray(value) && value.length >= 2) {
-          const [eventType, handler, options] = value;
-          element.addEventListener(eventType, handler, options);
+        // 5. addEventListener - ENHANCED: Support for multiple events and e.target/this.update
+        if (key === 'addEventListener') {
+          handleEnhancedEventListener(element, value);
           return;
         }
 
