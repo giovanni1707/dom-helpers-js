@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>insertAdjacentHTML test</title>
+  <title>Elements innerHTML test (local build)</title>
   <style>
     .dynamic {
       color: white;
@@ -17,9 +17,9 @@
   <div id="app"></div>
 
   <!-- Load your local library -->
-  <script src="dom-helpers.js"></script>
+  <script src="../dom-helpers.js"></script>
   <script>
-    // Setup UI with button + container
+    // Create a button + container in the #app root
     Elements.app.update({
       innerHTML: `
         <button id="addBtn">Add Paragraph</button>
@@ -27,18 +27,16 @@
       `
     });
 
-    let counter = 1;
-
+    // Handle button click
     Elements.addBtn.update({
       onclick: () => {
-        // Append paragraph inside container without replacing content
-        Elements.container.insertAdjacentHTML(
-          "beforeend",  // position (append at the end of container)
-          `<p id="para${counter}" class="dynamic">
-             This is paragraph #${counter}, added with <code>insertAdjacentHTML</code>.
-           </p>`
-        );
-        counter++;
+        Elements.container.update({
+          innerHTML: `
+            <p id="para1" class="dynamic">
+              This is a dynamically added paragraph with an <strong>id</strong> and a <em>class</em>.
+            </p>
+          `
+        });
       }
     });
   </script>
