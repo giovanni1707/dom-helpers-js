@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Helpers Storage Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #495057;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .button-group button {
+            margin: 0;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button.secondary {
+            background: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background: #545b62;
+        }
+        
+        button.success {
+            background: #28a745;
+        }
+        
+        button.success:hover {
+            background: #1e7e34;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        .result {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+        
+        .result h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .debug {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ DOM Helpers Storage Test</h1>
+        <p>Testing the Storage module with localStorage, sessionStorage, namespaces, expiry, and Forms integration.</p>
+        
+        <div id="debug-info" class="debug">
+            <strong>Debug Info:</strong><br>
+            Loading libraries...
+        </div>
+    </div>
+
+    <!-- Basic Storage Tests -->
+    <div class="container">
+        <div class="test-section">
+            <h3>📦 Basic Storage Operations</h3>
+            <div class="button-group">
+                <button onclick="testBasicSet()">Test Set</button>
+                <button onclick="testBasicGet()">Test Get</button>
+                <button onclick="testBasicRemove()">Test Remove</button>
+                <button onclick="testBasicHas()">Test Has</button>
+                <button onclick="testBasicKeys()">Test Keys</button>
+                <button onclick="testBasicValues()">Test Values</button>
+                <button class="danger" onclick="testBasicClear()">Test Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Storage Tests -->
+    <div class="container">
+        <div class="test-section">
+            <h3>🔄 Session Storage Tests</h3>
+            <div class="button-group">
+                <button onclick="testSessionSet()">Session Set</button>
+                <button onclick="testSessionGet()">Session Get</button>
+                <button onclick="testSessionOperations()">Session Operations</button>
+                <button class="danger" onclick="testSessionClear()">Session Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dual API Tests -->
+    <div class="container">
+        <div class="test-section">
+            <h3>🔀 Dual API Tests (Vanilla-like)</h3>
+            <div class="button-group">
+                <button onclick="testVanillaAPI()">Test setItem/getItem</button>
+                <button onclick="testVanillaVsShorthand()">Compare APIs</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Namespace Tests -->
+    <div class="container">
+        <div class="test-section">
+            <h3>🏷️ Namespace Tests</h3>
+            <div class="button-group">
+                <button onclick="testNamespaces()">Test Namespaces</button>
+                <button onclick="testNestedNamespaces()">Nested Namespaces</button>
+                <button onclick="testNamespaceIsolation()">Namespace Isolation</button>
+                <button class="danger" onclick="clearNamespaces()">Clear Namespaces</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expiry Tests -->
+    <div class="container">
+        <div class="test-section">
+            <h3>⏰ Expiry System Tests</h3>
+            <div class="button-group">
+                <button onclick="testExpiry()">Test Expiry (5 seconds)</button>
+                <button onclick="testExpiryImmediate()">Test Immediate Expiry</button>
+                <button onclick="testExpiryCleanup()">Test Cleanup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Features -->
+    <div class="container">
+        <div class="test-section">
+            <h3>🚀 Advanced Features</h3>
+            <div class="button-group">
+                <button onclick="testBulkOperations()">Bulk Operations</button>
+                <button onclick="testIncrement()">Increment/Decrement</button>
+                <button onclick="testToggle()">Toggle</button>
+                <button onclick="testStats()">Storage Stats</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forms Integration -->
+    <div class="container">
+        <div class="test-section">
+            <h3>📝 Forms Integration</h3>
+            
+            <form id="testForm">
+                <div class="two-column">
+                    <div>
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="form-group">
+                            <label for="preferences">Preferences:</label>
+                            <select id="preferences" name="preferences">
+                                <option value="">Choose...</option>
+                                <option value="light">Light Theme</option>
+                                <option value="dark">Dark Theme</option>
+                                <option value="auto">Auto Theme</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">Notes:</label>
+                            <textarea id="notes" name="notes" rows="3" placeholder="Additional notes..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            <div class="button-group">
+                <button onclick="testAutoSave()">Enable Auto-Save</button>
+                <button onclick="testRestore()">Restore Form</button>
+                <button onclick="testFormStorage()">Manual Save/Load</button>
+                <button class="secondary" onclick="clearFormStorage()">Clear Form Storage</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-world Examples -->
+    <div class="container">
+        <div class="test-section">
+            <h3>🌍 Real-world Examples</h3>
+            <div class="button-group">
+                <button onclick="testThemePreference()">Theme Preference</button>
+                <button onclick="testUserSession()">User Session</button>
+                <button onclick="testShoppingCart()">Shopping Cart</button>
+                <button onclick="testRecentSearches()">Recent Searches</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result" class="result">
+        <h4>Test Results:</h4>
+        <p>Click any test button above to see results...</p>
+    </div>
+
+    <!-- Load the DOM Helpers libraries -->
+    <script src="../dom-helpers.js"></script>
+    <script src="../dom-helpers-form.js"></script>
+    <script src="../dom-helpers-storage.js"></script>
+    
+    <script>
+        // Debug function to check what's available
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            const info = {
+                'DOM Ready': document.readyState,
+                'Elements': typeof Elements,
+                'Forms': typeof Forms,
+                'Storage': typeof Storage,
+                'Storage.session': Storage && typeof Storage.session === 'object' ? 'Available' : 'Not available',
+                'Storage.namespace': Storage && typeof Storage.namespace === 'function' ? 'Function' : 'Not available',
+                'LocalStorage Support': typeof localStorage !== 'undefined' ? 'Yes' : 'No',
+                'SessionStorage Support': typeof sessionStorage !== 'undefined' ? 'Yes' : 'No'
+            };
+            
+            let debugText = '<strong>Debug Info:</strong><br>';
+            Object.entries(info).forEach(([key, value]) => {
+                debugText += `${key}: ${value}<br>`;
+            });
+            
+            debugDiv.innerHTML = debugText;
+        }
+
+        // Basic Storage Tests
+        function testBasicSet() {
+            try {
+                const results = [];
+                
+                // Test different data types
+                results.push(`String: ${Storage.set("testString", "Hello World")}`);
+                results.push(`Number: ${Storage.set("testNumber", 42)}`);
+                results.push(`Boolean: ${Storage.set("testBoolean", true)}`);
+                results.push(`Object: ${Storage.set("testObject", { name: "Alice", age: 30 })}`);
+                results.push(`Array: ${Storage.set("testArray", [1, 2, 3, "four"])}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Basic Set Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Basic Set Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testBasicGet() {
+            try {
+                const results = [];
+                
+                results.push(`String: ${JSON.stringify(Storage.get("testString"))}`);
+                results.push(`Number: ${JSON.stringify(Storage.get("testNumber"))}`);
+                results.push(`Boolean: ${JSON.stringify(Storage.get("testBoolean"))}`);
+                results.push(`Object: ${JSON.stringify(Storage.get("testObject"))}`);
+                results.push(`Array: ${JSON.stringify(Storage.get("testArray"))}`);
+                results.push(`Non-existent: ${JSON.stringify(Storage.get("nonExistent", "default"))}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Basic Get Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Basic Get Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testBasicRemove() {
+            try {
+                Storage.set("tempItem", "This will be removed");
+                const beforeRemove = Storage.has("tempItem");
+                const removeResult = Storage.remove("tempItem");
+                const afterRemove = Storage.has("tempItem");
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Basic Remove Test Results:</h4>
+                    <p><strong>Before Remove:</strong> ${beforeRemove}</p>
+                    <p><strong>Remove Result:</strong> ${removeResult}</p>
+                    <p><strong>After Remove:</strong> ${afterRemove}</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Basic Remove Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testBasicHas() {
+            try {
+                Storage.set("existingItem", "I exist");
+                
+                const results = [];
+                results.push(`Existing item: ${Storage.has("existingItem")}`);
+                results.push(`Non-existing item: ${Storage.has("nonExistingItem")}`);
+                results.push(`Test string: ${Storage.has("testString")}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Basic Has Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Basic Has Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testBasicKeys() {
+            try {
+                const keys = Storage.keys();
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Basic Keys Test Results:</h4>
+                    <p><strong>Total Keys:</strong> ${keys.length}</p>
+                    <pre>${JSON.stringify(keys, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Basic Keys Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testBasicValues() {
+            try {
+                const values = Storage.values();
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Basic Values Test Results:</h4>
+                    <p><strong>Total Values:</strong> ${values.length}</p>
+                    <pre>${JSON.stringify(values, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Basic Values Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testBasicClear() {
+            try {
+                const beforeCount = Storage.keys().length;
+                const clearResult = Storage.clear();
+                const afterCount = Storage.keys().length;
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Basic Clear Test Results:</h4>
+                    <p><strong>Items Before Clear:</strong> ${beforeCount}</p>
+                    <p><strong>Clear Result:</strong> ${clearResult}</p>
+                    <p><strong>Items After Clear:</strong> ${afterCount}</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Basic Clear Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Session Storage Tests
+        function testSessionSet() {
+            try {
+                const results = [];
+                
+                results.push(`Session String: ${Storage.session.set("sessionString", "Session Hello")}`);
+                results.push(`Session Object: ${Storage.session.set("sessionObject", { type: "session", data: "test" })}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Session Set Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Session Set Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testSessionGet() {
+            try {
+                const results = [];
+                
+                results.push(`Session String: ${JSON.stringify(Storage.session.get("sessionString"))}`);
+                results.push(`Session Object: ${JSON.stringify(Storage.session.get("sessionObject"))}`);
+                results.push(`Non-existent: ${JSON.stringify(Storage.session.get("nonExistent", "session default"))}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Session Get Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Session Get Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testSessionOperations() {
+            try {
+                const results = [];
+                
+                // Test session operations
+                Storage.session.set("tempSession", "temporary");
+                results.push(`Has tempSession: ${Storage.session.has("tempSession")}`);
+                results.push(`Session keys: ${JSON.stringify(Storage.session.keys())}`);
+                results.push(`Session size: ${Storage.session.size()}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Session Operations Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Session Operations Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testSessionClear() {
+            try {
+                const beforeCount = Storage.session.keys().length;
+                const clearResult = Storage.session.clear();
+                const afterCount = Storage.session.keys().length;
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Session Clear Test Results:</h4>
+                    <p><strong>Session Items Before Clear:</strong> ${beforeCount}</p>
+                    <p><strong>Clear Result:</strong> ${clearResult}</p>
+                    <p><strong>Session Items After Clear:</strong> ${afterCount}</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Session Clear Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Dual API Tests
+        function testVanillaAPI() {
+            try {
+                const results = [];
+                
+                // Test vanilla-like API
+                results.push(`setItem result: ${Storage.setItem("vanillaTest", "vanilla value")}`);
+                results.push(`getItem result: ${JSON.stringify(Storage.getItem("vanillaTest"))}`);
+                results.push(`removeItem result: ${Storage.removeItem("vanillaTest")}`);
+                results.push(`getItem after remove: ${JSON.stringify(Storage.getItem("vanillaTest", "not found"))}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Vanilla API Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Vanilla API Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testVanillaVsShorthand() {
+            try {
+                const testData = { message: "Hello", count: 5 };
+                
+                // Test both APIs
+                Storage.set("shorthand", testData);
+                Storage.setItem("vanilla", testData);
+                
+                const shorthandResult = Storage.get("shorthand");
+                const vanillaResult = Storage.getItem("vanilla");
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ API Comparison Test Results:</h4>
+                    <p><strong>Shorthand API:</strong></p>
+                    <pre>${JSON.stringify(shorthandResult, null, 2)}</pre>
+                    <p><strong>Vanilla-like API:</strong></p>
+                    <pre>${JSON.stringify(vanillaResult, null, 2)}</pre>
+                    <p><strong>Results Match:</strong> ${JSON.stringify(shorthandResult) === JSON.stringify(vanillaResult)}</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ API Comparison Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Namespace Tests
+        function testNamespaces() {
+            try {
+                const appStorage = Storage.namespace("app");
+                const userStorage = Storage.namespace("user");
+                
+                // Set data in different namespaces
+                appStorage.set("theme", "dark");
+                appStorage.set("version", "1.0.0");
+                userStorage.set("name", "Alice");
+                userStorage.set("theme", "light"); // Same key, different namespace
+                
+                const results = [];
+                results.push(`App theme: ${appStorage.get("theme")}`);
+                results.push(`User theme: ${userStorage.get("theme")}`);
+                results.push(`App keys: ${JSON.stringify(appStorage.keys())}`);
+                results.push(`User keys: ${JSON.stringify(userStorage.keys())}`);
+                results.push(`Global keys: ${JSON.stringify(Storage.keys())}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Namespace Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Namespace Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testNestedNamespaces() {
+            try {
+                const appStorage = Storage.namespace("app");
+                const appSettingsStorage = appStorage.namespace("settings");
+                const appCacheStorage = appStorage.namespace("cache");
+                
+                appSettingsStorage.set("theme", "dark");
+                appSettingsStorage.set("language", "en");
+                appCacheStorage.set("lastUpdate", new Date().toISOString());
+                
+                const results = [];
+                results.push(`App settings keys: ${JSON.stringify(appSettingsStorage.keys())}`);
+                results.push(`App cache keys: ${JSON.stringify(appCacheStorage.keys())}`);
+                results.push(`Settings theme: ${appSettingsStorage.get("theme")}`);
+                results.push(`Cache lastUpdate: ${appCacheStorage.get("lastUpdate")}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Nested Namespace Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Nested Namespace Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testNamespaceIsolation() {
+            try {
+                const ns1 = Storage.namespace("test1");
+                const ns2 = Storage.namespace("test2");
+                
+                // Set same key in different namespaces
+                ns1.set("data", "namespace 1 data");
+                ns2.set("data", "namespace 2 data");
+                Storage.set("data", "global data");
+                
+                const results = [];
+                results.push(`Namespace 1 data: ${ns1.get("data")}`);
+                results.push(`Namespace 2 data: ${ns2.get("data")}`);
+                results.push(`Global data: ${Storage.get("data")}`);
+                
+                // Test isolation
+                ns1.clear();
+                results.push(`After ns1.clear():`);
+                results.push(`  Namespace 1 data: ${ns1.get("data", "not found")}`);
+                results.push(`  Namespace 2 data: ${ns2.get("data")}`);
+                results.push(`  Global data: ${Storage.get("data")}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Namespace Isolation Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Namespace Isolation Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function clearNamespaces() {
+            try {
+                const appStorage = Storage.namespace("app");
+                const userStorage = Storage.namespace("user");
+                
+                const beforeApp = appStorage.keys().length;
+                const beforeUser = userStorage.keys().length;
+                
+                appStorage.clear();
+                userStorage.clear();
+                
+                const afterApp = appStorage.keys().length;
+                const afterUser = userStorage.keys().length;
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Clear Namespaces Results:</h4>
+                    <p><strong>App namespace:</strong> ${beforeApp} → ${afterApp}</p>
+                    <p><strong>User namespace:</strong> ${beforeUser} → ${afterUser}</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Clear Namespaces Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Expiry Tests
+        function testExpiry() {
+            try {
+                // Set item with 5 second expiry
+                Storage.set("expiringItem", "This will expire in 5 seconds", { expires: 5 });
+                
+                const results = [];
+                results.push(`Item set with 5 second expiry`);
+                results.push(`Immediate check: ${Storage.get("expiringItem")}`);
+                results.push(`Has item: ${Storage.has("expiringItem")}`);
+                
+                // Check after 6 seconds
+                setTimeout(() => {
+                    const afterExpiry = Storage.get("expiringItem", "expired");
+                    const hasAfterExpiry = Storage.has("expiringItem");
+                    
+                    document.getElementById('result').innerHTML += `
+                        <p><strong>After 6 seconds:</strong></p>
+                        <p>Value: ${afterExpiry}</p>
+                        <p>Has item: ${hasAfterExpiry}</p>
+                    `;
+                }, 6000);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Expiry Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                    <p><em>Checking again in 6 seconds...</em></p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Expiry Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testExpiryImmediate() {
+            try {
+                // Set item that expires immediately
+                const pastDate = new Date(Date.now() - 1000); // 1 second ago
+                Storage.set("immediateExpiry", "Already expired", { expires: pastDate });
+                
+                const value = Storage.get("immediateExpiry", "not found");
+                const hasItem = Storage.has("immediateExpiry");
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Immediate Expiry Test Results:</h4>
+                    <p><strong>Value:</strong> ${value}</p>
+                    <p><strong>Has item:</strong> ${hasItem}</p>
+                    <p><em>Item should be expired and return default value</em></p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Immediate Expiry Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testExpiryCleanup() {
+            try {
+                // Create some expired items
+                const pastDate = new Date(Date.now() - 1000);
+                Storage.set("expired1", "data1", { expires: pastDate });
+                Storage.set("expired2", "data2", { expires: pastDate });
+                Storage.set("expired3", "data3", { expires: pastDate });
+                Storage.set("valid", "valid data"); // No expiry
+                
+                const beforeCleanup = Storage.keys().length;
+                const cleaned = Storage.cleanup();
+                const afterCleanup = Storage.keys().length;
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Expiry Cleanup Test Results:</h4>
+                    <p><strong>Items before cleanup:</strong> ${beforeCleanup}</p>
+                    <p><strong>Items cleaned:</strong> ${cleaned}</p>
+                    <p><strong>Items after cleanup:</strong> ${afterCleanup}</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Expiry Cleanup Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Advanced Features Tests
+        function testBulkOperations() {
+            try {
+                const testData = {
+                    item1: "value1",
+                    item2: { nested: "object" },
+                    item3: [1, 2, 3],
+                    item4: true
+                };
+                
+                const setResults = Storage.setMultiple(testData);
+                const getResults = Storage.getMultiple(Object.keys(testData));
+                const removeResults = Storage.removeMultiple(['item1', 'item3']);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Bulk Operations Test Results:</h4>
+                    <p><strong>Set Results:</strong></p>
+                    <pre>${JSON.stringify(setResults, null, 2)}</pre>
+                    <p><strong>Get Results:</strong></p>
+                    <pre>${JSON.stringify(getResults, null, 2)}</pre>
+                    <p><strong>Remove Results:</strong></p>
+                    <pre>${JSON.stringify(removeResults, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Bulk Operations Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testIncrement() {
+            try {
+                Storage.set("counter", 10);
+                
+                const results = [];
+                results.push(`Initial value: ${Storage.get("counter")}`);
+                results.push(`After increment(): ${Storage.increment("counter")}`);
+                results.push(`After increment(5): ${Storage.increment("counter", 5)}`);
+                results.push(`After decrement(): ${Storage.decrement("counter")}`);
+                results.push(`After decrement(3): ${Storage.decrement("counter", 3)}`);
+                
+                // Test with non-existent key
+                results.push(`New counter increment: ${Storage.increment("newCounter")}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Increment/Decrement Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Increment/Decrement Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testToggle() {
+            try {
+                const results = [];
+                
+                // Test toggle with non-existent key (should start as false, toggle to true)
+                results.push(`Initial toggle: ${Storage.toggle("toggleTest")}`);
+                results.push(`Second toggle: ${Storage.toggle("toggleTest")}`);
+                results.push(`Third toggle: ${Storage.toggle("toggleTest")}`);
+                
+                // Test with existing boolean
+                Storage.set("existingBool", true);
+                results.push(`Existing true toggle: ${Storage.toggle("existingBool")}`);
+                results.push(`Existing false toggle: ${Storage.toggle("existingBool")}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Toggle Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Toggle Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testStats() {
+            try {
+                // Add some test data
+                Storage.set("statsTest1", "data1");
+                Storage.set("statsTest2", { complex: "object", with: ["nested", "data"] });
+                Storage.session.set("sessionStats", "session data");
+                
+                const stats = Storage.stats();
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Storage Stats Test Results:</h4>
+                    <pre>${JSON.stringify(stats, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Storage Stats Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Forms Integration Tests
+        function testAutoSave() {
+            try {
+                if (typeof Forms === 'undefined' || !Forms.testForm) {
+                    throw new Error('Forms module or testForm not available');
+                }
+                
+                Forms.testForm.autoSave("testFormData", {
+                    interval: 500, // Save every 500ms
+                    namespace: "formTests"
+                });
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Auto-Save Enabled:</h4>
+                    <p>Form will now auto-save every 500ms when you type.</p>
+                    <p>Try typing in the form fields above to see it in action.</p>
+                    <p><em>Check your browser's localStorage to see the saved data.</em></p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Auto-Save Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testRestore() {
+            try {
+                if (typeof Forms === 'undefined' || !Forms.testForm) {
+                    throw new Error('Forms module or testForm not available');
+                }
+                
+                Forms.testForm.restore("testFormData", {
+                    namespace: "formTests"
+                });
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Form Restored:</h4>
+                    <p>Form data has been restored from storage.</p>
+                    <p>Check the form fields above to see the restored values.</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Form Restore Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testFormStorage() {
+            try {
+                if (typeof Forms === 'undefined' || !Forms.testForm) {
+                    throw new Error('Forms module or testForm not available');
+                }
+                
+                const formStorage = Storage.namespace("formTests");
+                
+                // Manual save
+                const currentValues = Forms.testForm.values;
+                formStorage.set("manualSave", currentValues);
+                
+                // Manual load
+                const savedValues = formStorage.get("manualSave", {});
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Manual Form Storage Test:</h4>
+                    <p><strong>Current Form Values:</strong></p>
+                    <pre>${JSON.stringify(currentValues, null, 2)}</pre>
+                    <p><strong>Saved Values:</strong></p>
+                    <pre>${JSON.stringify(savedValues, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Manual Form Storage Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function clearFormStorage() {
+            try {
+                const formStorage = Storage.namespace("formTests");
+                const beforeCount = formStorage.keys().length;
+                formStorage.clear();
+                const afterCount = formStorage.keys().length;
+                
+                // Also clear auto-save if active
+                if (typeof Forms !== 'undefined' && Forms.testForm) {
+                    Forms.testForm.clearAutoSave();
+                }
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Form Storage Cleared:</h4>
+                    <p><strong>Items before clear:</strong> ${beforeCount}</p>
+                    <p><strong>Items after clear:</strong> ${afterCount}</p>
+                    <p>Auto-save has also been disabled.</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Clear Form Storage Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Real-world Examples
+        function testThemePreference() {
+            try {
+                // Simulate theme preference functionality
+                const currentTheme = Storage.get("theme", "light");
+                const newTheme = currentTheme === "light" ? "dark" : "light";
+                
+                Storage.set("theme", newTheme);
+                
+                // Apply theme (simulate)
+                if (typeof Elements !== 'undefined' && Elements.body) {
+                    if (newTheme === "dark") {
+                        Elements.body.update({ 
+                            style: { backgroundColor: "#333", color: "#fff" }
+                        });
+                    } else {
+                        Elements.body.update({ 
+                            style: { backgroundColor: "#fff", color: "#333" }
+                        });
+                    }
+                }
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Theme Preference Example:</h4>
+                    <p><strong>Previous Theme:</strong> ${currentTheme}</p>
+                    <p><strong>New Theme:</strong> ${newTheme}</p>
+                    <p>Theme has been applied to the page background.</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Theme Preference Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testUserSession() {
+            try {
+                const userSession = {
+                    userId: "user123",
+                    username: "alice",
+                    loginTime: new Date().toISOString(),
+                    preferences: {
+                        language: "en",
+                        notifications: true
+                    }
+                };
+                
+                // Store in session storage with 1 hour expiry
+                Storage.session.set("userSession", userSession, { expires: 3600 });
+                
+                const retrievedSession = Storage.session.get("userSession");
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ User Session Example:</h4>
+                    <p><strong>Session Data:</strong></p>
+                    <pre>${JSON.stringify(retrievedSession, null, 2)}</pre>
+                    <p><em>This session will expire in 1 hour or when the browser tab is closed.</em></p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ User Session Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testShoppingCart() {
+            try {
+                const cartStorage = Storage.namespace("shopping");
+                
+                // Simulate adding items to cart
+                let cart = cartStorage.get("cart", []);
+                
+                const newItem = {
+                    id: Date.now(),
+                    name: "Sample Product",
+                    price: 29.99,
+                    quantity: 1
+                };
+                
+                cart.push(newItem);
+                cartStorage.set("cart", cart);
+                
+                // Calculate total
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Shopping Cart Example:</h4>
+                    <p><strong>Cart Items:</strong> ${cart.length}</p>
+                    <p><strong>Total:</strong> $${total.toFixed(2)}</p>
+                    <p><strong>Cart Contents:</strong></p>
+                    <pre>${JSON.stringify(cart, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Shopping Cart Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testRecentSearches() {
+            try {
+                const searchStorage = Storage.namespace("search");
+                
+                // Simulate search functionality
+                let recentSearches = searchStorage.get("recent", []);
+                const newSearch = `Search ${Date.now()}`;
+                
+                // Add new search to beginning, limit to 10 items
+                recentSearches.unshift(newSearch);
+                recentSearches = recentSearches.slice(0, 10);
+                
+                searchStorage.set("recent", recentSearches);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Recent Searches Example:</h4>
+                    <p><strong>Latest Search:</strong> ${newSearch}</p>
+                    <p><strong>Recent Searches:</strong></p>
+                    <pre>${JSON.stringify(recentSearches, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Recent Searches Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            updateDebugInfo();
+            
+            // Wait a bit for scripts to load
+            setTimeout(function() {
+                console.log('Storage test page initialized');
+                updateDebugInfo();
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Storage Test Page Ready:</h4>
+                    <p>All DOM Helpers modules loaded successfully!</p>
+                    <p>Use the test buttons above to explore the Storage module functionality.</p>
+                `;
+            }, 200);
+        });
+
+        // Update debug info periodically
+        setInterval(updateDebugInfo, 3000);
+    </script>
+</body>
+</html>
