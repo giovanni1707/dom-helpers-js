@@ -197,9 +197,17 @@ function protectClassList(element) {
         return;
       }
 
-      // 3. setAttribute - enhanced support
-      if (key === 'setAttribute' && Array.isArray(value) && value.length >= 2) {
-        element.setAttribute(value[0], value[1]);
+      // 3. setAttribute - enhanced support for both array and object formats
+      if (key === 'setAttribute') {
+        if (Array.isArray(value) && value.length >= 2) {
+          // Legacy array format: ['src', 'image.png']
+          element.setAttribute(value[0], value[1]);
+        } else if (typeof value === 'object' && value !== null) {
+          // New object format: { src: 'image.png', alt: 'Description' }
+          Object.entries(value).forEach(([attrName, attrValue]) => {
+            element.setAttribute(attrName, attrValue);
+          });
+        }
         return;
       }
 
@@ -924,9 +932,17 @@ function protectClassList(element) {
                   return;
                 }
 
-                // Handle setAttribute
-                if (key === 'setAttribute' && Array.isArray(value) && value.length >= 2) {
-                  element.setAttribute(value[0], value[1]);
+                // Handle setAttribute - enhanced support for both array and object formats
+                if (key === 'setAttribute') {
+                  if (Array.isArray(value) && value.length >= 2) {
+                    // Legacy array format: ['src', 'image.png']
+                    element.setAttribute(value[0], value[1]);
+                  } else if (typeof value === 'object' && value !== null) {
+                    // New object format: { src: 'image.png', alt: 'Description' }
+                    Object.entries(value).forEach(([attrName, attrValue]) => {
+                      element.setAttribute(attrName, attrValue);
+                    });
+                  }
                   return;
                 }
 
@@ -1056,6 +1072,20 @@ function protectClassList(element) {
                     console.warn(`[DOM Helpers] Error in classList.${method}: ${error.message}`);
                   }
                 });
+                return;
+              }
+
+              // Handle setAttribute - enhanced support for both array and object formats
+              if (key === 'setAttribute') {
+                if (Array.isArray(value) && value.length >= 2) {
+                  // Legacy array format: ['src', 'image.png']
+                  element.setAttribute(value[0], value[1]);
+                } else if (typeof value === 'object' && value !== null) {
+                  // New object format: { src: 'image.png', alt: 'Description' }
+                  Object.entries(value).forEach(([attrName, attrValue]) => {
+                    element.setAttribute(attrName, attrValue);
+                  });
+                }
                 return;
               }
 

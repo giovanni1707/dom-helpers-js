@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Utilities Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .result {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+        
+        .result h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .debug {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #495057;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .button-group button {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ Form Utilities Test</h1>
+        <p>Testing form utility methods, serialization, field access, and helper functions.</p>
+        
+        <div id="debug-info" class="debug">
+            <strong>Debug Info:</strong><br>
+            Loading libraries...
+        </div>
+        
+        <form id="utilityForm">
+            <div class="form-group">
+                <label for="testField">Test Field:</label>
+                <input type="text" id="testField" name="testField" value="Initial Value">
+            </div>
+            
+            <div class="form-group">
+                <label for="emailField">Email Field:</label>
+                <input type="email" id="emailField" name="emailField" value="test@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="numberField">Number Field:</label>
+                <input type="number" id="numberField" name="numberField" value="42">
+            </div>
+            
+            <div class="form-group">
+                <label for="multiSelect">Multi-Select:</label>
+                <select id="multiSelect" name="multiSelect" multiple>
+                    <option value="option1">Option 1</option>
+                    <option value="option2" selected>Option 2</option>
+                    <option value="option3">Option 3</option>
+                    <option value="option4" selected>Option 4</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="singleSelect">Single Select:</label>
+                <select id="singleSelect" name="singleSelect">
+                    <option value="">Choose...</option>
+                    <option value="choice1">Choice 1</option>
+                    <option value="choice2" selected>Choice 2</option>
+                    <option value="choice3">Choice 3</option>
+                </select>
+            </div>
+        </form>
+        
+        <div class="test-section">
+            <h3>🔍 Field Access Tests</h3>
+            <div class="button-group">
+                <button onclick="testGetField()">Test getField()</button>
+                <button onclick="testSetField()">Test setField()</button>
+                <button onclick="testFieldValues()">Test Field Values</button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Serialization Tests</h3>
+            <div class="button-group">
+                <button onclick="testSerializeObject()">Serialize as Object</button>
+                <button onclick="testSerializeJSON()">Serialize as JSON</button>
+                <button onclick="testSerializeFormData()">Serialize as FormData</button>
+                <button onclick="testSerializeURLEncoded()">Serialize as URL Encoded</button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>⚙️ Form Methods Tests</h3>
+            <div class="button-group">
+                <button onclick="testFormValues()">Test Form Values</button>
+                <button onclick="testFormReset()">Test Form Reset</button>
+                <button onclick="testFormStats()">Test Form Stats</button>
+                <button onclick="testAllForms()">Test All Forms</button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Library Tests</h3>
+            <div class="button-group">
+                <button onclick="testLibraries()">Test Libraries</button>
+                <button onclick="testFormMethods()">Test Form Methods</button>
+                <button onclick="runAllTests()">Run All Tests</button>
+            </div>
+        </div>
+        
+        <div id="result" class="result">
+            <h4>Utility Results:</h4>
+            <p>Click buttons above to test various utilities...</p>
+        </div>
+    </div>
+
+    <!-- Load the DOM Helpers libraries -->
+    <script src="../dom-helpers.js"></script>
+    <script src="../dom-helpers-form.js"></script>
+    
+    <script>
+        // Debug function to check what's available
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            const info = {
+                'DOM Ready': document.readyState,
+                'Elements': typeof Elements,
+                'Forms': typeof Forms,
+                'Forms.utilityForm': Forms && Forms.utilityForm ? 'Found' : 'Not found',
+                'Forms.utilityForm.getField': Forms && Forms.utilityForm && typeof Forms.utilityForm.getField === 'function' ? 'Function' : 'Not available',
+                'Forms.utilityForm.serialize': Forms && Forms.utilityForm && typeof Forms.utilityForm.serialize === 'function' ? 'Function' : 'Not available',
+                'Forms.stats': Forms && typeof Forms.stats === 'function' ? 'Function' : 'Not available'
+            };
+            
+            let debugText = '<strong>Debug Info:</strong><br>';
+            Object.entries(info).forEach(([key, value]) => {
+                debugText += `${key}: ${value}<br>`;
+            });
+            
+            debugDiv.innerHTML = debugText;
+        }
+
+        // Test field access methods
+        function testGetField() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                const results = [];
+                
+                // Test getField by name
+                const testField = form.getField('testField');
+                results.push(`getField('testField'): ${testField ? 'Found (' + testField.tagName + ')' : 'Not found'}`);
+                
+                const emailField = form.getField('emailField');
+                results.push(`getField('emailField'): ${emailField ? 'Found (' + emailField.type + ')' : 'Not found'}`);
+                
+                const nonExistent = form.getField('nonExistent');
+                results.push(`getField('nonExistent'): ${nonExistent ? 'Found' : 'Not found (expected)'}`);
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ getField() Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ getField() Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testSetField() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                const results = [];
+                
+                // Test setField
+                form.setField('testField', 'Updated via setField()');
+                results.push(`setField('testField', 'Updated via setField()'): Done`);
+                
+                form.setField('numberField', 99);
+                results.push(`setField('numberField', 99): Done`);
+                
+                form.setField('singleSelect', 'choice3');
+                results.push(`setField('singleSelect', 'choice3'): Done`);
+                
+                form.setField('multiSelect', ['option1', 'option3']);
+                results.push(`setField('multiSelect', ['option1', 'option3']): Done`);
+                
+                // Show current values
+                const currentValues = form.values;
+                results.push(`\nCurrent form values after setField operations:`);
+                results.push(JSON.stringify(currentValues, null, 2));
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ setField() Test Results:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ setField() Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testFieldValues() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                const values = form.values;
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Field Values Test:</h4>
+                    <pre>${JSON.stringify(values, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Field Values Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Test serialization methods
+        function testSerializeObject() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                const serialized = form.serialize('object');
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Serialize Object Test:</h4>
+                    <pre>${JSON.stringify(serialized, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Serialize Object Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testSerializeJSON() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                const serialized = form.serialize('json');
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Serialize JSON Test:</h4>
+                    <pre>${serialized}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Serialize JSON Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testSerializeFormData() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                const serialized = form.serialize('formdata');
+                
+                // Convert FormData to readable format
+                const entries = [];
+                for (const [key, value] of serialized.entries()) {
+                    entries.push(`${key}: ${value}`);
+                }
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Serialize FormData Test:</h4>
+                    <p><strong>Type:</strong> ${serialized.constructor.name}</p>
+                    <p><strong>Entries:</strong></p>
+                    <pre>${entries.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Serialize FormData Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testSerializeURLEncoded() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                const serialized = form.serialize('urlencoded');
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Serialize URL Encoded Test:</h4>
+                    <pre>${serialized}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Serialize URL Encoded Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Test form methods
+        function testFormValues() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                
+                // Test getting values
+                const currentValues = form.values;
+                
+                // Test setting values
+                form.values = {
+                    testField: 'Set via values property',
+                    emailField: 'new@example.com',
+                    numberField: 123,
+                    multiSelect: ['option2', 'option4'],
+                    singleSelect: 'choice1'
+                };
+                
+                const newValues = form.values;
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Form Values Test:</h4>
+                    <p><strong>Original Values:</strong></p>
+                    <pre>${JSON.stringify(currentValues, null, 2)}</pre>
+                    <p><strong>New Values (after setting):</strong></p>
+                    <pre>${JSON.stringify(newValues, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Form Values Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testFormReset() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                
+                // Get values before reset
+                const beforeReset = form.values;
+                
+                // Reset the form
+                form.reset();
+                
+                // Get values after reset
+                const afterReset = form.values;
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Form Reset Test:</h4>
+                    <p><strong>Before Reset:</strong></p>
+                    <pre>${JSON.stringify(beforeReset, null, 2)}</pre>
+                    <p><strong>After Reset:</strong></p>
+                    <pre>${JSON.stringify(afterReset, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Form Reset Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testFormStats() {
+            try {
+                if (!Forms || typeof Forms.stats !== 'function') {
+                    throw new Error('Forms.stats not available');
+                }
+                
+                const stats = Forms.stats();
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Form Stats Test:</h4>
+                    <pre>${JSON.stringify(stats, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Form Stats Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function testAllForms() {
+            try {
+                if (!Forms || typeof Forms.getAllForms !== 'function') {
+                    throw new Error('Forms.getAllForms not available');
+                }
+                
+                const allForms = Forms.getAllForms();
+                const formInfo = allForms.map(form => ({
+                    id: form.id,
+                    tagName: form.tagName,
+                    hasUpdate: typeof form.update === 'function',
+                    hasValidate: typeof form.validate === 'function',
+                    hasValues: !!form.values
+                }));
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ All Forms Test:</h4>
+                    <p><strong>Total Forms Found:</strong> ${allForms.length}</p>
+                    <pre>${JSON.stringify(formInfo, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ All Forms Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Test libraries
+        function testLibraries() {
+            updateDebugInfo();
+            
+            const resultDiv = document.getElementById('result');
+            let testResults = [];
+            
+            // Test Forms
+            try {
+                if (typeof Forms !== 'undefined') {
+                    const testForm = Forms.utilityForm;
+                    testResults.push(`✅ Forms.utilityForm: ${testForm ? 'Found' : 'Not found'}`);
+                    
+                    if (testForm) {
+                        testResults.push(`✅ Forms.utilityForm.update: ${typeof testForm.update === 'function' ? 'Function' : 'Not function'}`);
+                        testResults.push(`✅ Forms.utilityForm.getField: ${typeof testForm.getField === 'function' ? 'Function' : 'Not function'}`);
+                        testResults.push(`✅ Forms.utilityForm.setField: ${typeof testForm.setField === 'function' ? 'Function' : 'Not function'}`);
+                        testResults.push(`✅ Forms.utilityForm.serialize: ${typeof testForm.serialize === 'function' ? 'Function' : 'Not function'}`);
+                        testResults.push(`✅ Forms.utilityForm.values: ${testForm.values ? 'Available' : 'Not available'}`);
+                    }
+                    
+                    testResults.push(`✅ Forms.stats: ${typeof Forms.stats === 'function' ? 'Function' : 'Not function'}`);
+                    testResults.push(`✅ Forms.getAllForms: ${typeof Forms.getAllForms === 'function' ? 'Function' : 'Not function'}`);
+                } else {
+                    testResults.push(`❌ Forms: Not available`);
+                }
+            } catch (error) {
+                testResults.push(`❌ Forms error: ${error.message}`);
+            }
+            
+            resultDiv.innerHTML = `
+                <h4>Library Test Results:</h4>
+                <pre>${testResults.join('\n')}</pre>
+            `;
+        }
+
+        function testFormMethods() {
+            try {
+                if (!Forms || !Forms.utilityForm) {
+                    throw new Error('Forms.utilityForm not available');
+                }
+                
+                const form = Forms.utilityForm;
+                const results = [];
+                
+                // Test all available methods
+                const methods = ['update', 'getField', 'setField', 'serialize', 'validate', 'reset'];
+                methods.forEach(method => {
+                    results.push(`${method}: ${typeof form[method] === 'function' ? '✅ Available' : '❌ Not available'}`);
+                });
+                
+                // Test properties
+                const properties = ['values'];
+                properties.forEach(prop => {
+                    results.push(`${prop}: ${form[prop] !== undefined ? '✅ Available' : '❌ Not available'}`);
+                });
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Form Methods Test:</h4>
+                    <pre>${results.join('\n')}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Form Methods Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function runAllTests() {
+            const tests = [
+                { name: 'Libraries', func: testLibraries },
+                { name: 'Form Methods', func: testFormMethods },
+                { name: 'Field Values', func: testFieldValues },
+                { name: 'Serialize Object', func: testSerializeObject },
+                { name: 'Form Stats', func: testFormStats }
+            ];
+            
+            let results = ['🧪 Running All Tests:\n'];
+            
+            tests.forEach((test, index) => {
+                try {
+                    test.func();
+                    results.push(`✅ ${test.name}: Passed`);
+                } catch (error) {
+                    results.push(`❌ ${test.name}: Failed - ${error.message}`);
+                }
+            });
+            
+            document.getElementById('result').innerHTML = `
+                <h4>All Tests Results:</h4>
+                <pre>${results.join('\n')}</pre>
+            `;
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            updateDebugInfo();
+            
+            // Wait a bit for scripts to load
+            setTimeout(function() {
+                console.log('Delayed initialization starting...');
+                updateDebugInfo();
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Form Utilities Test Ready:</h4>
+                    <p>Use the buttons above to test various form utility functions.</p>
+                `;
+            }, 200);
+        });
+
+        // Update debug info periodically
+        setInterval(updateDebugInfo, 3000);
+    </script>
+</body>
+</html>

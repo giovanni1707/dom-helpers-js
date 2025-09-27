@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Form Features Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .checkbox-item input,
+        .radio-item input {
+            width: auto;
+            margin: 0;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .result {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+        
+        .result h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .debug {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        
+        .form-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 2px rgba(220,53,69,0.25) !important;
+        }
+        
+        .form-error-message {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkbox-group,
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Advanced Form Features Test</h1>
+        <p>Testing advanced form validation, complex field types, and enhanced functionality.</p>
+        
+        <div id="debug-info" class="debug">
+            <strong>Debug Info:</strong><br>
+            Loading libraries...
+        </div>
+        
+        <form id="advancedForm">
+            <div class="two-column">
+                <div>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" minlength="3" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="number" id="age" name="age" min="18" max="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="country">Country:</label>
+                        <select id="country" name="country">
+                            <option value="">Select Country</option>
+                            <option value="us">United States</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="ca">Canada</option>
+                            <option value="au">Australia</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="form-group">
+                        <label>Gender:</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="male" name="gender" value="male">
+                                <label for="male">Male</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="female" name="gender" value="female">
+                                <label for="female">Female</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="other" name="gender" value="other">
+                                <label for="other">Other</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Interests:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="tech" name="interests" value="technology">
+                                <label for="tech">Technology</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sports" name="interests" value="sports">
+                                <label for="sports">Sports</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="music" name="interests" value="music">
+                                <label for="music">Music</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newsletter">
+                            <input type="checkbox" id="newsletter" name="newsletter" value="yes">
+                            Subscribe to newsletter
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="bio">Bio:</label>
+                <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself..."></textarea>
+            </div>
+            
+            <button type="submit">Submit Advanced Form</button>
+            <button type="button" onclick="testValidation()">Test Validation</button>
+            <button type="button" onclick="testPrefill()">Test Prefill</button>
+            <button type="button" onclick="testReset()">Test Reset</button>
+            <button type="button" onclick="testLibraries()">Test Libraries</button>
+        </form>
+        
+        <div id="result" class="result">
+            <h4>Advanced Form Result:</h4>
+            <p>Submit or interact with the form to see results...</p>
+        </div>
+    </div>
+
+    <!-- Load the DOM Helpers libraries -->
+    <script src="../dom-helpers.js"></script>
+    <script src="../dom-helpers-form.js"></script>
+    
+    <script>
+        // Debug function to check what's available
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            const info = {
+                'DOM Ready': document.readyState,
+                'Elements': typeof Elements,
+                'Collections': typeof Collections,
+                'Selector': typeof Selector,
+                'Forms': typeof Forms,
+                'Forms.advancedForm': Forms && Forms.advancedForm ? 'Found' : 'Not found',
+                'Forms.advancedForm.update': Forms && Forms.advancedForm && typeof Forms.advancedForm.update === 'function' ? 'Function' : 'Not available',
+                'Forms.advancedForm.validate': Forms && Forms.advancedForm && typeof Forms.advancedForm.validate === 'function' ? 'Function' : 'Not available'
+            };
+            
+            let debugText = '<strong>Debug Info:</strong><br>';
+            Object.entries(info).forEach(([key, value]) => {
+                debugText += `${key}: ${value}<br>`;
+            });
+            
+            debugDiv.innerHTML = debugText;
+        }
+
+        // Test libraries function
+        function testLibraries() {
+            updateDebugInfo();
+            
+            const resultDiv = document.getElementById('result');
+            let testResults = [];
+            
+            // Test Forms
+            try {
+                if (typeof Forms !== 'undefined') {
+                    const testForm = Forms.advancedForm;
+                    testResults.push(`✅ Forms.advancedForm: ${testForm ? 'Found' : 'Not found'}`);
+                    
+                    if (testForm) {
+                        testResults.push(`✅ Forms.advancedForm.update: ${typeof testForm.update === 'function' ? 'Function' : 'Not function'}`);
+                        testResults.push(`✅ Forms.advancedForm.validate: ${typeof testForm.validate === 'function' ? 'Function' : 'Not function'}`);
+                        testResults.push(`✅ Forms.advancedForm.values: ${testForm.values ? 'Available' : 'Not available'}`);
+                    }
+                } else {
+                    testResults.push(`❌ Forms: Not available`);
+                }
+            } catch (error) {
+                testResults.push(`❌ Forms error: ${error.message}`);
+            }
+            
+            // Test Elements
+            try {
+                if (typeof Elements !== 'undefined') {
+                    const testElement = Elements.result;
+                    testResults.push(`✅ Elements.result: ${testElement ? 'Found' : 'Not found'}`);
+                } else {
+                    testResults.push(`❌ Elements: Not available`);
+                }
+            } catch (error) {
+                testResults.push(`❌ Elements error: ${error.message}`);
+            }
+            
+            resultDiv.innerHTML = `
+                <h4>Library Test Results:</h4>
+                <pre>${testResults.join('\n')}</pre>
+            `;
+        }
+
+        // Test validation function
+        function testValidation() {
+            try {
+                if (typeof Forms === 'undefined' || !Forms.advancedForm) {
+                    throw new Error('Forms.advancedForm not available');
+                }
+                
+                const validation = Forms.advancedForm.validate({
+                    username: {
+                        required: true,
+                        minLength: 3,
+                        custom: (value) => {
+                            if (value && !/^[a-zA-Z0-9_]+$/.test(value)) {
+                                return 'Username can only contain letters, numbers, and underscores';
+                            }
+                            return true;
+                        }
+                    },
+                    age: {
+                        required: true,
+                        custom: (value) => {
+                            const age = parseInt(value);
+                            if (age < 18) return 'Must be at least 18 years old';
+                            if (age > 100) return 'Age must be realistic';
+                            return true;
+                        }
+                    },
+                    bio: {
+                        maxLength: 500
+                    }
+                });
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Validation Test Results:</h4>
+                    <p><strong>Valid:</strong> ${validation.isValid ? '✅ Yes' : '❌ No'}</p>
+                    ${!validation.isValid ? `<p><strong>Errors:</strong></p><pre>${JSON.stringify(validation.errors, null, 2)}</pre>` : ''}
+                    <p><strong>Values:</strong></p>
+                    <pre>${JSON.stringify(validation.values, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Validation Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Test prefill function
+        function testPrefill() {
+            try {
+                if (typeof Forms === 'undefined' || !Forms.advancedForm) {
+                    throw new Error('Forms.advancedForm not available');
+                }
+                
+                Forms.advancedForm.update({
+                    values: {
+                        username: "johndoe123",
+                        age: 25,
+                        country: "us",
+                        gender: "male",
+                        interests: ["technology", "music"],
+                        newsletter: true,
+                        bio: "I'm a software developer who loves technology and music."
+                    }
+                });
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Prefill Test:</h4>
+                    <p>Advanced form has been prefilled successfully!</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Prefill Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Test reset function
+        function testReset() {
+            try {
+                if (typeof Forms === 'undefined' || !Forms.advancedForm) {
+                    throw new Error('Forms.advancedForm not available');
+                }
+                
+                Forms.advancedForm.reset();
+                
+                document.getElementById('result').innerHTML = `
+                    <h4>✅ Reset Test:</h4>
+                    <p>Advanced form has been reset successfully!</p>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <h4>❌ Reset Test Failed:</h4>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            updateDebugInfo();
+            
+            // Wait a bit for scripts to load
+            setTimeout(function() {
+                console.log('Delayed initialization starting...');
+                updateDebugInfo();
+                
+                try {
+                    // Try to initialize the advanced form
+                    if (typeof Forms !== 'undefined' && Forms.advancedForm) {
+                        console.log('Forms.advancedForm available, initializing...');
+                        
+                        Forms.advancedForm.update({
+                            addEventListener: {
+                                submit: function(e) {
+                                    e.preventDefault();
+                                    console.log('Advanced form submitted!');
+                                    
+                                    try {
+                                        // Validate with custom rules
+                                        const validation = this.validate({
+                                            username: {
+                                                required: true,
+                                                minLength: 3,
+                                                custom: (value) => {
+                                                    if (value && !/^[a-zA-Z0-9_]+$/.test(value)) {
+                                                        return 'Username can only contain letters, numbers, and underscores';
+                                                    }
+                                                    return true;
+                                                }
+                                            },
+                                            age: {
+                                                required: true,
+                                                custom: (value) => {
+                                                    const age = parseInt(value);
+                                                    if (age < 18) return 'Must be at least 18 years old';
+                                                    if (age > 100) return 'Age must be realistic';
+                                                    return true;
+                                                }
+                                            },
+                                            bio: {
+                                                maxLength: 500
+                                            }
+                                        });
+                                        
+                                        if (validation.isValid) {
+                                            if (typeof Elements !== 'undefined' && Elements.result) {
+                                                Elements.result.update({
+                                                    innerHTML: `
+                                                        <h4>✅ Advanced Form Submitted Successfully!</h4>
+                                                        <pre>${JSON.stringify(validation.values, null, 2)}</pre>
+                                                    `
+                                                });
+                                            } else {
+                                                document.getElementById('result').innerHTML = `
+                                                    <h4>✅ Advanced Form Submitted Successfully!</h4>
+                                                    <pre>${JSON.stringify(validation.values, null, 2)}</pre>
+                                                `;
+                                            }
+                                            this.reset();
+                                        } else {
+                                            if (typeof Elements !== 'undefined' && Elements.result) {
+                                                Elements.result.update({
+                                                    innerHTML: `
+                                                        <h4>❌ Validation Failed</h4>
+                                                        <pre>${JSON.stringify(validation.errors, null, 2)}</pre>
+                                                    `
+                                                });
+                                            } else {
+                                                document.getElementById('result').innerHTML = `
+                                                    <h4>❌ Validation Failed</h4>
+                                                    <pre>${JSON.stringify(validation.errors, null, 2)}</pre>
+                                                `;
+                                            }
+                                        }
+                                    } catch (error) {
+                                        console.error('Error in submit handler:', error);
+                                        document.getElementById('result').innerHTML = `
+                                            <h4>❌ Submit Error:</h4>
+                                            <p>${error.message}</p>
+                                        `;
+                                    }
+                                }
+                            }
+                        });
+                        
+                        document.getElementById('result').innerHTML = `
+                            <h4>✅ Advanced Form Initialization Complete:</h4>
+                            <p>Form is ready! Try submitting it or using the test buttons.</p>
+                        `;
+                        
+                    } else {
+                        console.error('Forms.advancedForm not available');
+                        document.getElementById('result').innerHTML = `
+                            <h4>❌ Initialization Failed:</h4>
+                            <p>Forms.advancedForm not available.</p>
+                            <p>Forms: ${typeof Forms}</p>
+                            <p>Forms.advancedForm: ${Forms ? (Forms.advancedForm ? 'Found' : 'Not found') : 'N/A'}</p>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    document.getElementById('result').innerHTML = `
+                        <h4>❌ Initialization Error:</h4>
+                        <p>${error.message}</p>
+                    `;
+                }
+            }, 200);
+        });
+
+        // Update debug info periodically
+        setInterval(updateDebugInfo, 3000);
+    </script>
+</body>
+</html>
