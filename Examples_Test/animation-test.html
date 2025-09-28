@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Helpers Animation - Test Examples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .example-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+
+        .button-group {
+            margin: 15px 0;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .demo-box {
+            width: 200px;
+            height: 100px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .demo-panel {
+            background: #e9ecef;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+
+        .demo-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            min-width: 300px;
+            display: none;
+        }
+
+        .demo-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: inline-block;
+            width: 200px;
+            vertical-align: top;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: none;
+        }
+
+        .stagger-item {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 4px;
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .transform-demo {
+            width: 100px;
+            height: 100px;
+            background: #ff6b6b;
+            margin: 20px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .code-example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DOM Helpers Animation Module - Test Examples</h1>
+        <div class="status success" id="loadStatus">
+            ✓ Animation module loaded successfully
+        </div>
+    </div>
+
+    <!-- Basic Animations -->
+    <div class="container">
+        <h2>1. Basic Animations</h2>
+        
+        <div class="example-section">
+            <h3>Fade Animations</h3>
+            <div class="demo-box" id="fadeBox">Fade Demo Box</div>
+            <div class="button-group">
+                <button class="btn" id="fadeInBtn">Fade In</button>
+                <button class="btn" id="fadeOutBtn">Fade Out</button>
+                <button class="btn btn-secondary" id="fadeToggleBtn">Toggle Fade</button>
+            </div>
+            <div class="code-example">
+// Using direct method calls
+Elements.fadeBox.fadeIn({ duration: 500, easing: 'ease-out' });
+Elements.fadeBox.fadeOut({ duration: 300 });
+
+// Using .update() method
+Elements.fadeBox.update({
+    fadeIn: { duration: 500, easing: 'ease-out' }
+});
+            </div>
+        </div>
+
+        <div class="example-section">
+            <h3>Slide Animations</h3>
+            <div class="demo-panel" id="slidePanel">
+                <h4>Sliding Panel</h4>
+                <p>This panel can slide up and down smoothly. The animation preserves the original dimensions and handles padding, margins, and borders correctly.</p>
+            </div>
+            <div class="button-group">
+                <button class="btn" id="slideUpBtn">Slide Up</button>
+                <button class="btn" id="slideDownBtn">Slide Down</button>
+                <button class="btn btn-secondary" id="slideToggleBtn">Toggle Slide</button>
+            </div>
+            <div class="code-example">
+// Slide animations with callbacks
+Elements.slidePanel.slideUp({
+    duration: 400,
+    easing: 'ease-in-out',
+    onComplete: (element) => console.log('Slide up complete!')
+});
+
+Elements.slidePanel.slideToggle({ duration: 300 });
+            </div>
+        </div>
+    </div>
+
+    <!-- Transform Animations -->
+    <div class="container">
+        <h2>2. Transform Animations</h2>
+        
+        <div class="example-section">
+            <h3>CSS Transforms</h3>
+            <div class="transform-demo" id="transformBox1"></div>
+            <div class="transform-demo" id="transformBox2"></div>
+            <div class="transform-demo" id="transformBox3"></div>
+            <div class="button-group">
+                <button class="btn" id="rotateBtn">Rotate</button>
+                <button class="btn" id="scaleBtn">Scale</button>
+                <button class="btn" id="translateBtn">Translate</button>
+                <button class="btn btn-secondary" id="resetTransformBtn">Reset</button>
+            </div>
+            <div class="code-example">
+// Transform examples
+Elements.transformBox1.transform({
+    rotate: '45deg',
+    scale: '1.2'
+}, { duration: 500 });
+
+Elements.transformBox2.transform({
+    translateX: '100px',
+    rotateY: '180deg'
+}, { duration: 800, easing: 'ease-out-back' });
+            </div>
+        </div>
+    </div>
+
+    <!-- Animation Chaining -->
+    <div class="container">
+        <h2>3. Animation Chaining</h2>
+        
+        <div class="example-section">
+            <h3>Sequential Animations</h3>
+            <div class="demo-box" id="chainBox">Chain Demo</div>
+            <div class="button-group">
+                <button class="btn" id="chainBtn">Run Animation Chain</button>
+                <button class="btn btn-secondary" id="stopChainBtn">Stop Animations</button>
+            </div>
+            <div class="code-example">
+// Animation chaining
+Elements.chainBox.animate()
+    .fadeOut({ duration: 300 })
+    .delay(200)
+    .fadeIn({ duration: 300 })
+    .transform({ scale: '1.2', rotate: '10deg' }, { duration: 400 })
+    .delay(500)
+    .transform({ scale: '1', rotate: '0deg' }, { duration: 400 })
+    .play();
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Animations -->
+    <div class="container">
+        <h2>4. Collection Animations</h2>
+        
+        <div class="example-section">
+            <h3>Staggered Animations</h3>
+            <div id="staggerContainer">
+                <div class="stagger-item">Item 1</div>
+                <div class="stagger-item">Item 2</div>
+                <div class="stagger-item">Item 3</div>
+                <div class="stagger-item">Item 4</div>
+                <div class="stagger-item">Item 5</div>
+            </div>
+            <div class="button-group">
+                <button class="btn" id="staggerInBtn">Stagger In</button>
+                <button class="btn" id="staggerOutBtn">Stagger Out</button>
+                <button class="btn btn-secondary" id="resetStaggerBtn">Reset</button>
+            </div>
+            <div class="code-example">
+// Collection animations with stagger
+Collections.ClassName.staggerItem.fadeIn({
+    duration: 400,
+    stagger: 100, // 100ms delay between each item
+    easing: 'ease-out'
+});
+
+// Using update method on collections
+Collections.ClassName.staggerItem.update({
+    fadeIn: { duration: 300, stagger: 150 }
+});
+            </div>
+        </div>
+
+        <div class="example-section">
+            <h3>Card Grid Animation</h3>
+            <div id="cardContainer">
+                <div class="card card-item">
+                    <h4>Card 1</h4>
+                    <p>Sample content for card 1</p>
+                </div>
+                <div class="card card-item">
+                    <h4>Card 2</h4>
+                    <p>Sample content for card 2</p>
+                </div>
+                <div class="card card-item">
+                    <h4>Card 3</h4>
+                    <p>Sample content for card 3</p>
+                </div>
+                <div class="card card-item">
+                    <h4>Card 4</h4>
+                    <p>Sample content for card 4</p>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn" id="cardsInBtn">Animate Cards In</button>
+                <button class="btn" id="cardsOutBtn">Animate Cards Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Example -->
+    <div class="container">
+        <h2>5. Modal with Animations</h2>
+        
+        <div class="example-section">
+            <h3>Animated Modal</h3>
+            <div class="button-group">
+                <button class="btn" id="showModalBtn">Show Modal</button>
+            </div>
+            <div class="code-example">
+// Modal animation example
+function showModal() {
+    Elements.modalOverlay.update({
+        style: { display: 'block' },
+        fadeIn: { duration: 200 }
+    });
+    
+    Elements.demoModal.update({
+        style: { display: 'block' },
+        transform: { scale: '0.8', translateX: '-50%', translateY: '-50%' }
+    }).then(() => {
+        Elements.demoModal.transform({
+            scale: '1', translateX: '-50%', translateY: '-50%'
+        }, { duration: 300, easing: 'ease-out-back' });
+    });
+}
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Animation -->
+    <div class="container">
+        <h2>6. Form Animations</h2>
+        
+        <div class="example-section">
+            <h3>Animated Form</h3>
+            <form id="animatedForm" style="display: none;">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-secondary" id="hideFormBtn">Cancel</button>
+                </div>
+            </form>
+            <div class="button-group">
+                <button class="btn" id="showFormBtn">Show Form</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration Examples -->
+    <div class="container">
+        <h2>7. Configuration & Easing</h2>
+        
+        <div class="example-section">
+            <h3>Different Easing Functions</h3>
+            <div class="demo-box" id="easingBox">Easing Demo</div>
+            <div class="button-group">
+                <button class="btn" id="easeLinearBtn">Linear</button>
+                <button class="btn" id="easeQuadBtn">Ease Quad</button>
+                <button class="btn" id="easeBackBtn">Ease Back</button>
+                <button class="btn" id="easeBounceBtn">Ease Bounce</button>
+            </div>
+            <div class="code-example">
+// Different easing examples
+Elements.easingBox.transform({ translateX: '200px' }, {
+    duration: 1000,
+    easing: 'ease-out-back'
+});
+
+// Custom configuration
+Animation.setDefaults({
+    duration: 500,
+    easing: 'ease-out',
+    cleanup: true
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance & Browser Support -->
+    <div class="container">
+        <h2>8. Browser Support & Performance</h2>
+        
+        <div class="example-section">
+            <h3>Feature Detection</h3>
+            <div class="status info" id="supportStatus">
+                Checking browser support...
+            </div>
+            <div class="button-group">
+                <button class="btn" id="checkSupportBtn">Check Support</button>
+                <button class="btn btn-secondary" id="performanceTestBtn">Performance Test</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal HTML -->
+    <div class="demo-overlay" id="modalOverlay"></div>
+    <div class="demo-modal" id="demoModal">
+        <h3>Animated Modal</h3>
+        <p>This modal appears with smooth animations using the DOM Helpers Animation module.</p>
+        <div class="button-group">
+            <button class="btn btn-secondary" id="closeModalBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        Animation completed successfully!
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="../dom-helpers.js"></script>
+    <script src="../dom-helpers-animation.js"></script>
+    
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Helpers Animation Test Page Loaded');
+            
+            // Check if animation module is loaded
+            if (typeof Animation !== 'undefined') {
+                Elements.loadStatus.textContent = '✓ Animation module loaded successfully';
+                console.log('Animation module version:', Animation.version);
+            } else {
+                Elements.loadStatus.textContent = '✗ Animation module failed to load';
+                Elements.loadStatus.className = 'status error';
+            }
+
+            // Basic Fade Animations
+            Elements.fadeInBtn.addEventListener('click', function() {
+                const fadeBox = Animation.enhance(Elements.fadeBox);
+                fadeBox.fadeIn({ 
+                    duration: 500, 
+                    easing: 'ease-out',
+                    onComplete: () => showNotification('Fade in complete!')
+                });
+            });
+
+            Elements.fadeOutBtn.addEventListener('click', function() {
+                const fadeBox = Animation.enhance(Elements.fadeBox);
+                fadeBox.fadeOut({ 
+                    duration: 300,
+                    onComplete: () => showNotification('Fade out complete!')
+                });
+            });
+
+            Elements.fadeToggleBtn.addEventListener('click', function() {
+                const fadeBox = Animation.enhance(Elements.fadeBox);
+                const isVisible = window.getComputedStyle(fadeBox).display !== 'none';
+                if (isVisible) {
+                    fadeBox.fadeOut({ duration: 300 });
+                } else {
+                    fadeBox.fadeIn({ duration: 300 });
+                }
+            });
+
+            // Slide Animations
+            Elements.slideUpBtn.addEventListener('click', function() {
+                const slidePanel = Animation.enhance(Elements.slidePanel);
+                slidePanel.slideUp({ 
+                    duration: 400, 
+                    easing: 'ease-in-out',
+                    onComplete: () => showNotification('Slide up complete!')
+                });
+            });
+
+            Elements.slideDownBtn.addEventListener('click', function() {
+                const slidePanel = Animation.enhance(Elements.slidePanel);
+                slidePanel.slideDown({ 
+                    duration: 400, 
+                    easing: 'ease-in-out',
+                    onComplete: () => showNotification('Slide down complete!')
+                });
+            });
+
+            Elements.slideToggleBtn.addEventListener('click', function() {
+                const slidePanel = Animation.enhance(Elements.slidePanel);
+                slidePanel.slideToggle({ duration: 300 });
+            });
+
+            // Transform Animations
+            Elements.rotateBtn.addEventListener('click', function() {
+                const transformBox1 = Animation.enhance(Elements.transformBox1);
+                transformBox1.transform({
+                    rotate: '360deg'
+                }, { duration: 800, easing: 'ease-in-out' });
+            });
+
+            Elements.scaleBtn.addEventListener('click', function() {
+                const transformBox2 = Animation.enhance(Elements.transformBox2);
+                transformBox2.transform({
+                    scale: '1.5'
+                }, { duration: 500, easing: 'ease-out-back' });
+            });
+
+            Elements.translateBtn.addEventListener('click', function() {
+                const transformBox3 = Animation.enhance(Elements.transformBox3);
+                transformBox3.transform({
+                    translateX: '150px',
+                    translateY: '50px'
+                }, { duration: 600, easing: 'ease-out' });
+            });
+
+            Elements.resetTransformBtn.addEventListener('click', function() {
+                const transformBox1 = Animation.enhance(Elements.transformBox1);
+                const transformBox2 = Animation.enhance(Elements.transformBox2);
+                const transformBox3 = Animation.enhance(Elements.transformBox3);
+                
+                [transformBox1, transformBox2, transformBox3].forEach(box => {
+                    box.transform({
+                        rotate: '0deg',
+                        scale: '1',
+                        translateX: '0px',
+                        translateY: '0px'
+                    }, { duration: 400 });
+                });
+            });
+
+            // Animation Chaining
+            Elements.chainBtn.addEventListener('click', function() {
+                const chainBox = Animation.enhance(Elements.chainBox);
+                chainBox.animate()
+                    .fadeOut({ duration: 300 })
+                    .delay(200)
+                    .fadeIn({ duration: 300 })
+                    .transform({ scale: '1.2', rotate: '10deg' }, { duration: 400 })
+                    .delay(500)
+                    .transform({ scale: '1', rotate: '0deg' }, { duration: 400 })
+                    .then(() => showNotification('Animation chain complete!'))
+                    .play();
+            });
+
+            Elements.stopChainBtn.addEventListener('click', function() {
+                const chainBox = Animation.enhance(Elements.chainBox);
+                chainBox.stopAnimations();
+                showNotification('Animations stopped');
+            });
+
+            // Collection Animations - Stagger
+            Elements.staggerInBtn.addEventListener('click', function() {
+                // Get all stagger items and enhance them individually
+                const staggerItems = document.querySelectorAll('.stagger-item');
+                
+                // Reset initial state
+                staggerItems.forEach(item => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(-50px)';
+                    item.style.display = 'block';
+                });
+                
+                // Animate each item with stagger delay
+                staggerItems.forEach((item, index) => {
+                    const enhancedItem = Animation.enhance(item);
+                    setTimeout(() => {
+                        enhancedItem.fadeIn({
+                            duration: 400,
+                            easing: 'ease-out',
+                            onComplete: () => {
+                                enhancedItem.transform({
+                                    translateX: '0px'
+                                }, { duration: 300 });
+                            }
+                        });
+                    }, index * 100);
+                });
+            });
+
+            Elements.staggerOutBtn.addEventListener('click', function() {
+                const staggerItems = document.querySelectorAll('.stagger-item');
+                staggerItems.forEach((item, index) => {
+                    const enhancedItem = Animation.enhance(item);
+                    setTimeout(() => {
+                        enhancedItem.fadeOut({
+                            duration: 300
+                        });
+                    }, index * 80);
+                });
+            });
+
+            Elements.resetStaggerBtn.addEventListener('click', function() {
+                const staggerItems = document.querySelectorAll('.stagger-item');
+                staggerItems.forEach(item => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0px)';
+                    item.style.display = 'block';
+                });
+            });
+
+            // Card Animations
+            Elements.cardsInBtn.addEventListener('click', function() {
+                const cardItems = document.querySelectorAll('.card-item');
+                
+                // Set initial state
+                cardItems.forEach(item => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(30px) scale(0.9)';
+                });
+                
+                // Animate each card with stagger delay
+                cardItems.forEach((item, index) => {
+                    const enhancedItem = Animation.enhance(item);
+                    setTimeout(() => {
+                        enhancedItem.fadeIn({
+                            duration: 500,
+                            easing: 'ease-out',
+                            onComplete: () => {
+                                enhancedItem.transform({
+                                    translateY: '0px',
+                                    scale: '1'
+                                }, { duration: 400, easing: 'ease-out-back' });
+                            }
+                        });
+                    }, index * 150);
+                });
+            });
+
+            Elements.cardsOutBtn.addEventListener('click', function() {
+                const cardItems = document.querySelectorAll('.card-item');
+                cardItems.forEach((item, index) => {
+                    const enhancedItem = Animation.enhance(item);
+                    setTimeout(() => {
+                        enhancedItem.transform({
+                            translateY: '-30px',
+                            scale: '0.9'
+                        }, { 
+                            duration: 300,
+                            onComplete: () => {
+                                enhancedItem.fadeOut({ duration: 200 });
+                            }
+                        });
+                    }, index * 100);
+                });
+            });
+
+            // Modal Animations
+            Elements.showModalBtn.addEventListener('click', showModal);
+            Elements.closeModalBtn.addEventListener('click', hideModal);
+            Elements.modalOverlay.addEventListener('click', hideModal);
+
+            function showModal() {
+                const modalOverlay = Animation.enhance(Elements.modalOverlay);
+                const demoModal = Animation.enhance(Elements.demoModal);
+                
+                // Show overlay with fade in
+                Elements.modalOverlay.style.display = 'block';
+                Elements.modalOverlay.style.opacity = '0';
+                modalOverlay.fadeIn({ duration: 200 });
+                
+                // Show modal with scale animation
+                Elements.demoModal.style.display = 'block';
+                Elements.demoModal.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                Elements.demoModal.style.opacity = '0';
+                
+                demoModal.fadeIn({ 
+                    duration: 100,
+                    onComplete: () => {
+                        demoModal.transform({
+                            scale: '1'
+                        }, { duration: 300, easing: 'ease-out-back' });
+                    }
+                });
+            }
+
+            function hideModal() {
+                const modalOverlay = Animation.enhance(Elements.modalOverlay);
+                const demoModal = Animation.enhance(Elements.demoModal);
+                
+                demoModal.transform({
+                    scale: '0.8'
+                }, { 
+                    duration: 200,
+                    onComplete: () => {
+                        demoModal.fadeOut({ 
+                            duration: 100,
+                            onComplete: () => {
+                                Elements.demoModal.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+                
+                modalOverlay.fadeOut({ 
+                    duration: 200,
+                    onComplete: () => {
+                        Elements.modalOverlay.style.display = 'none';
+                    }
+                });
+            }
+
+            // Form Animations
+            Elements.showFormBtn.addEventListener('click', function() {
+                const animatedForm = Animation.enhance(Elements.animatedForm);
+                animatedForm.slideDown({ 
+                    duration: 400, 
+                    easing: 'ease-out',
+                    onComplete: () => Elements.name.focus()
+                });
+            });
+
+            Elements.hideFormBtn.addEventListener('click', function() {
+                const animatedForm = Animation.enhance(Elements.animatedForm);
+                animatedForm.slideUp({ duration: 300 });
+            });
+
+            // Easing Examples
+            Elements.easeLinearBtn.addEventListener('click', function() {
+                resetEasingBox();
+                setTimeout(() => {
+                    const easingBox = Animation.enhance(Elements.easingBox);
+                    easingBox.transform({ translateX: '200px' }, {
+                        duration: 1000,
+                        easing: 'linear'
+                    });
+                }, 100);
+            });
+
+            Elements.easeQuadBtn.addEventListener('click', function() {
+                resetEasingBox();
+                setTimeout(() => {
+                    const easingBox = Animation.enhance(Elements.easingBox);
+                    easingBox.transform({ translateX: '200px' }, {
+                        duration: 1000,
+                        easing: 'ease-out-quad'
+                    });
+                }, 100);
+            });
+
+            Elements.easeBackBtn.addEventListener('click', function() {
+                resetEasingBox();
+                setTimeout(() => {
+                    const easingBox = Animation.enhance(Elements.easingBox);
+                    easingBox.transform({ translateX: '200px' }, {
+                        duration: 1000,
+                        easing: 'ease-out-back'
+                    });
+                }, 100);
+            });
+
+            Elements.easeBounceBtn.addEventListener('click', function() {
+                resetEasingBox();
+                setTimeout(() => {
+                    const easingBox = Animation.enhance(Elements.easingBox);
+                    easingBox.transform({ translateX: '200px' }, {
+                        duration: 1200,
+                        easing: 'ease-out-bounce'
+                    });
+                }, 100);
+            });
+
+            function resetEasingBox() {
+                Elements.easingBox.update({
+                    style: { transform: 'translateX(0px)' }
+                });
+            }
+
+            // Browser Support Check
+            Elements.checkSupportBtn.addEventListener('click', function() {
+                const transitionSupport = Animation.isSupported('transitions');
+                const transformSupport = Animation.isSupported('transforms');
+                
+                let message = 'Browser Support:\n';
+                message += `• CSS Transitions: ${transitionSupport ? '✓ Supported' : '✗ Not Supported'}\n`;
+                message += `• CSS Transforms: ${transformSupport ? '✓ Supported' : '✗ Not Supported'}`;
+                
+                Elements.supportStatus.textContent = message;
+                Elements.supportStatus.style.whiteSpace = 'pre-line';
+            });
+
+            // Performance Test
+            Elements.performanceTestBtn.addEventListener('click', function() {
+                const startTime = performance.now();
+                const testElements = [];
+                
+                // Create test elements
+                for (let i = 0; i < 50; i++) {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'width:10px;height:10px;background:red;position:absolute;top:0;left:0;';
+                    document.body.appendChild(div);
+                    testElements.push(Animation.enhance(div));
+                }
+                
+                // Animate all elements
+                Promise.all(testElements.map((el, index) => {
+                    return el.transform({
+                        translateX: (index * 5) + 'px',
+                        translateY: (index * 2) + 'px'
+                    }, { duration: 500 });
+                })).then(() => {
+                    const endTime = performance.now();
+                    const duration = endTime - startTime;
+                    
+                    // Cleanup
+                    testElements.forEach(el => el.remove());
+                    
+                    showNotification(`Performance test completed in ${duration.toFixed(2)}ms`);
+                });
+            });
+
+            // Utility function to show notifications
+            function showNotification(message) {
+                Elements.notification.textContent = message;
+                
+                // Ensure notification element has animation methods
+                const notification = Elements.notification._hasAnimationMethods ? 
+                    Elements.notification : Animation.enhance(Elements.notification);
+                
+                notification.fadeIn({ duration: 200 });
+                
+                setTimeout(() => {
+                    notification.fadeOut({ duration: 200 });
+                }, 2000);
+            }
+
+            // Initialize page
+            setTimeout(() => {
+                // Auto-run browser support check
+                Elements.checkSupportBtn.click();
+                
+                // Show initial notification
+                showNotification('Animation test page ready!');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
