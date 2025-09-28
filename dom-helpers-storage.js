@@ -430,101 +430,140 @@
   function addFormsIntegration() {
     // Only add if Forms is available
     if (typeof global.Forms === 'undefined' && typeof Forms === 'undefined') {
+      console.log('[DOM Helpers Storage] Forms not available, skipping integration');
       return;
     }
 
     const FormsObject = global.Forms || Forms;
 
-   
+    // Check if Forms helper exists and has _getForm method
+    if (!FormsObject.helper || typeof FormsObject.helper._getForm !== 'function') {
+      console.warn('[DOM Helpers Storage] Forms helper not properly initialized, trying alternative approach');
+      
+      // Alternative approach: Try to enhance forms directly
+      if (FormsObject && typeof FormsObject === 'object') {
+        // Create a proxy to intercept form access
+        const originalProxy = FormsObject;
+        
+        // Try to wrap the proxy getter
+        try {
+          const handler = {
+            get: function(target, prop) {
+              const form = Reflect.get(target, prop);
+              if (form && form.tagName && form.tagName.toLowerCase() === 'form') {
+                return enhanceFormWithStorageIntegration(form);
+              }
+              return form;
+            }
+          };
+          
+          // This won't work with existing proxy, so let's try a different approach
+          console.log('[DOM Helpers Storage] Using direct form enhancement approach');
+        } catch (error) {
+          console.warn('[DOM Helpers Storage] Could not wrap Forms proxy:', error.message);
+        }
+      }
+      return;
+    }
+
+    console.log('[DOM Helpers Storage] Adding Forms integration');
 
     // Add autoSave method to form objects
-    const originalGetForm = FormsObject.helper._getForm;
+    const originalGetForm = FormsObject.helper._getForm.bind(FormsObject.helper);
     FormsObject.helper._getForm = function(prop) {
-      const form = originalGetForm.call(this, prop);
-      
-      if (form && !form._hasStorageIntegration) {
-        // Add storage integration methods
-        form.autoSave = function(storageKey, options = {}) {
-          const {
-            storage = 'localStorage',
-            interval = 1000,
-            events = ['input', 'change'],
-            namespace = ''
-          } = options;
+      const form = originalGetForm(prop);
+      return enhanceFormWithStorageIntegration(form);
+    };
+  }
 
-          const storageHelper = namespace ? 
-            Storage.namespace(namespace) : 
-            (storage === 'sessionStorage' ? Storage.session : Storage);
+  /**
+   * Enhance a form with storage integration methods
+   */
+  function enhanceFormWithStorageIntegration(form) {
+    if (!form || form._hasStorageIntegration) {
+      return form;
+    }
 
-          // Save current form values
-          const saveValues = () => {
-            const values = form.values;
-            storageHelper.set(storageKey, values, options);
-          };
+    // Add storage integration methods
+    form.autoSave = function(storageKey, options = {}) {
+      const {
+        storage = 'localStorage',
+        interval = 1000,
+        events = ['input', 'change'],
+        namespace = ''
+      } = options;
 
-          // Set up auto-save listeners
-          events.forEach(eventType => {
-            form.addEventListener(eventType, () => {
-              clearTimeout(form._autoSaveTimeout);
-              form._autoSaveTimeout = setTimeout(saveValues, interval);
-            });
-          });
+      const storageHelper = namespace ? 
+        Storage.namespace(namespace) : 
+        (storage === 'sessionStorage' ? Storage.session : Storage);
 
-          // Initial save
-          saveValues();
+      // Save current form values
+      const saveValues = () => {
+        const values = form.values;
+        storageHelper.set(storageKey, values, options);
+      };
 
-          // Store reference for cleanup
-          form._autoSaveKey = storageKey;
-          form._autoSaveStorage = storageHelper;
-
-          return form;
-        };
-
-        form.restore = function(storageKey, options = {}) {
-          const {
-            storage = 'localStorage',
-            namespace = '',
-            clearAfterRestore = false
-          } = options;
-
-          const storageHelper = namespace ? 
-            Storage.namespace(namespace) : 
-            (storage === 'sessionStorage' ? Storage.session : Storage);
-
-          const savedValues = storageHelper.get(storageKey);
-          
-          if (savedValues) {
-            form.values = savedValues;
-            
-            if (clearAfterRestore) {
-              storageHelper.remove(storageKey);
-            }
-          }
-
-          return form;
-        };
-
-        form.clearAutoSave = function() {
-          if (form._autoSaveTimeout) {
-            clearTimeout(form._autoSaveTimeout);
-          }
-          if (form._autoSaveKey && form._autoSaveStorage) {
-            form._autoSaveStorage.remove(form._autoSaveKey);
-          }
-          return form;
-        };
-
-        // Mark as having storage integration
-        Object.defineProperty(form, '_hasStorageIntegration', {
-          value: true,
-          writable: false,
-          enumerable: false,
-          configurable: false
+      // Set up auto-save listeners
+      events.forEach(eventType => {
+        form.addEventListener(eventType, () => {
+          clearTimeout(form._autoSaveTimeout);
+          form._autoSaveTimeout = setTimeout(saveValues, interval);
         });
+      });
+
+      // Initial save
+      saveValues();
+
+      // Store reference for cleanup
+      form._autoSaveKey = storageKey;
+      form._autoSaveStorage = storageHelper;
+
+      return form;
+    };
+
+    form.restore = function(storageKey, options = {}) {
+      const {
+        storage = 'localStorage',
+        namespace = '',
+        clearAfterRestore = false
+      } = options;
+
+      const storageHelper = namespace ? 
+        Storage.namespace(namespace) : 
+        (storage === 'sessionStorage' ? Storage.session : Storage);
+
+      const savedValues = storageHelper.get(storageKey);
+      
+      if (savedValues) {
+        form.values = savedValues;
+        
+        if (clearAfterRestore) {
+          storageHelper.remove(storageKey);
+        }
       }
 
       return form;
     };
+
+    form.clearAutoSave = function() {
+      if (form._autoSaveTimeout) {
+        clearTimeout(form._autoSaveTimeout);
+      }
+      if (form._autoSaveKey && form._autoSaveStorage) {
+        form._autoSaveStorage.remove(form._autoSaveKey);
+      }
+      return form;
+    };
+
+    // Mark as having storage integration
+    Object.defineProperty(form, '_hasStorageIntegration', {
+      value: true,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
+
+    return form;
   }
 
   // Create storage instances
@@ -539,6 +578,7 @@
 
   // Add utility methods to main Storage object
   Storage.local = localStorage;
+  Storage.namespace = (name) => localStorage.namespace(name);
   Storage.cleanup = () => {
     const localCleaned = localStorage.cleanup();
     const sessionCleaned = sessionStorage.cleanup();
@@ -569,11 +609,48 @@
   if (typeof document !== 'undefined') {
     // Wait for DOM to be ready
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', addFormsIntegration);
+      document.addEventListener('DOMContentLoaded', function() {
+        addFormsIntegration();
+        // Also try to enhance forms directly after a delay
+        setTimeout(enhanceExistingForms, 100);
+      });
     } else {
       // DOM is already ready
-      setTimeout(addFormsIntegration, 0);
+      setTimeout(function() {
+        addFormsIntegration();
+        enhanceExistingForms();
+      }, 0);
     }
+  }
+
+  /**
+   * Enhance existing forms directly
+   */
+  function enhanceExistingForms() {
+    // Try to enhance forms directly by finding the actual DOM elements
+    const forms = document.querySelectorAll('form[id]');
+    forms.forEach(form => {
+      if (!form._hasStorageIntegration) {
+        console.log(`[DOM Helpers Storage] Enhancing DOM form ${form.id} directly`);
+        enhanceFormWithStorageIntegration(form);
+        
+        // Now try to make sure the Forms proxy returns this enhanced form
+        if (typeof global.Forms !== 'undefined' || typeof Forms !== 'undefined') {
+          const FormsObject = global.Forms || Forms;
+          
+          // Try to intercept the proxy getter for this specific form
+          try {
+            // Store a reference to the enhanced form
+            if (FormsObject && FormsObject.helper && FormsObject.helper.cache) {
+              // Try to update the cache if it exists
+              FormsObject.helper.cache.set(form.id, form);
+            }
+          } catch (error) {
+            console.warn(`[DOM Helpers Storage] Could not update Forms cache for ${form.id}:`, error.message);
+          }
+        }
+      }
+    });
   }
 
   // Add Storage to the main DOMHelpers object if it exists
