@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Helpers Async Module - Test Examples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .example-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .btn.loading {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control.error {
+            border-color: #dc3545;
+            background-color: #ffe6e6;
+        }
+
+        .form-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .form-message--success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .form-message--error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .form-message--info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .search-results {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .search-result-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .loading-indicator {
+            display: none;
+            padding: 10px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .code-example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #28a745;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .scroll-demo {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+
+        .scroll-content {
+            height: 800px;
+            background: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .xss-demo {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .unsafe-content {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+
+        .safe-content {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DOM Helpers Async Module - Test Examples</h1>
+        <div class="status success" id="loadStatus">
+            ✓ Async module loaded successfully
+        </div>
+    </div>
+
+    <!-- Debounce & Throttle Examples -->
+    <div class="container">
+        <h2>1. Debounce & Throttle Utilities</h2>
+        
+        <div class="example-section">
+            <h3>Search with Debounce</h3>
+            <p>Type in the search box - the search function will be debounced (300ms delay):</p>
+            <div class="form-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Type to search...">
+                <div id="searchResults" class="search-results"></div>
+                <div id="searchLoading" class="loading-indicator">Searching...</div>
+            </div>
+            <div class="code-example">
+// Using debounce with DOM Helpers integration
+Elements.searchInput.update({
+    addEventListener: {
+        input: Elements.debounce(async (e) => {
+            const query = e.target.value;
+            if (query.length > 2) {
+                const data = await Elements.fetchJSON(`/api/search?q=${query}`);
+                Elements.searchResults.update({ innerHTML: data.map(item => `&lt;div class="search-result-item"&gt;${item}&lt;/div&gt;`).join('') });
+            }
+        }, 300)
+    }
+});
+            </div>
+        </div>
+
+        <div class="example-section">
+            <h3>Scroll Event with Throttle</h3>
+            <p>Scroll in the box below - the scroll handler is throttled (200ms):</p>
+            <div id="scrollDemo" class="scroll-demo">
+                <div class="scroll-content">
+                    <h4>Scroll down to see throttled events in action</h4>
+                    <p>This content is tall enough to require scrolling. The scroll event handler is throttled to prevent performance issues.</p>
+                    <div id="scrollPosition" class="status info">Scroll position: 0</div>
+                </div>
+            </div>
+            <div class="code-example">
+// Throttled scroll event
+Elements.scrollDemo.update({
+    addEventListener: {
+        scroll: Elements.throttle(() => {
+            const scrollTop = Elements.scrollDemo.scrollTop;
+            Elements.scrollPosition.update({ 
+                textContent: `Scroll position: ${scrollTop}px` 
+            });
+        }, 200)
+    }
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Sanitization Examples -->
+    <div class="container">
+        <h2>2. Input Sanitization (XSS Protection)</h2>
+        
+        <div class="example-section">
+            <h3>XSS Prevention Demo</h3>
+            <p>Enter potentially dangerous HTML content to see sanitization in action:</p>
+            <div class="form-group">
+                <textarea id="dangerousInput" class="form-control" rows="3" placeholder="Try entering: &lt;script&gt;alert('XSS')&lt;/script&gt; or &lt;img src=x onerror=alert(1)&gt;"></textarea>
+                <br>
+                <button class="btn" id="sanitizeBtn">Sanitize & Display</button>
+            </div>
+            <div class="xss-demo">
+                <div><strong>Unsafe (raw input):</strong></div>
+                <div id="unsafeOutput" class="unsafe-content">Raw input will appear here</div>
+                <div><strong>Safe (sanitized):</strong></div>
+                <div id="safeOutput" class="safe-content">Sanitized input will appear here</div>
+            </div>
+            <div class="code-example">
+// XSS protection with sanitization
+const userInput = Elements.dangerousInput.value;
+Elements.safeOutput.update({
+    innerHTML: Elements.sanitize(userInput) // Safe, built-in protection
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Fetch Examples -->
+    <div class="container">
+        <h2>3. Enhanced Fetch with Error Handling & Retries</h2>
+        
+        <div class="example-section">
+            <h3>Fetch with Loading Indicator & Retry</h3>
+            <p>Test various fetch scenarios with built-in error handling:</p>
+            <div class="form-group">
+                <button class="btn btn-success" id="fetchSuccessBtn">Fetch Success (Mock)</button>
+                <button class="btn btn-danger" id="fetchErrorBtn">Fetch Error (404)</button>
+                <button class="btn btn-warning" id="fetchTimeoutBtn">Fetch Timeout</button>
+                <button class="btn" id="fetchRetryBtn">Fetch with Retry</button>
+            </div>
+            <div id="fetchLoading" class="loading-indicator">Loading...</div>
+            <div id="fetchResults" class="status info">Results will appear here</div>
+            <div class="code-example">
+// Enhanced fetch with all features
+Elements.fetch('/api/data', {
+    timeout: 5000,      // Auto-abort after 5 seconds
+    retries: 3,         // Auto-retry 3 times
+    loadingIndicator: Elements.fetchLoading,
+    onSuccess: (data) => Elements.fetchResults.update({ textContent: JSON.stringify(data) }),
+    onError: (err) => Elements.fetchResults.update({ textContent: `Error: ${err.message}` })
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Handling Examples -->
+    <div class="container">
+        <h2>4. Async Form Handling</h2>
+        
+        <div class="example-section">
+            <h3>Contact Form with Validation</h3>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" class="form-control" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Submit Form</button>
+                <button type="button" class="btn" id="validateOnlyBtn">Validate Only</button>
+            </form>
+            <div class="code-example">
+// Async form submission with validation
+Elements.contactForm.update({
+    addEventListener: {
+        submit: Elements.asyncHandler(async (e, form) => {
+            e.preventDefault();
+            
+            // Validate form
+            const validation = form.validate({
+                name: { required: true, label: 'Name', minLength: 2 },
+                email: { required: true, type: 'email', label: 'Email' },
+                message: { maxLength: 500, label: 'Message' }
+            });
+            
+            if (!validation.isValid) {
+                form.showMessage(validation.errors.join(', '), 'error');
+                return;
+            }
+
+            // Submit data
+            const data = form.getData();
+            await Elements.fetchJSON(form.action || '/api/contact', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            form.showMessage('Message sent successfully!', 'success');
+        })
+    }
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Parallel Requests Examples -->
+    <div class="container">
+        <h2>5. Parallel Requests & Progress Tracking</h2>
+        
+        <div class="example-section">
+            <h3>Multiple API Calls with Progress</h3>
+            <button class="btn" id="parallelBtn">Start Parallel Requests</button>
+            <button class="btn" id="sequentialBtn">Start Sequential Requests</button>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <div id="parallelResults" class="status info">Click a button to start</div>
+            <div class="code-example">
+// Parallel requests with progress tracking
+const requests = [
+    Elements.fetchJSON('/api/users'),
+    Elements.fetchJSON('/api/posts'),
+    Elements.fetchJSON('/api/comments')
+];
+
+Elements.parallelAll(requests, {
+    onProgress: (completed, total, result) => {
+        const percent = (completed / total) * 100;
+        Elements.progressFill.update({ 
+            style: { width: `${percent}%` } 
+        });
+    }
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Integration Examples -->
+    <div class="container">
+        <h2>6. DOM Helpers Integration Examples</h2>
+        
+        <div class="example-section">
+            <h3>Declarative Async with .update()</h3>
+            <button class="btn" id="updateExampleBtn">Run Update Examples</button>
+            <div id="updateResults" class="status info">Results will appear here</div>
+            <div class="code-example">
+// All examples using declarative .update() syntax
+
+// 1. Debounced search
+Elements.search.update({
+    addEventListener: {
+        input: Elements.debounce((e) => {
+            console.log('Search:', e.target.value);
+        }, 300)
+    }
+});
+
+// 2. Throttled scroll
+Elements.window.update({
+    addEventListener: {
+        scroll: Elements.throttle(() => {
+            console.log('Scroll event!');
+        }, 200)
+    }
+});
+
+// 3. Safe content insertion
+const userInput = '&lt;img src=x onerror=alert(1)&gt;';
+Elements.output.update({
+    innerHTML: Elements.sanitize(userInput) // Safe, built-in
+});
+
+// 4. Enhanced fetch
+Elements.myButton.update({
+    addEventListener: {
+        click: Elements.asyncHandler(async () => {
+            const data = await Elements.fetchJSON('/api/data');
+            Elements.results.update({ textContent: JSON.stringify(data) });
+        })
+    }
+});
+            </div>
+        </div>
+
+        <div class="example-section">
+            <h3>Real-World Usage Patterns</h3>
+            <div id="realWorldDemo">
+                <input type="text" id="liveSearch" class="form-control" placeholder="Live search with auto-complete...">
+                <div id="suggestions" class="search-results"></div>
+            </div>
+            <div class="code-example">
+// Complete real-world example: Live search with auto-complete
+Elements.liveSearch.update({
+    addEventListener: {
+        input: Elements.debounce(async (e) => {
+            const query = e.target.value.trim();
+            
+            if (query.length < 2) {
+                Elements.suggestions.update({ 
+                    style: { display: 'none' },
+                    innerHTML: '' 
+                });
+                return;
+            }
+
+            try {
+                // Sanitize input before sending
+                const safeQuery = Elements.sanitize(query);
+                
+                // Fetch suggestions with loading state
+                const data = await Elements.fetchJSON(`/api/search?q=${encodeURIComponent(safeQuery)}`, {
+                    timeout: 3000,
+                    retries: 1,
+                    onStart: () => Elements.suggestions.update({ innerHTML: '&lt;div class="loading-indicator"&gt;Searching...&lt;/div&gt;' }),
+                    onError: () => Elements.suggestions.update({ innerHTML: '&lt;div class="search-result-item"&gt;Search failed. Please try again.&lt;/div&gt;' })
+                });
+                
+                // Update suggestions safely
+                Elements.suggestions.update({
+                    innerHTML: data.map(item => 
+                        `&lt;div class="search-result-item"&gt;${Elements.sanitize(item.title)}&lt;/div&gt;`
+                    ).join(''),
+                    style: { display: 'block' }
+                });
+                
+            } catch (error) {
+                console.error('Search error:', error);
+            }
+        }, 300)
+    }
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        Action completed successfully!
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="../dom-helpers.js"></script>
+    <script src="../dom-helpers-async.js"></script>
+    <script src="../asyncExample.js"></script>
+    
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Helpers Async Test Page Loaded');
+            
+            // Check if async module is loaded
+            if (typeof AsyncHelpers !== 'undefined') {
+                Elements.loadStatus.textContent = '✓ Async module loaded successfully';
+                console.log('AsyncHelpers version:', AsyncHelpers.version);
+                console.log('DOM Helpers integration:', AsyncHelpers.isDOMHelpersAvailable());
+            } else {
+                Elements.loadStatus.textContent = '✗ Async module failed to load';
+                Elements.loadStatus.className = 'status error';
+            }
+
+            // 1. Debounced Search Example
+            Elements.searchInput.update({
+                addEventListener: {
+                    input: Elements.debounce(async (e) => {
+                        const query = e.target.value.trim();
+                        
+                        if (query.length < 2) {
+                            Elements.searchResults.update({ 
+                                style: { display: 'none' },
+                                innerHTML: '' 
+                            });
+                            return;
+                        }
+
+                        // Show loading
+                        Elements.searchLoading.update({ style: { display: 'block' } });
+                        Elements.searchResults.update({ style: { display: 'none' } });
+
+                        // Simulate API search with delay
+                        await Elements.sleep(800);
+                        
+                        // Mock search results
+                        const mockResults = [
+                            `Result for "${query}" - Item 1`,
+                            `Result for "${query}" - Item 2`,
+                            `Result for "${query}" - Item 3`,
+                            `Result for "${query}" - Related topic`
+                        ];
+
+                        // Hide loading and show results
+                        Elements.searchLoading.update({ style: { display: 'none' } });
+                        Elements.searchResults.update({
+                            innerHTML: mockResults.map(item => 
+                                `<div class="search-result-item">${Elements.sanitize(item)}</div>`
+                            ).join(''),
+                            style: { display: 'block' }
+                        });
+                    }, 300)
+                }
+            });
+
+            // 2. Throttled Scroll Example
+            Elements.scrollDemo.update({
+                addEventListener: {
+                    scroll: Elements.throttle((e) => {
+                        const scrollTop = e.target.scrollTop;
+                        const scrollHeight = e.target.scrollHeight - e.target.clientHeight;
+                        const scrollPercent = ((scrollTop / scrollHeight) * 100).toFixed(1);
+                        
+                        Elements.scrollPosition.update({ 
+                            textContent: `Scroll position: ${scrollTop}px (${scrollPercent}%)` 
+                        });
+                    }, 200)
+                }
+            });
+
+            // 3. XSS Sanitization Example
+            Elements.sanitizeBtn.update({
+                addEventListener: {
+                    click: (e) => {
+                        const userInput = Elements.dangerousInput.value;
+                        
+                        if (!userInput.trim()) {
+                            showNotification('Please enter some content to test');
+                            return;
+                        }
+
+                        // Show unsafe content (for demonstration - DON'T do this in production!)
+                        Elements.unsafeOutput.update({ 
+                            textContent: `Raw: ${userInput}` 
+                        });
+
+                        // Show safe content
+                        Elements.safeOutput.update({
+                            innerHTML: Elements.sanitize(userInput)
+                        });
+
+                        showNotification('Content sanitized successfully!');
+                    }
+                }
+            });
+
+            // 4. Enhanced Fetch Examples
+            Elements.fetchSuccessBtn.update({
+                addEventListener: {
+                    click: Elements.asyncHandler(async () => {
+                        // Mock successful API response
+                        await Elements.sleep(1000); // Simulate network delay
+                        
+                        const mockData = { 
+                            message: 'Success!', 
+                            timestamp: new Date().toISOString(),
+                            data: [1, 2, 3, 4, 5]
+                        };
+
+                        Elements.fetchResults.update({
+                            textContent: `✓ Success: ${JSON.stringify(mockData)}`,
+                            className: 'status success'
+                        });
+                    }, {
+                        loadingClass: 'loading',
+                        errorHandler: (error) => {
+                            Elements.fetchResults.update({
+                                textContent: `✗ Error: ${error.message}`,
+                                className: 'status error'
+                            });
+                        }
+                    })
+                }
+            });
+
+            Elements.fetchErrorBtn.update({
+                addEventListener: {
+                    click: Elements.asyncHandler(async () => {
+                        await Elements.sleep(500);
+                        throw new Error('404 Not Found - Simulated error');
+                    }, {
+                        errorHandler: (error) => {
+                            Elements.fetchResults.update({
+                                textContent: `✗ ${error.message}`,
+                                className: 'status error'
+                            });
+                        }
+                    })
+                }
+            });
+
+            Elements.fetchTimeoutBtn.update({
+                addEventListener: {
+                    click: Elements.asyncHandler(async () => {
+                        // Simulate timeout
+                        await Elements.raceWithTimeout([
+                            Elements.sleep(10000) // This will timeout
+                        ], 2000);
+                    }, {
+                        errorHandler: (error) => {
+                            Elements.fetchResults.update({
+                                textContent: `✗ ${error.message}`,
+                                className: 'status error'
+                            });
+                        }
+                    })
+                }
+            });
+
+            Elements.fetchRetryBtn.update({
+                addEventListener: {
+                    click: Elements.asyncHandler(async () => {
+                        Elements.fetchResults.update({
+                            textContent: 'Starting retry test...',
+                            className: 'status info'
+                        });
+
+                        let attempt = 0;
+                        const maxRetries = 3;
+
+                        while (attempt <= maxRetries) {
+                            try {
+                                attempt++;
+                                Elements.fetchResults.update({
+                                    textContent: `Attempt ${attempt}/${maxRetries + 1} - Simulating failure...`,
+                                    className: 'status info'
+                                });
+
+                                // Simulate network delay
+                                await Elements.sleep(1000);
+
+                                // Simulate failure for first 2 attempts
+                                if (attempt <= 2) {
+                                    throw new Error(`Network error on attempt ${attempt}`);
+                                }
+
+                                // Success on 3rd attempt
+                                Elements.fetchResults.update({
+                                    textContent: `✓ Success on attempt ${attempt}! Retry mechanism working correctly.`,
+                                    className: 'status success'
+                                });
+                                break;
+
+                            } catch (error) {
+                                if (attempt > maxRetries) {
+                                    Elements.fetchResults.update({
+                                        textContent: `✗ All ${maxRetries + 1} attempts failed: ${error.message}`,
+                                        className: 'status error'
+                                    });
+                                    break;
+                                } else {
+                                    Elements.fetchResults.update({
+                                        textContent: `Attempt ${attempt} failed: ${error.message}. Retrying...`,
+                                        className: 'status error'
+                                    });
+                                    
+                                    // Exponential backoff delay
+                                    await Elements.sleep(1000 * attempt);
+                                }
+                            }
+                        }
+                    }, {
+                        errorHandler: (error) => {
+                            Elements.fetchResults.update({
+                                textContent: `✗ Retry test failed: ${error.message}`,
+                                className: 'status error'
+                            });
+                        }
+                    })
+                }
+            });
+
+            // 5. Form Validation and Submission
+            Elements.contactForm.update({
+                addEventListener: {
+                    submit: Elements.asyncHandler(async (e) => {
+                        e.preventDefault();
+                        
+                        const form = e.target;
+                        
+                        // Validate form
+                        const validation = Elements.validateForm(form, {
+                            name: { 
+                                required: true, 
+                                label: 'Name', 
+                                minLength: 2 
+                            },
+                            email: { 
+                                required: true, 
+                                type: 'email', 
+                                label: 'Email' 
+                            },
+                            message: { 
+                                maxLength: 500, 
+                                label: 'Message' 
+                            }
+                        });
+
+                        if (!validation.isValid) {
+                            Elements.showFormMessage(form, validation.errors.join(', '), 'error');
+                            return;
+                        }
+
+                        // Get form data
+                        const data = Elements.getFormData(form);
+                        
+                        // Simulate form submission
+                        await Elements.sleep(1500);
+                        
+                        // Mock successful submission
+                        Elements.showFormMessage(form, 'Message sent successfully!', 'success');
+                        form.reset();
+                        
+                    }, {
+                        loadingClass: 'loading',
+                        errorHandler: (error) => {
+                            Elements.showFormMessage(Elements.contactForm, `Submission failed: ${error.message}`, 'error');
+                        }
+                    })
+                }
+            });
+
+            Elements.validateOnlyBtn.update({
+                addEventListener: {
+                    click: () => {
+                        const validation = Elements.validateForm(Elements.contactForm, {
+                            name: { required: true, label: 'Name', minLength: 2 },
+                            email: { required: true, type: 'email', label: 'Email' },
+                            message: { maxLength: 500, label: 'Message' }
+                        });
+
+                        const messageType = validation.isValid ? 'success' : 'error';
+                        const message = validation.isValid ? 'Form is valid!' : validation.errors.join(', ');
+                        
+                        Elements.showFormMessage(Elements.contactForm, message, messageType);
+                    }
+                }
+            });
+
+            // 6. Parallel Requests Example
+            Elements.parallelBtn.update({
+                addEventListener: {
+                    click: Elements.asyncHandler(async () => {
+                        // Reset progress
+                        Elements.progressFill.update({ style: { width: '0%' } });
+                        Elements.parallelResults.update({ 
+                            textContent: 'Starting parallel requests...',
+                            className: 'status info'
+                        });
+
+                        // Create mock promises with different delays
+                        const requests = [
+                            Elements.sleep(800).then(() => ({ api: 'users', data: ['user1', 'user2', 'user3'] })),
+                            Elements.sleep(1200).then(() => ({ api: 'posts', data: ['post1', 'post2'] })),
+                            Elements.sleep(600).then(() => ({ api: 'comments', data: ['comment1', 'comment2', 'comment3', 'comment4'] }))
+                        ];
+
+                        const results = await Elements.parallelAll(requests, {
+                            failFast: false,
+                            onProgress: (completed, total, result) => {
+                                const percent = (completed / total) * 100;
+                                Elements.progressFill.update({ 
+                                    style: { width: `${percent}%` } 
+                                });
+                                
+                                Elements.parallelResults.update({
+                                    textContent: `Progress: ${completed}/${total} requests completed`,
+                                    className: 'status info'
+                                });
+                            }
+                        });
+
+                        // Show final results
+                        const successCount = results.filter(r => r.status === 'fulfilled').length;
+                        Elements.parallelResults.update({
+                            textContent: `✓ Parallel requests completed! ${successCount}/${results.length} successful. Total results: ${results.reduce((acc, r) => acc + (r.status === 'fulfilled' ? r.value.data.length : 0), 0)} items`,
+                            className: 'status success'
+                        });
+                    })
+                }
+            });
+
+            Elements.sequentialBtn.update({
+                addEventListener: {
+                    click: Elements.asyncHandler(async () => {
+                        // Reset progress
+                        Elements.progressFill.update({ style: { width: '0%' } });
+                        Elements.parallelResults.update({ 
+                            textContent: 'Starting sequential requests...',
+                            className: 'status info'
+                        });
+
+                        const apis = ['users', 'posts', 'comments'];
+                        const results = [];
+                        
+                        for (let i = 0; i < apis.length; i++) {
+                            const api = apis[i];
+                            Elements.parallelResults.update({
+                                textContent: `Processing ${api}...`,
+                                className: 'status info'
+                            });
+
+                            // Mock API call with delay
+                            await Elements.sleep(800);
+                            results.push({ api, data: [`${api}1`, `${api}2`] });
+                            
+                            // Update progress
+                            const percent = ((i + 1) / apis.length) * 100;
+                            Elements.progressFill.update({ 
+                                style: { width: `${percent}%` } 
+                            });
+                        }
+
+                        Elements.parallelResults.update({
+                            textContent: `✓ Sequential requests completed! Total results: ${results.reduce((acc, r) => acc + r.data.length, 0)} items`,
+                            className: 'status success'
+                        });
+                    })
+                }
+            });
+
+            // 7. Live Search Demo
+            Elements.liveSearch.update({
+                addEventListener: {
+                    input: Elements.debounce(async (e) => {
+                        const query = e.target.value.trim();
+                        
+                        if (query.length < 2) {
+                            Elements.suggestions.update({ 
+                                style: { display: 'none' },
+                                innerHTML: '' 
+                            });
+                            return;
+                        }
+
+                        // Show loading
+                        Elements.suggestions.update({
+                            innerHTML: '<div class="search-result-item">Searching...</div>',
+                            style: { display: 'block' }
+                        });
+
+                        // Simulate API search
+                        await Elements.sleep(600);
+                        
+                        // Mock suggestions
+                        const mockSuggestions = [
+                            { title: `${query} - Auto suggestion 1` },
+                            { title: `${query} - Auto suggestion 2` },
+                            { title: `${query} - Related term` },
+                            { title: `Best ${query} results` }
+                        ];
+
+                        // Update suggestions safely
+                        Elements.suggestions.update({
+                            innerHTML: mockSuggestions.map(item => 
+                                `<div class="search-result-item">${Elements.sanitize(item.title)}</div>`
+                            ).join(''),
+                            style: { display: 'block' }
+                        });
+                    }, 300)
+                }
+            });
+
+            // 8. Run Update Examples Button
+            Elements.updateExampleBtn.update({
+                addEventListener: {
+                    click: Elements.asyncHandler(async () => {
+                        Elements.updateResults.update({
+                            textContent: 'Running .update() integration examples...',
+                            className: 'status info'
+                        });
+
+                        await Elements.sleep(500);
+
+                        // Example 1: Debounced function test
+                        Elements.updateResults.update({
+                            textContent: 'Testing debounce integration...',
+                            className: 'status info'
+                        });
+
+                        let debounceCount = 0;
+                        const debouncedFn = Elements.debounce(() => {
+                            debounceCount++;
+                        }, 100);
+
+                        // Trigger multiple times quickly
+                        debouncedFn();
+                        debouncedFn();
+                        debouncedFn();
+
+                        await Elements.sleep(200); // Wait for debounce to complete
+
+                        Elements.updateResults.update({
+                            textContent: `✓ Debounce test passed! Function called ${debounceCount} time(s) (should be 1)`,
+                            className: 'status success'
+                        });
+
+                        await Elements.sleep(800);
+
+                        // Example 2: Sanitization test
+                        Elements.updateResults.update({
+                            textContent: 'Testing sanitization integration...',
+                            className: 'status info'
+                        });
+
+                     
+                      await Elements.sleep(500);
+
+                        Elements.updateResults.update({
+                            textContent: `✓ Sanitization test ${isSafe ? 'passed' : 'failed'}! Input was properly sanitized: "${sanitized}"`,
+                            className: isSafe ? 'status success' : 'status error'
+                        });
+
+                        await Elements.sleep(800);
+
+                        // Example 3: Sleep function test
+                        Elements.updateResults.update({
+                            textContent: 'Testing sleep utility...',
+                            className: 'status info'
+                        });
+
+                        const startTime = Date.now();
+                        await Elements.sleep(500);
+                        const elapsedTime = Date.now() - startTime;
+                        const isAccurate = elapsedTime >= 450 && elapsedTime <= 600; // Allow some variance
+
+                        Elements.updateResults.update({
+                            textContent: `✓ Sleep test ${isAccurate ? 'passed' : 'failed'}! Elapsed time: ${elapsedTime}ms (expected ~500ms)`,
+                            className: isAccurate ? 'status success' : 'status error'
+                        });
+
+                        await Elements.sleep(800);
+
+                        // Example 4: DOM integration test
+                        Elements.updateResults.update({
+                            textContent: 'Testing DOM integration with .update()...',
+                            className: 'status info'
+                        });
+
+                        // Test that Elements has the async methods
+                        const hasDebounce = typeof Elements.debounce === 'function';
+                        const hasSanitize = typeof Elements.sanitize === 'function';
+                        const hasSleep = typeof Elements.sleep === 'function';
+                        const hasAsyncHandler = typeof Elements.asyncHandler === 'function';
+
+                        await Elements.sleep(500);
+
+                        const integrationStatus = hasDebounce && hasSanitize && hasSleep && hasAsyncHandler;
+                        Elements.updateResults.update({
+                            textContent: `✓ Integration test ${integrationStatus ? 'passed' : 'failed'}! All async methods available on Elements: debounce(${hasDebounce}), sanitize(${hasSanitize}), sleep(${hasSleep}), asyncHandler(${hasAsyncHandler})`,
+                            className: integrationStatus ? 'status success' : 'status error'
+                        });
+
+                        await Elements.sleep(1000);
+
+                        // Final result
+                        Elements.updateResults.update({
+                            textContent: '🎉 All .update() integration examples completed successfully! DOM Helpers Async is fully integrated.',
+                            className: 'status success'
+                        });
+
+                        showNotification('Update examples completed successfully!');
+                    }, {
+                        errorHandler: (error) => {
+                            Elements.updateResults.update({
+                                textContent: `✗ Update examples failed: ${error.message}`,
+                                className: 'status error'
+                            });
+                        }
+                    })
+                }
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!Elements.liveSearch.contains(e.target) && !Elements.suggestions.contains(e.target)) {
+                    Elements.suggestions.update({ style: { display: 'none' } });
+                }
+            });
+
+            // Utility function to show notifications
+            function showNotification(message, type = 'success') {
+                Elements.notification.update({
+                    textContent: message,
+                    style: { 
+                        display: 'block',
+                        backgroundColor: type === 'error' ? '#dc3545' : '#28a745'
+                    }
+                });
+                
+                setTimeout(() => {
+                    Elements.notification.update({ style: { display: 'none' } });
+                }, 3000);
+            }
+
+            // Initialize page
+            setTimeout(() => {
+                showNotification('DOM Helpers Async test page loaded successfully!');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
