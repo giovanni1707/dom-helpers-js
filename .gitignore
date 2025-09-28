@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+
+# Build / output folders
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE folders
+.vscode/
+.idea/
+
+# Temporary / cache files
+*.tmp
+*.cache
+
+# Coverage reports
+coverage/
+
+# Mac specific
+*.DS_Store
+
+# Windows specific
+Thumbs.db
+
+# Optional: npm package lock files (if you want to ignore)
+# package-lock.json
+# yarn.lock
