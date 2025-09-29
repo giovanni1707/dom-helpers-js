@@ -1,0 +1,189 @@
+<div class="user-card">
+  <img id="userAvatar" class="avatar" src="https://via.placeholder.com/64" alt="User Avatar" />
+  <div class="user-info">
+    <h3 id="userName" class="name">John Doe</h3>
+    <p id="userEmail" class="email">john@example.com</p>
+    <span id="userStatus" class="status" style="display: none;">Online</span>
+    <button id="contactBtn" class="contact-btn">Contact</button>
+  </div>
+</div>
+
+<style>
+  .user-card {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 8px 0;
+    transition: transform 0.2s ease;
+  }
+  
+  .user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  
+  .avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-right: 16px;
+    object-fit: cover;
+  }
+  
+  .user-info {
+    flex: 1;
+  }
+  
+  .name {
+    margin: 0 0 4px 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .email {
+    margin: 0 0 8px 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .status {
+    background: #10b981;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-right: 8px;
+  }
+  
+  .contact-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+  }
+  
+  .contact-btn:hover {
+    background: #2563eb;
+  }
+  
+  .contact-btn:disabled {
+    background: #10b981;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+  // Initialize component with data - support both direct props and nested user object
+  const userData = data.user || data;
+  
+  // Update user information using DOM Helpers Elements
+  if (userData.name) {
+    Elements.userName.update({
+      textContent: userData.name
+    });
+  }
+  
+  if (userData.email) {
+    Elements.userEmail.update({
+      textContent: userData.email
+    });
+  }
+  
+  if (userData.avatar) {
+    Elements.userAvatar.update({
+      src: userData.avatar,
+      alt: userData.name || 'User Avatar'
+    });
+  }
+  
+  // Show online status if user is online (handle both isOnline and is-online from props)
+  if (userData.isOnline || userData['is-online']) {
+    Elements.userStatus.update({
+      style: { display: 'inline-block' }
+    });
+  }
+  
+  // Handle contact button click
+  Elements.contactBtn.addEventListener('click', function() {
+    // Emit custom event using component emit method
+    emit('userContact', userData);
+    
+    // Update button state using DOM Helpers .update() method
+    Elements.contactBtn.update({
+      textContent: 'Contacted!',
+      disabled: true,
+      style: { 
+        background: '#10b981',
+        cursor: 'not-allowed'
+      }
+    });
+    
+    // Reset button after 2 seconds
+    setTimeout(() => {
+      Elements.contactBtn.update({
+        textContent: 'Contact',
+        disabled: false,
+        style: { 
+          background: '#3b82f6',
+          cursor: 'pointer'
+        }
+      });
+    }, 2000);
+  });
+  
+  // Handle data updates
+  const updateUserCard = (newUserData) => {
+    if (newUserData.name !== userData.name) {
+      Elements.userName.textContent = newUserData.name;
+    }
+    
+    if (newUserData.email !== userData.email) {
+      Elements.userEmail.textContent = newUserData.email;
+    }
+    
+    if (newUserData.avatar !== userData.avatar) {
+      Elements.userAvatar.update({
+        src: newUserData.avatar,
+        alt: newUserData.name || 'User Avatar'
+      });
+    }
+    
+    // Update online status
+    if (newUserData.isOnline !== userData.isOnline) {
+      Elements.userStatus.update({
+        style: { 
+          display: newUserData.isOnline ? 'inline-block' : 'none' 
+        }
+      });
+    }
+    
+    // Store updated data
+    Object.assign(userData, newUserData);
+  };
+  
+  // Register lifecycle callbacks
+  onMounted(() => {
+    console.log('[UserCard] Component mounted for user:', userData.name || 'Unknown');
+    
+    // Add hover effect using Collections
+    Collections.ClassName.userCard.update({
+      style: { cursor: 'pointer' }
+    });
+  });
+  
+  onBeforeDestroy(() => {
+    console.log('[UserCard] Component will be destroyed');
+  });
+  
+  // Expose update method for external use
+  component.updateUser = updateUserCard;
+</script>

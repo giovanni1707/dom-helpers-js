@@ -1,0 +1,426 @@
+<div class="todo-container">
+  <h2 id="todoTitle" class="title">My Todo List</h2>
+  
+  <div class="add-todo">
+    <input id="newTodoInput" type="text" placeholder="Add a new task..." class="todo-input" />
+    <button id="addTodoBtn" class="add-btn">Add</button>
+  </div>
+  
+  <div id="todoList" class="todo-list">
+    <!-- Todo items will be dynamically added here -->
+  </div>
+  
+  <div id="todoStats" class="todo-stats">
+    <span id="totalCount">Total: 0 tasks</span>
+    <span id="completedCount">Completed: 0</span>
+  </div>
+</div>
+
+<style>
+  .todo-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .title {
+    text-align: center;
+    color: #2d3748;
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 700;
+  }
+  
+  .add-todo {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .todo-input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  
+  .todo-input:focus {
+    border-color: #4299e1;
+  }
+  
+  .add-btn {
+    padding: 12px 20px;
+    background: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+  }
+  
+  .add-btn:hover {
+    background: #3182ce;
+  }
+  
+  .todo-list {
+    margin-bottom: 20px;
+  }
+  
+  .todo-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .todo-item:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .todo-item.completed {
+    background: #f0fff4;
+    border-color: #9ae6b4;
+  }
+  
+  .todo-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+  
+  .todo-text {
+    flex: 1;
+    font-size: 14px;
+    color: #2d3748;
+    transition: all 0.2s ease;
+  }
+  
+  .todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: #718096;
+  }
+  
+  .delete-btn {
+    width: 24px;
+    height: 24px;
+    background: #fed7d7;
+    color: #e53e3e;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: background 0.2s ease;
+  }
+  
+  .delete-btn:hover {
+    background: #feb2b2;
+  }
+  
+  .todo-stats {
+    display: flex;
+    justify-content: space-between;
+    color: #718096;
+    font-size: 14px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+  }
+</style>
+
+<script>
+  // Initialize component data - support both direct props and nested structure
+  const todoData = {
+    todos: data.todos || [],
+    title: data.title || 'My Todo List'
+  };
+  
+  // Set title if provided
+  Elements.todoTitle.update({
+    textContent: todoData.title
+  });
+  
+  // Render existing todos
+  renderTodos();
+  updateStats();
+  
+  // Add todo functionality
+  function addTodo() {
+    const input = Elements.newTodoInput;
+    const text = input.value.trim();
+    
+    if (!text) {
+      // Highlight input with error state
+      input.update({
+        style: { 
+          borderColor: '#e53e3e',
+          background: '#fed7d7'
+        }
+      });
+      
+      setTimeout(() => {
+        input.update({
+          style: { 
+            borderColor: '#e2e8f0',
+            background: 'white'
+          }
+        });
+      }, 1000);
+      
+      return;
+    }
+    
+    // Create new todo
+    const newTodo = {
+      id: Date.now(),
+      text: text,
+      completed: false
+    };
+    
+    // Add to todos array
+    todoData.todos.push(newTodo);
+    
+    // Clear input with success animation
+    input.update({
+      value: '',
+      style: { 
+        borderColor: '#10b981',
+        background: '#f0fff4'
+      }
+    });
+    
+    setTimeout(() => {
+      input.update({
+        style: { 
+          borderColor: '#e2e8f0',
+          background: 'white'
+        }
+      });
+    }, 500);
+    
+    // Re-render todos and update stats
+    renderTodos();
+    updateStats();
+    
+    // Emit event
+    emit('todoAdded', newTodo);
+  }
+  
+  // Render all todos
+  function renderTodos() {
+    const todoList = Elements.todoList;
+    todoList.innerHTML = '';
+    
+    todoData.todos.forEach(todo => {
+      const todoItem = createTodoElement(todo);
+      todoList.appendChild(todoItem);
+    });
+  }
+  
+  // Create individual todo element
+  function createTodoElement(todo) {
+    const todoItem = document.createElement('div');
+    todoItem.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+    todoItem.dataset.todoId = todo.id;
+    
+    todoItem.innerHTML = `
+      <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
+      <span class="todo-text">${todo.text}</span>
+      <button class="delete-btn">×</button>
+    `;
+    
+    // Enhance with DOM Helpers .update() method
+    if (global.EnhancedUpdateUtility && global.EnhancedUpdateUtility.enhanceElementWithUpdate) {
+      global.EnhancedUpdateUtility.enhanceElementWithUpdate(todoItem);
+    }
+    
+    return todoItem;
+  }
+  
+  // Update statistics
+  function updateStats() {
+    const total = todoData.todos.length;
+    const completed = todoData.todos.filter(todo => todo.completed).length;
+    
+    Elements.totalCount.update({
+      textContent: `Total: ${total} tasks`
+    });
+    
+    Elements.completedCount.update({
+      textContent: `Completed: ${completed}`
+    });
+  }
+  
+  // Handle todo interactions using event delegation
+  Elements.todoList.addEventListener('click', function(e) {
+    const todoItem = e.target.closest('.todo-item');
+    if (!todoItem) return;
+    
+    const todoId = parseInt(todoItem.dataset.todoId);
+    const todo = todoData.todos.find(t => t.id === todoId);
+    
+    if (!todo) return;
+    
+    if (e.target.classList.contains('todo-checkbox')) {
+      // Toggle completion
+      todo.completed = !todo.completed;
+      
+      // Update UI with animation
+      todoItem.update({
+        classList: {
+          toggle: 'completed'
+        }
+      });
+      
+      // Update checkbox
+      e.target.checked = todo.completed;
+      
+      updateStats();
+      emit('todoToggled', todo);
+      
+    } else if (e.target.classList.contains('delete-btn')) {
+      // Delete todo with animation
+      todoItem.update({
+        style: {
+          transform: 'translateX(100%)',
+          opacity: '0'
+        }
+      });
+      
+      // Remove from array after animation
+      setTimeout(() => {
+        const index = todoData.todos.findIndex(t => t.id === todoId);
+        if (index > -1) {
+          todoData.todos.splice(index, 1);
+          todoItem.remove();
+          updateStats();
+          emit('todoDeleted', todoId);
+        }
+      }, 200);
+    }
+  });
+  
+  // Add button click handler
+  Elements.addTodoBtn.addEventListener('click', addTodo);
+  
+  // Enter key handler for input
+  Elements.newTodoInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      addTodo();
+    }
+  });
+  
+  // Bulk operations using Collections
+  function toggleAllTodos() {
+    const allCompleted = todoData.todos.every(todo => todo.completed);
+    
+    todoData.todos.forEach(todo => {
+      todo.completed = !allCompleted;
+    });
+    
+    // Update all checkboxes using Collections
+    Collections.ClassName.todoCheckbox.forEach((checkbox, index) => {
+      checkbox.checked = todoData.todos[index].completed;
+    });
+    
+    // Update all todo items
+    Collections.ClassName.todoItem.update({
+      classList: {
+        toggle: 'completed'
+      }
+    });
+    
+    updateStats();
+    emit('todosToggled', { allCompleted: !allCompleted });
+  }
+  
+  function clearCompleted() {
+    // Find completed todos
+    const completedTodos = todoData.todos.filter(todo => todo.completed);
+    
+    // Remove completed todos with animation
+    Collections.ClassName.todoItem.forEach(item => {
+      const todoId = parseInt(item.dataset.todoId);
+      const todo = todoData.todos.find(t => t.id === todoId);
+      
+      if (todo && todo.completed) {
+        item.update({
+          style: {
+            opacity: '0',
+            transform: 'scale(0.8)'
+          }
+        });
+      }
+    });
+    
+    // Remove from array after animation
+    setTimeout(() => {
+      todoData.todos = todoData.todos.filter(todo => !todo.completed);
+      renderTodos();
+      updateStats();
+      emit('completedCleared', completedTodos.length);
+    }, 200);
+  }
+  
+  // Lifecycle callbacks
+  onMounted(() => {
+    console.log('[TodoList] Component mounted with', todoData.todos.length, 'todos');
+    
+    // Focus on input
+    Elements.newTodoInput.focus();
+    
+    // Animate in existing todos using Collections
+    Collections.ClassName.todoItem.forEach((item, index) => {
+      item.update({
+        style: {
+          opacity: '0',
+          transform: 'translateY(20px)'
+        }
+      });
+      
+      setTimeout(() => {
+        item.update({
+          style: {
+            opacity: '1',
+            transform: 'translateY(0)',
+            transition: 'all 0.3s ease'
+          }
+        });
+      }, index * 100);
+    });
+  });
+  
+  onBeforeUpdate(() => {
+    console.log('[TodoList] About to update');
+  });
+  
+  onUpdated(() => {
+    console.log('[TodoList] Updated, now has', todoData.todos.length, 'todos');
+  });
+  
+  onBeforeDestroy(() => {
+    console.log('[TodoList] Will be destroyed');
+  });
+  
+  // Expose methods for external use
+  component.addTodo = (text) => {
+    Elements.newTodoInput.value = text;
+    addTodo();
+  };
+  
+  component.toggleAll = toggleAllTodos;
+  component.clearCompleted = clearCompleted;
+  component.getTodos = () => [...todoData.todos];
+</script>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Helpers Components - Custom Tags Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .demo-section h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .code-example {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .demo-output {
+            padding: 20px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #3182ce;
+        }
+        
+        .log {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 4px 0;
+            border-bottom: 1px solid #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏷️ Custom Tag Components</h1>
+            <p>Using components with HTML-like syntax: &lt;UserCard /&gt;</p>
+        </div>
+        
+        <!-- Basic Custom Tag Usage -->
+        <div class="demo-section">
+            <h2>Basic Custom Tag Usage</h2>
+            <div class="code-example">
+&lt;!-- Component usage with props --&gt;
+&lt;user-card 
+  name="Alice Johnson" 
+  email="alice@example.com" 
+  avatar="https://images.unsplash.com/photo-1494790108755-2616b5e1f1e8?w=64&h=64&fit=crop&crop=face"
+  is-online="true"&gt;
+&lt;/user-card&gt;
+            </div>
+            
+            <div class="demo-output">
+                <h3>Output:</h3>
+                <user-card 
+                    name="Alice Johnson" 
+                    email="alice@example.com" 
+                    avatar="https://images.unsplash.com/photo-1494790108755-2616b5e1f1e8?w=64&h=64&fit=crop&crop=face"
+                    is-online="true">
+                </user-card>
+            </div>
+        </div>
+        
+        <!-- Multiple Components -->
+        <div class="demo-section">
+            <h2>Multiple Component Instances</h2>
+            <div class="code-example">
+&lt;user-card name="Bob Smith" email="bob@example.com" is-online="false"&gt;&lt;/user-card&gt;
+&lt;user-card name="Carol Davis" email="carol@example.com" is-online="true"&gt;&lt;/user-card&gt;
+            </div>
+            
+            <div class="demo-output">
+                <h3>Output:</h3>
+                <user-card name="Bob Smith" email="bob@example.com" avatar="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face" is-online="false"></user-card>
+                <user-card name="Carol Davis" email="carol@example.com" avatar="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face" is-online="true"></user-card>
+            </div>
+        </div>
+        
+        <!-- Todo List Component -->
+        <div class="demo-section">
+            <h2>Todo List Component</h2>
+            <div class="code-example">
+&lt;todo-list 
+  title="My Daily Tasks"
+  todos='[{"id":1,"text":"Learn DOM Components","completed":false},{"id":2,"text":"Build an app","completed":true}]'&gt;
+&lt;/todo-list&gt;
+            </div>
+            
+            <div class="demo-output">
+                <h3>Output:</h3>
+                <todo-list 
+                    title="My Daily Tasks"
+                    todos='[{"id":1,"text":"Learn DOM Components","completed":false},{"id":2,"text":"Build an app","completed":true}]'>
+                </todo-list>
+            </div>
+        </div>
+        
+        <!-- Dynamic Components -->
+        <div class="demo-section">
+            <h2>Dynamic Component Creation</h2>
+            <div class="controls">
+                <button id="addUserBtn" class="btn btn-primary">Add Random User</button>
+                <button id="addTodoBtn" class="btn btn-primary">Add Todo List</button>
+                <button id="clearAllBtn" class="btn btn-primary">Clear All</button>
+            </div>
+            
+            <div id="dynamicContainer" class="demo-output">
+                <h3>Dynamic Components:</h3>
+                <p>Click the buttons above to add components dynamically.</p>
+            </div>
+        </div>
+        
+        <!-- Event Log -->
+        <div class="demo-section">
+            <h2>📝 Component Events</h2>
+            <div id="eventLog" class="log">
+                <div class="log-entry">Component system ready...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include DOM Helpers and Components libraries -->
+    <script src="../dom-helpers.js"></script>
+    <script src="../dom-helpers-components.js"></script>
+    
+    <script>
+        // Demo application for custom tag components
+        class CustomTagDemo {
+            constructor() {
+                this.userCounter = 0;
+                this.todoCounter = 0;
+                this.init();
+            }
+            
+            async init() {
+                this.log('🚀 Registering components...');
+                
+                try {
+                    // Register components inline to avoid CORS issues
+                    this.registerComponents();
+                    
+                    this.log('✅ Components registered successfully');
+                    
+                    // Setup event listeners
+                    this.setupEventListeners();
+                    
+                    // Components will be automatically processed by the auto-init system
+                    this.log('🏷️ Custom tags will be automatically processed');
+                    
+                } catch (error) {
+                    this.log(`❌ Error: ${error.message}`);
+                }
+            }
+
+            registerComponents() {
+                // Register UserCard component
+                Components.register('UserCard', {
+                    template: `
+                        <div class="user-card">
+                            <img id="userAvatar" class="avatar" src="https://via.placeholder.com/64" alt="User Avatar" />
+                            <div class="user-info">
+                                <h3 id="userName" class="name">John Doe</h3>
+                                <p id="userEmail" class="email">john@example.com</p>
+                                <span id="userStatus" class="status" style="display: none;">Online</span>
+                                <button id="contactBtn" class="contact-btn">Contact</button>
+                            </div>
+                        </div>
+                    `,
+                    styles: `
+                        .user-card {
+                            display: flex;
+                            align-items: center;
+                            padding: 16px;
+                            border: 1px solid #e1e5e9;
+                            border-radius: 8px;
+                            background: white;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            margin: 8px 0;
+                            transition: transform 0.2s ease;
+                        }
+                        
+                        .user-card:hover {
+                            transform: translateY(-2px);
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                        }
+                        
+                        .avatar {
+                            width: 64px;
+                            height: 64px;
+                            border-radius: 50%;
+                            margin-right: 16px;
+                            object-fit: cover;
+                        }
+                        
+                        .user-info {
+                            flex: 1;
+                        }
+                        
+                        .name {
+                            margin: 0 0 4px 0;
+                            color: #333;
+                            font-size: 18px;
+                            font-weight: 600;
+                        }
+                        
+                        .email {
+                            margin: 0 0 8px 0;
+                            color: #666;
+                            font-size: 14px;
+                        }
+                        
+                        .status {
+                            background: #10b981;
+                            color: white;
+                            padding: 2px 8px;
+                            border-radius: 12px;
+                            font-size: 12px;
+                            margin-right: 8px;
+                        }
+                        
+                        .contact-btn {
+                            background: #3b82f6;
+                            color: white;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            transition: background 0.2s ease;
+                        }
+                        
+                        .contact-btn:hover {
+                            background: #2563eb;
+                        }
+                        
+                        .contact-btn:disabled {
+                            background: #10b981;
+                            cursor: not-allowed;
+                        }
+                    `,
+                    script: `
+                        // Initialize component with data - support both direct props and nested user object
+                        const userData = data.user || data;
+                        
+                        // Update user information using DOM Helpers Elements
+                        if (userData.name) {
+                            Elements.userName.update({
+                                textContent: userData.name
+                            });
+                        }
+                        
+                        if (userData.email) {
+                            Elements.userEmail.update({
+                                textContent: userData.email
+                            });
+                        }
+                        
+                        if (userData.avatar) {
+                            Elements.userAvatar.update({
+                                src: userData.avatar,
+                                alt: userData.name || 'User Avatar'
+                            });
+                        }
+                        
+                        // Show online status if user is online (handle both isOnline and is-online from props)
+                        if (userData.isOnline || userData['isOnline']) {
+                            Elements.userStatus.update({
+                                style: { display: 'inline-block' }
+                            });
+                        }
+                        
+                        // Handle contact button click
+                        Elements.contactBtn.addEventListener('click', function() {
+                            // Emit custom event using component emit method
+                            emit('userContact', userData);
+                            
+                            // Update button state using DOM Helpers .update() method
+                            Elements.contactBtn.update({
+                                textContent: 'Contacted!',
+                                disabled: true,
+                                style: { 
+                                    background: '#10b981',
+                                    cursor: 'not-allowed'
+                                }
+                            });
+                            
+                            // Reset button after 2 seconds
+                            setTimeout(() => {
+                                Elements.contactBtn.update({
+                                    textContent: 'Contact',
+                                    disabled: false,
+                                    style: { 
+                                        background: '#3b82f6',
+                                        cursor: 'pointer'
+                                    }
+                                });
+                            }, 2000);
+                        });
+                        
+                        // Register lifecycle callbacks
+                        onMounted(() => {
+                            console.log('[UserCard] Component mounted for user:', userData.name || 'Unknown');
+                        });
+                    `
+                });
+
+                // Register TodoList component
+                Components.register('TodoList', {
+                    template: `
+                        <div class="todo-container">
+                            <h2 id="todoTitle" class="title">My Todo List</h2>
+                            
+                            <div class="add-todo">
+                                <input id="newTodoInput" type="text" placeholder="Add a new task..." class="todo-input" />
+                                <button id="addTodoBtn" class="add-btn">Add</button>
+                            </div>
+                            
+                            <div id="todoList" class="todo-list">
+                                <!-- Todo items will be dynamically added here -->
+                            </div>
+                            
+                            <div id="todoStats" class="todo-stats">
+                                <span id="totalCount">Total: 0 tasks</span>
+                                <span id="completedCount">Completed: 0</span>
+                            </div>
+                        </div>
+                    `,
+                    styles: `
+                        .todo-container {
+                            max-width: 400px;
+                            margin: 0 auto;
+                            padding: 20px;
+                            background: #f8f9fa;
+                            border-radius: 12px;
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                        }
+                        
+                        .title {
+                            text-align: center;
+                            color: #2d3748;
+                            margin-bottom: 24px;
+                            font-size: 24px;
+                            font-weight: 700;
+                        }
+                        
+                        .add-todo {
+                            display: flex;
+                            gap: 8px;
+                            margin-bottom: 20px;
+                        }
+                        
+                        .todo-input {
+                            flex: 1;
+                            padding: 12px;
+                            border: 2px solid #e2e8f0;
+                            border-radius: 8px;
+                            font-size: 14px;
+                            outline: none;
+                            transition: border-color 0.2s ease;
+                        }
+                        
+                        .todo-input:focus {
+                            border-color: #4299e1;
+                        }
+                        
+                        .add-btn {
+                            padding: 12px 20px;
+                            background: #4299e1;
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-weight: 600;
+                            transition: background 0.2s ease;
+                        }
+                        
+                        .add-btn:hover {
+                            background: #3182ce;
+                        }
+                        
+                        .todo-list {
+                            margin-bottom: 20px;
+                        }
+                        
+                        .todo-item {
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 12px;
+                            background: white;
+                            border: 1px solid #e2e8f0;
+                            border-radius: 8px;
+                            margin-bottom: 8px;
+                            transition: all 0.2s ease;
+                        }
+                        
+                        .todo-item:hover {
+                            border-color: #cbd5e0;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                        }
+                        
+                        .todo-item.completed {
+                            background: #f0fff4;
+                            border-color: #9ae6b4;
+                        }
+                        
+                        .todo-checkbox {
+                            width: 18px;
+                            height: 18px;
+                            cursor: pointer;
+                        }
+                        
+                        .todo-text {
+                            flex: 1;
+                            font-size: 14px;
+                            color: #2d3748;
+                            transition: all 0.2s ease;
+                        }
+                        
+                        .todo-item.completed .todo-text {
+                            text-decoration: line-through;
+                            color: #718096;
+                        }
+                        
+                        .delete-btn {
+                            width: 24px;
+                            height: 24px;
+                            background: #fed7d7;
+                            color: #e53e3e;
+                            border: none;
+                            border-radius: 50%;
+                            cursor: pointer;
+                            font-size: 16px;
+                            line-height: 1;
+                            transition: background 0.2s ease;
+                        }
+                        
+                        .delete-btn:hover {
+                            background: #feb2b2;
+                        }
+                        
+                        .todo-stats {
+                            display: flex;
+                            justify-content: space-between;
+                            color: #718096;
+                            font-size: 14px;
+                            padding-top: 16px;
+                            border-top: 1px solid #e2e8f0;
+                        }
+                    `,
+                    script: `
+                        // Initialize component data - support both direct props and nested structure
+                        const todoData = {
+                            todos: data.todos || [],
+                            title: data.title || 'My Todo List'
+                        };
+                        
+                        // Set title if provided
+                        Elements.todoTitle.update({
+                            textContent: todoData.title
+                        });
+                        
+                        // Render existing todos
+                        renderTodos();
+                        updateStats();
+                        
+                        // Add todo functionality
+                        function addTodo() {
+                            const input = Elements.newTodoInput;
+                            const text = input.value.trim();
+                            
+                            if (!text) return;
+                            
+                            // Create new todo
+                            const newTodo = {
+                                id: Date.now(),
+                                text: text,
+                                completed: false
+                            };
+                            
+                            // Add to todos array
+                            todoData.todos.push(newTodo);
+                            
+                            // Clear input
+                            input.value = '';
+                            
+                            // Re-render todos and update stats
+                            renderTodos();
+                            updateStats();
+                            
+                            // Emit event
+                            emit('todoAdded', newTodo);
+                        }
+                        
+                        // Render all todos
+                        function renderTodos() {
+                            const todoList = Elements.todoList;
+                            todoList.innerHTML = '';
+                            
+                            todoData.todos.forEach(todo => {
+                                const todoItem = createTodoElement(todo);
+                                todoList.appendChild(todoItem);
+                            });
+                        }
+                        
+                        // Create individual todo element
+                        function createTodoElement(todo) {
+                            const todoItem = document.createElement('div');
+                            todoItem.className = \`todo-item \${todo.completed ? 'completed' : ''}\`;
+                            todoItem.dataset.todoId = todo.id;
+                            
+                            todoItem.innerHTML = \`
+                                <input type="checkbox" class="todo-checkbox" \${todo.completed ? 'checked' : ''}>
+                                <span class="todo-text">\${todo.text}</span>
+                                <button class="delete-btn">×</button>
+                            \`;
+                            
+                            return todoItem;
+                        }
+                        
+                        // Update statistics
+                        function updateStats() {
+                            const total = todoData.todos.length;
+                            const completed = todoData.todos.filter(todo => todo.completed).length;
+                            
+                            Elements.totalCount.update({
+                                textContent: \`Total: \${total} tasks\`
+                            });
+                            
+                            Elements.completedCount.update({
+                                textContent: \`Completed: \${completed}\`
+                            });
+                        }
+                        
+                        // Handle todo interactions using event delegation
+                        Elements.todoList.addEventListener('click', function(e) {
+                            const todoItem = e.target.closest('.todo-item');
+                            if (!todoItem) return;
+                            
+                            const todoId = parseInt(todoItem.dataset.todoId);
+                            const todo = todoData.todos.find(t => t.id === todoId);
+                            
+                            if (!todo) return;
+                            
+                            if (e.target.classList.contains('todo-checkbox')) {
+                                // Toggle completion
+                                todo.completed = !todo.completed;
+                                todoItem.classList.toggle('completed');
+                                e.target.checked = todo.completed;
+                                updateStats();
+                                emit('todoToggled', todo);
+                                
+                            } else if (e.target.classList.contains('delete-btn')) {
+                                // Delete todo
+                                const index = todoData.todos.findIndex(t => t.id === todoId);
+                                if (index > -1) {
+                                    todoData.todos.splice(index, 1);
+                                    todoItem.remove();
+                                    updateStats();
+                                    emit('todoDeleted', todoId);
+                                }
+                            }
+                        });
+                        
+                        // Add button click handler
+                        Elements.addTodoBtn.addEventListener('click', addTodo);
+                        
+                        // Enter key handler for input
+                        Elements.newTodoInput.addEventListener('keypress', function(e) {
+                            if (e.key === 'Enter') {
+                                addTodo();
+                            }
+                        });
+                        
+                        // Lifecycle callbacks
+                        onMounted(() => {
+                            console.log('[TodoList] Component mounted with', todoData.todos.length, 'todos');
+                            Elements.newTodoInput.focus();
+                        });
+                    `
+                });
+                
+                this.log('📦 Components registered inline');
+            }
+            
+            setupEventListeners() {
+                // Dynamic component controls - add error checking
+                const addUserBtn = Elements.addUserBtn || document.getElementById('addUserBtn');
+                const addTodoBtn = Elements.addTodoBtn || document.getElementById('addTodoBtn');
+                const clearAllBtn = Elements.clearAllBtn || document.getElementById('clearAllBtn');
+
+                if (addUserBtn) {
+                    addUserBtn.addEventListener('click', () => this.addRandomUser());
+                } else {
+                    console.error('Add User button not found');
+                }
+
+                if (addTodoBtn) {
+                    addTodoBtn.addEventListener('click', () => this.addTodoList());
+                } else {
+                    console.error('Add Todo button not found');
+                }
+
+                if (clearAllBtn) {
+                    clearAllBtn.addEventListener('click', () => this.clearAll());
+                } else {
+                    console.error('Clear All button not found');
+                }
+                
+                // Listen for component events
+                document.addEventListener('component:userContact', (e) => {
+                    const userData = e.detail.data;
+                    this.log(`📞 User contact: ${userData.name} (${userData.email})`);
+                });
+                
+                document.addEventListener('component:todoAdded', (e) => {
+                    const todo = e.detail.data;
+                    this.log(`✅ Todo added: ${todo.text}`);
+                });
+                
+                document.addEventListener('component:todoToggled', (e) => {
+                    const todo = e.detail.data;
+                    const status = todo.completed ? 'completed' : 'uncompleted';
+                    this.log(`🔄 Todo ${status}: ${todo.text}`);
+                });
+            }
+            
+            async addRandomUser() {
+                this.log('🔧 Adding random user...');
+                
+                try {
+                    const names = ['David Wilson', 'Emma Brown', 'Frank Miller', 'Grace Lee'];
+                    const domains = ['example.com', 'test.com', 'demo.com'];
+                    const avatars = [
+                        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face',
+                        'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=64&h=64&fit=crop&crop=face'
+                    ];
+                    
+                    const name = names[Math.floor(Math.random() * names.length)];
+                    const email = `${name.toLowerCase().replace(' ', '.')}@${domains[Math.floor(Math.random() * domains.length)]}`;
+                    const avatar = avatars[Math.floor(Math.random() * avatars.length)];
+                    const isOnline = Math.random() > 0.5;
+                    
+                    // Get container with fallback
+                    const dynamicContainer = Elements.dynamicContainer || document.getElementById('dynamicContainer');
+                    
+                    if (!dynamicContainer) {
+                        throw new Error('Dynamic container not found');
+                    }
+                    
+                    // Create custom tag element
+                    const userCard = document.createElement('user-card');
+                    userCard.setAttribute('name', name);
+                    userCard.setAttribute('email', email);
+                    userCard.setAttribute('avatar', avatar);
+                    userCard.setAttribute('is-online', isOnline.toString());
+                    
+                    dynamicContainer.appendChild(userCard);
+                    
+                    // Process the new custom tag
+                    if (Components && Components._processCustomTags) {
+                        await Components._processCustomTags(dynamicContainer);
+                    } else {
+                        this.log('❌ Components._processCustomTags not available');
+                    }
+                    
+                    this.log(`➕ Added user: ${name}`);
+                } catch (error) {
+                    this.log(`❌ Error adding user: ${error.message}`);
+                    console.error('Error in addRandomUser:', error);
+                }
+            }
+            
+            async addTodoList() {
+                this.log('🔧 Adding todo list...');
+                
+                try {
+                    this.todoCounter++;
+                    
+                    const sampleTodos = [
+                        { id: Date.now(), text: 'Sample task 1', completed: false },
+                        { id: Date.now() + 1, text: 'Sample task 2', completed: true }
+                    ];
+                    
+                    // Get container with fallback
+                    const dynamicContainer = Elements.dynamicContainer || document.getElementById('dynamicContainer');
+                    
+                    if (!dynamicContainer) {
+                        throw new Error('Dynamic container not found');
+                    }
+                    
+                    // Create custom tag element
+                    const todoList = document.createElement('todo-list');
+                    todoList.setAttribute('title', `Todo List #${this.todoCounter}`);
+                    todoList.setAttribute('todos', JSON.stringify(sampleTodos));
+                    
+                    dynamicContainer.appendChild(todoList);
+                    
+                    // Process the new custom tag
+                    if (Components && Components._processCustomTags) {
+                        await Components._processCustomTags(dynamicContainer);
+                    } else {
+                        this.log('❌ Components._processCustomTags not available');
+                    }
+                    
+                    this.log(`📝 Added TodoList #${this.todoCounter}`);
+                } catch (error) {
+                    this.log(`❌ Error adding todo list: ${error.message}`);
+                    console.error('Error in addTodoList:', error);
+                }
+            }
+            
+            clearAll() {
+                this.log('🔧 Clearing all components...');
+                
+                try {
+                    // Get container with fallback
+                    const dynamicContent = Elements.dynamicContainer || document.getElementById('dynamicContainer');
+                    
+                    if (!dynamicContent) {
+                        throw new Error('Dynamic container not found');
+                    }
+                    
+                    const children = Array.from(dynamicContent.children);
+                    
+                    // Keep only the header and text
+                    children.forEach(child => {
+                        if (child.tagName !== 'H3' && child.tagName !== 'P') {
+                            child.remove();
+                        }
+                    });
+                    
+                    this.log('🧹 Cleared all dynamic components');
+                } catch (error) {
+                    this.log(`❌ Error clearing components: ${error.message}`);
+                    console.error('Error in clearAll:', error);
+                }
+            }
+            
+            log(message) {
+                const time = new Date().toLocaleTimeString();
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = `
+                    <div style="color: #9ca3af; font-size: 12px;">${time}</div>
+                    <div>${message}</div>
+                `;
+                
+                Elements.eventLog.appendChild(entry);
+                Elements.eventLog.scrollTop = Elements.eventLog.scrollHeight;
+                
+                // Keep only last 20 entries
+                const entries = Elements.eventLog.querySelectorAll('.log-entry');
+                if (entries.length > 20) {
+                    entries[0].remove();
+                }
+                
+                console.log(`[CustomTagDemo] ${message}`);
+            }
+        }
+        
+        // Initialize demo when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new CustomTagDemo();
+        });
+    </script>
+</body>
+</html>
