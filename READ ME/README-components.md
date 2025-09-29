@@ -6,6 +6,8 @@ A lightweight component system that extends DOM Helpers with traditional HTML5 a
 
 DOM Helpers Components brings component-based development to vanilla JavaScript using:
 
+- **Custom HTML Tags** - Use components like native HTML: `<user-card name="Alice" />`
+- **Props Support** - Pass data through attributes with intelligent type conversion
 - **Traditional HTML5 structure** with standard IDs and classes
 - **Full DOM Helpers integration** with Elements, Collections, and Selector
 - **Scoped CSS** with automatic style isolation
@@ -13,6 +15,30 @@ DOM Helpers Components brings component-based development to vanilla JavaScript 
 - **Event delegation** and custom events
 - **Seamless integration** with all DOM Helpers libraries (async, form, storage, animation)
 - **Vanilla JavaScript** following DOM Helpers philosophy
+
+## ⭐ Quick Start - Custom Tags
+
+The easiest way to use components is with custom HTML tags:
+
+```html
+<!-- Use components like native HTML elements -->
+<user-card 
+  name="Alice Johnson"
+  email="alice@example.com"
+  avatar="https://example.com/avatar.jpg"
+  is-online="true">
+</user-card>
+
+<todo-list 
+  title="My Daily Tasks"
+  todos='[{"id":1,"text":"Learn Components","completed":false}]'>
+</todo-list>
+```
+
+**Automatic Props Conversion:**
+- `name="Alice Johnson"` → `data.name = "Alice Johnson"`
+- `is-online="true"` → `data.isOnline = true`
+- `todos='[...]'` → `data.todos = [parsed array]`
 
 ## Installation & Setup
 
@@ -136,25 +162,89 @@ The component system will be available globally as `Components` and integrates a
 </script>
 ```
 
-### 2. Load and Render Components
+### 2. Register Components for Custom Tags
 
 ```javascript
-// Load component from file
+// Method 1: Register inline component
+Components.register('UserCard', {
+  template: `
+    <div class="user-card">
+      <img id="userAvatar" class="avatar" src="https://via.placeholder.com/64" />
+      <h3 id="userName" class="name">John Doe</h3>
+      <p id="userEmail" class="email">john@example.com</p>
+      <button id="contactBtn" class="contact-btn">Contact</button>
+    </div>
+  `,
+  styles: `
+    .user-card { padding: 16px; border: 1px solid #ddd; border-radius: 8px; }
+    .avatar { width: 64px; height: 64px; border-radius: 50%; }
+    .contact-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; }
+  `,
+  script: `
+    // Access props directly from data
+    if (data.name) Elements.userName.textContent = data.name;
+    if (data.email) Elements.userEmail.textContent = data.email;
+    if (data.avatar) Elements.userAvatar.src = data.avatar;
+    
+    // Handle events
+    Elements.contactBtn.addEventListener('click', () => {
+      emit('userContact', data);
+    });
+  `
+});
+
+// Method 2: Load from external file (requires server)
 await Components.load('UserCard', './UserCard.html');
-
-// Render component with data
-const userData = {
-  name: 'Alice Johnson',
-  email: 'alice@example.com',
-  avatar: 'avatar.jpg',
-  isOnline: true
-};
-
-const container = Elements.userContainer; // or document.getElementById('userContainer')
-await Components.render('UserCard', container, { user: userData });
 ```
 
-### 3. Alternative Usage Methods
+### 3. Use Custom Tags in HTML
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="dom-helpers.js"></script>
+    <script src="dom-helpers-components.js"></script>
+</head>
+<body>
+    <!-- Components are automatically processed -->
+    <user-card 
+      name="Alice Johnson"
+      email="alice@example.com" 
+      avatar="https://example.com/avatar.jpg"
+      is-online="true">
+    </user-card>
+    
+    <!-- Multiple instances with different props -->
+    <user-card name="Bob Smith" email="bob@example.com"></user-card>
+    <user-card name="Carol Davis" email="carol@example.com" is-online="true"></user-card>
+    
+    <!-- Complex props with JSON -->
+    <todo-list 
+      title="My Tasks"
+      todos='[{"id":1,"text":"Learn Components","completed":false}]'>
+    </todo-list>
+</body>
+</html>
+```
+
+### 4. Dynamic Custom Tag Creation
+
+```javascript
+// Create custom tags dynamically
+const userCard = document.createElement('user-card');
+userCard.setAttribute('name', 'Dynamic User');
+userCard.setAttribute('email', 'dynamic@example.com');
+userCard.setAttribute('is-online', 'true');
+
+// Add to DOM
+document.body.appendChild(userCard);
+
+// Process new custom tags
+await Components._processCustomTags(document.body);
+```
+
+### 5. Traditional Usage Methods
 
 ```javascript
 // Register inline component
