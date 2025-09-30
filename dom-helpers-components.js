@@ -490,9 +490,162 @@
   }
 
   /**
+   * Enhanced Elements.update() for component-friendly syntax
+   * Supports multiple syntaxes including dot notation
+   */
+  function createEnhancedElementsUpdate() {
+    return function(updates = {}) {
+      if (!updates || typeof updates !== 'object') {
+        console.warn('[DOM Components] .update() called with invalid updates object');
+        return;
+      }
+
+      // Process each key
+      Object.entries(updates).forEach(([key, value]) => {
+        // Check if key contains dot notation (e.g., "userName.textContent")
+        if (key.includes('.')) {
+          // Parse dot notation: "userName.textContent" -> elementId: "userName", property: "textContent"
+          const dotIndex = key.indexOf('.');
+          const elementId = key.substring(0, dotIndex);
+          const property = key.substring(dotIndex + 1);
+          
+          const element = Elements[elementId];
+          
+          if (element) {
+            // Check if property contains nested dots (e.g., "style.color")
+            if (property.includes('.')) {
+              const parts = property.split('.');
+              let target = element;
+              
+              // Navigate to the nested property
+              for (let i = 0; i < parts.length - 1; i++) {
+                if (target[parts[i]]) {
+                  target = target[parts[i]];
+                } else {
+                  console.warn(`[DOM Components] Property "${parts[i]}" not found on element "${elementId}"`);
+                  return;
+                }
+              }
+              
+              // Set the final property
+              const finalProp = parts[parts.length - 1];
+              target[finalProp] = value;
+            } else {
+              // Direct property assignment
+              if (property in element) {
+                element[property] = value;
+              } else {
+                // Try as attribute
+                element.setAttribute(property, value);
+              }
+            }
+          } else {
+            console.warn(`[DOM Components] Element with id "${elementId}" not found`);
+          }
+        } else {
+          // Regular element ID key (no dot notation)
+          const element = Elements[key];
+          
+          if (element) {
+            // Element found - apply updates to it
+            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+              // Check if value contains a nested .update() call result
+              if (value._isUpdateCall) {
+                // This is a deferred update - execute it now
+                element.update(value._updates);
+              } else {
+                // Direct property updates - declarative style
+                element.update(value);
+              }
+            } else {
+              // Single value update
+              console.warn(`[DOM Components] Invalid update value for element "${key}"`);
+            }
+          } else {
+            console.warn(`[DOM Components] Element with id "${key}" not found`);
+          }
+        }
+      });
+    };
+  }
+
+  /**
+   * Create a deferred update object for method chaining style
+   * This allows: userName.update({ ... }) to be captured and executed later
+   */
+  function createDeferredUpdate(updates) {
+    return {
+      _isUpdateCall: true,
+      _updates: updates
+    };
+  }
+
+  /**
+   * Enhanced element wrapper for component context
+   * Wraps elements to support the method chaining style
+   */
+  function wrapElementForComponentUpdate(element) {
+    if (!element) return null;
+    
+    return new Proxy(element, {
+      get(target, prop) {
+        if (prop === 'update') {
+          // Return wrapped update that creates a deferred call
+          return function(updates) {
+            return createDeferredUpdate(updates);
+          };
+        }
+        return target[prop];
+      }
+    });
+  }
+
+  /**
    * Components API - Main interface
    */
   const Components = {
+    /**
+     * Enhanced update method for declarative component updates
+     * Supports multiple syntaxes:
+     * 
+     * 1. Declarative object style (recommended):
+     *    Elements.update({
+     *      userName: { textContent: data.name },
+     *      userEmail: { textContent: data.email },
+     *      userAvatar: { 
+     *        src: data.avatar, 
+     *        alt: data.name || "User Avatar" 
+     *      }
+     *    });
+     * 
+     * 2. Dot notation style (concise):
+     *    Elements.update({
+     *      "userName.textContent": data.name,
+     *      "userEmail.textContent": data.email,
+     *      userAvatar: { 
+     *        src: data.avatar,
+     *        alt: data.name || "User Avatar"
+     *      }
+     *    });
+     * 
+     * 3. Method chaining style:
+     *    Elements.update({
+     *      "userName.textContent": data.name,
+     *      "userEmail.textContent": data.email,
+     *      userAvatar: Elements.userAvatar.update({
+     *        src: data.avatar,
+     *        alt: data.name || "User Avatar"
+     *      })
+     *    });
+     * 
+     * 4. Nested property style:
+     *    Elements.update({
+     *      "myElement.style.color": "red",
+     *      "myElement.style.fontSize": "16px"
+     *    });
+     */
+    update: createEnhancedElementsUpdate(),
+
     /**
      * Register a component
      */
@@ -572,6 +725,110 @@
     },
 
     /**
+     * Create a scoped context for component updates
+     * This provides a more intuitive way to update multiple elements
+     * 
+     * @example
+     * const { userName, userEmail, userAvatar } = Components.scope();
+     * Components.update({
+     *   userName: { textContent: data.name },
+     *   userEmail: { textContent: data.email },
+     *   userAvatar: { src: data.avatar, alt: data.name }
+     * });
+     */
+    scope(...elementIds) {
+      const scope = {};
+      
+      if (elementIds.length === 0) {
+        // No specific IDs provided - return all available elements
+        return new Proxy({}, {
+          get(target, prop) {
+            if (typeof prop === 'string') {
+              const element = Elements[prop];
+              return wrapElementForComponentUpdate(element);
+            }
+            return undefined;
+          }
+        });
+      }
+      
+      // Create scope object with specified element IDs
+      elementIds.forEach(id => {
+        const element = Elements[id];
+        if (element) {
+          scope[id] = wrapElementForComponentUpdate(element);
+        } else {
+          console.warn(`[DOM Components] Element "${id}" not found in scope`);
+          scope[id] = null;
+        }
+      });
+      
+      return scope;
+    },
+
+    /**
+     * Batch update helper for multiple elements
+     * Provides a cleaner syntax for updating multiple elements at once
+     * 
+     * @example
+     * Components.batchUpdate({
+     *   userName: { textContent: data.name },
+     *   userEmail: { textContent: data.email },
+     *   userStatus: { 
+     *     textContent: data.status,
+     *     classList: { toggle: 'active' }
+     *   }
+     * });
+     */
+    batchUpdate(updates) {
+      if (!updates || typeof updates !== 'object') {
+        console.warn('[DOM Components] batchUpdate called with invalid updates object');
+        return;
+      }
+
+      Object.entries(updates).forEach(([elementId, elementUpdates]) => {
+        const element = Elements[elementId];
+        
+        if (element && typeof element.update === 'function') {
+          try {
+            element.update(elementUpdates);
+          } catch (error) {
+            console.error(`[DOM Components] Error updating element "${elementId}":`, error);
+          }
+        } else if (!element) {
+          console.warn(`[DOM Components] Element "${elementId}" not found for batchUpdate`);
+        }
+      });
+      
+      return this;
+    },
+
+    /**
+     * Create a data binding helper for reactive updates
+     * 
+     * @example
+     * const userBinding = Components.createBinding(['userName', 'userEmail'], (data) => ({
+     *   userName: { textContent: data.name },
+     *   userEmail: { textContent: data.email }
+     * }));
+     * 
+     * userBinding.update({ name: 'John', email: 'john@example.com' });
+     */
+    createBinding(elementIds, mapFunction) {
+      return {
+        update(data) {
+          const updates = mapFunction(data);
+          Components.batchUpdate(updates);
+        },
+        
+        elements: elementIds.reduce((acc, id) => {
+          acc[id] = Elements[id];
+          return acc;
+        }, {})
+      };
+    },
+
+    /**
      * Get component instance
      */
     getInstance(container) {
@@ -647,11 +904,9 @@
      */
     async _processCustomTags(root = document) {
       const allElements = root.querySelectorAll('*');
+      
       const customElements = Array.from(allElements).filter(element => {
         const tagName = element.tagName.toLowerCase();
-        
-        // Check if it's a potential component tag
-        // Component tags should start with uppercase letter or contain hyphens
         return (this._isComponentTag(tagName) && !componentInstances.has(element));
       });
 
@@ -706,13 +961,21 @@
         return false;
       }
 
-      // Check if it looks like a component
-      // Component tags should either:
-      // 1. Start with uppercase (PascalCase converted to lowercase)
-      // 2. Contain hyphens (kebab-case)
-      // 3. Not be a known web component pattern
-      return /^[a-z]+(-[a-z0-9]+)*$/.test(tagName) && tagName.includes('-') ||
-             /^[a-z][a-z0-9]*$/.test(tagName) && tagName.length > 2;
+      // Check if it looks like a component tag
+      // Accept any tag that:
+      // 1. Contains hyphens (kebab-case like user-card)
+      // 2. Is a single word with length > 2 (like usercard, which could be UserCard)
+      // 3. This allows both <user-card> and <usercard> / <UserCard> (browsers convert to lowercase)
+      
+      if (tagName.includes('-')) {
+        // Kebab-case: user-card, my-component, etc.
+        return /^[a-z]+(-[a-z0-9]+)+$/.test(tagName);
+      } else {
+        // Single word: must be longer than 2 chars to avoid false positives
+        // This catches tags like: usercard, todolist, navbar, etc.
+        // (which are UserCard, TodoList, NavBar in PascalCase)
+        return /^[a-z][a-z0-9]*$/.test(tagName) && tagName.length > 2;
+      }
     },
 
     /**
@@ -729,9 +992,30 @@
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join('');
       } else {
-        // Try direct match first, then try PascalCase
-        const pascalCase = tagName.charAt(0).toUpperCase() + tagName.slice(1);
-        return this.isRegistered(pascalCase) ? pascalCase : tagName;
+        // For single-word tags like "usercard", try multiple approaches:
+        // 1. Exact match (usercard)
+        if (this.isRegistered(tagName)) {
+          return tagName;
+        }
+        
+        // 2. Simple PascalCase (Usercard)
+        const simplePascal = tagName.charAt(0).toUpperCase() + tagName.slice(1);
+        if (this.isRegistered(simplePascal)) {
+          return simplePascal;
+        }
+        
+        // 3. Search through all registered components for a case-insensitive match
+        const registeredComponents = this.getRegistered();
+        const lowerTag = tagName.toLowerCase();
+        
+        for (const compName of registeredComponents) {
+          if (compName.toLowerCase() === lowerTag) {
+            return compName;
+          }
+        }
+        
+        // 4. Default to simple PascalCase
+        return simplePascal;
       }
     },
 
@@ -869,17 +1153,25 @@
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
-        Components.autoInit();
+        // Delay auto-init slightly to allow inline scripts to register components first
+        setTimeout(() => Components.autoInit(), 0);
       });
     } else {
-      // DOM already loaded, initialize immediately
-      Components.autoInit();
+      // DOM already loaded, initialize after a short delay to allow registration
+      setTimeout(() => Components.autoInit(), 0);
     }
 
     // Cleanup on page unload
     window.addEventListener('beforeunload', () => {
       Components.destroyAll();
     });
+  }
+
+  // Extend Elements with the enhanced update method
+  if (typeof global.Elements !== 'undefined' && global.Elements) {
+    // Add the enhanced update method to Elements
+    global.Elements.update = Components.update;
+    console.log('[DOM Components] Elements.update() enhanced with dot notation support');
   }
 
   // Export for different environments

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Components Update Syntax Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .user-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      padding: 30px;
+      color: white;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .user-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+
+    .user-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid white;
+      object-fit: cover;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .user-name {
+      font-size: 1.8em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .user-email {
+      font-size: 1.1em;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .user-bio {
+      font-size: 1em;
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .code-example {
+      background: #2d3748;
+      color: #48bb78;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .syntax-label {
+      display: inline-block;
+      background: #48bb78;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .info-box {
+      background: #ebf8ff;
+      border-left: 4px solid #4299e1;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+
+    .info-box strong {
+      color: #2c5282;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Components Update Syntax Test</h1>
+
+    <!-- Syntax 1: Declarative Object Style -->
+    <div class="section">
+      <h2>Syntax 1: Declarative Object Style (Recommended)</h2>
+      
+      <div class="info-box">
+        <strong>✨ Best Practice:</strong> This is the cleanest and most intuitive way to update multiple elements. 
+        Perfect for component-based architecture!
+      </div>
+
+      <div class="code-example">
+        <span class="syntax-label">Declarative Style</span><br>
+        Components.update({<br>
+        &nbsp;&nbsp;userName: { textContent: data.name },<br>
+        &nbsp;&nbsp;userEmail: { textContent: data.email },<br>
+        &nbsp;&nbsp;userAvatar: { <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;src: data.avatar, <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;alt: data.name || "User Avatar" <br>
+        &nbsp;&nbsp;}<br>
+        });
+      </div>
+
+      <div class="user-card">
+        <img id="userAvatar" class="user-avatar" src="https://via.placeholder.com/100" alt="User Avatar">
+        <div id="userName" class="user-name">John Doe</div>
+        <div id="userEmail" class="user-email">john.doe@example.com</div>
+        <div id="userBio" class="user-bio">Software Developer | Tech Enthusiast</div>
+      </div>
+
+      <div class="controls">
+        <button onclick="updateDeclarativeStyle1()">Update User (Alice)</button>
+        <button onclick="updateDeclarativeStyle2()">Update User (Bob)</button>
+        <button onclick="updateDeclarativeStyle3()">Update User (Charlie)</button>
+      </div>
+    </div>
+
+    <!-- Syntax 2: Batch Update Method -->
+    <div class="section">
+      <h2>Syntax 2: Batch Update Method</h2>
+      
+      <div class="info-box">
+        <strong>⚡ Alternative:</strong> Same functionality as Components.update() but with a more explicit method name.
+      </div>
+
+      <div class="code-example">
+        <span class="syntax-label">Batch Update</span><br>
+        Components.batchUpdate({<br>
+        &nbsp;&nbsp;productName: { textContent: data.name },<br>
+        &nbsp;&nbsp;productPrice: { textContent: `$${data.price}` },<br>
+        &nbsp;&nbsp;productImage: { src: data.image }<br>
+        });
+      </div>
+
+      <div class="user-card">
+        <img id="productImage" class="user-avatar" src="https://via.placeholder.com/100" alt="Product">
+        <div id="productName" class="user-name">MacBook Pro</div>
+        <div id="productPrice" class="user-email">$2,499</div>
+        <div id="productDescription" class="user-bio">Powerful laptop for professionals</div>
+      </div>
+
+      <div class="controls">
+        <button onclick="updateBatchStyle1()">Update Product 1</button>
+        <button onclick="updateBatchStyle2()">Update Product 2</button>
+        <button onclick="updateBatchStyle3()">Update Product 3</button>
+      </div>
+    </div>
+
+    <!-- Syntax 3: Data Binding -->
+    <div class="section">
+      <h2>Syntax 3: Data Binding (Reactive)</h2>
+      
+      <div class="info-box">
+        <strong>🔄 Reactive:</strong> Create bindings for automatic updates when data changes.
+      </div>
+
+      <div class="code-example">
+        <span class="syntax-label">Data Binding</span><br>
+        const userBinding = Components.createBinding(<br>
+        &nbsp;&nbsp;['authorName', 'authorEmail', 'authorAvatar'],<br>
+        &nbsp;&nbsp;(data) => ({<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;authorName: { textContent: data.name },<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;authorEmail: { textContent: data.email },<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;authorAvatar: { src: data.avatar }<br>
+        &nbsp;&nbsp;})<br>
+        );<br><br>
+        userBinding.update({ name: 'Emma', email: 'emma@example.com' });
+      </div>
+
+      <div class="user-card">
+        <img id="authorAvatar" class="user-avatar" src="https://via.placeholder.com/100" alt="Author">
+        <div id="authorName" class="user-name">Emma Wilson</div>
+        <div id="authorEmail" class="user-email">emma.wilson@example.com</div>
+        <div id="authorBio" class="user-bio">Technical Writer | Content Creator</div>
+      </div>
+
+      <div class="controls">
+        <button onclick="updateBinding1()">Update Author (Emma)</button>
+        <button onclick="updateBinding2()">Update Author (Frank)</button>
+        <button onclick="updateBinding3()">Update Author (Grace)</button>
+      </div>
+    </div>
+
+    <!-- Performance Comparison -->
+    <div class="section">
+      <h2>Performance & Best Practices</h2>
+      
+      <div class="info-box">
+        <strong>💡 Tips:</strong>
+        <ul style="margin-top: 10px; margin-left: 20px;">
+          <li><strong>Declarative Style:</strong> Best for most use cases - clean, readable, and efficient</li>
+          <li><strong>Batch Update:</strong> Same performance as declarative, just different API</li>
+          <li><strong>Data Binding:</strong> Best for reactive components with frequent updates</li>
+          <li><strong>All methods:</strong> Support the full DOM Helpers update() API (classList, style, events, etc.)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Libraries -->
+  <script src="../dom-helpers.js"></script>
+  <script src="../dom-helpers-components.js"></script>
+
+  <script>
+    // Sample data
+    const users = {
+      alice: {
+        name: 'Alice Johnson',
+        email: 'alice.j@example.com',
+        avatar: 'https://i.pravatar.cc/100?img=1',
+        bio: 'Frontend Developer | React Expert'
+      },
+      bob: {
+        name: 'Bob Smith',
+        email: 'bob.smith@example.com',
+        avatar: 'https://i.pravatar.cc/100?img=3',
+        bio: 'Backend Developer | Node.js Specialist'
+      },
+      charlie: {
+        name: 'Charlie Brown',
+        email: 'charlie.b@example.com',
+        avatar: 'https://i.pravatar.cc/100?img=5',
+        bio: 'Full Stack Developer | Cloud Architect'
+      }
+    };
+
+    const products = {
+      laptop: {
+        name: 'Dell XPS 15',
+        price: 1899,
+        image: 'https://via.placeholder.com/100/0066cc/ffffff?text=Laptop',
+        description: 'High-performance laptop for developers'
+      },
+      phone: {
+        name: 'iPhone 15 Pro',
+        price: 1299,
+        image: 'https://via.placeholder.com/100/ff6600/ffffff?text=Phone',
+        description: 'Latest flagship smartphone'
+      },
+      tablet: {
+        name: 'iPad Pro',
+        price: 999,
+        image: 'https://via.placeholder.com/100/00aa00/ffffff?text=Tablet',
+        description: 'Powerful tablet for creativity'
+      }
+    };
+
+    const authors = {
+      emma: {
+        name: 'Emma Wilson',
+        email: 'emma.w@example.com',
+        avatar: 'https://i.pravatar.cc/100?img=9',
+        bio: 'Technical Writer | Content Creator'
+      },
+      frank: {
+        name: 'Frank Miller',
+        email: 'frank.m@example.com',
+        avatar: 'https://i.pravatar.cc/100?img=11',
+        bio: 'Software Architect | Tech Blogger'
+      },
+      grace: {
+        name: 'Grace Lee',
+        email: 'grace.l@example.com',
+        avatar: 'https://i.pravatar.cc/100?img=15',
+        bio: 'UX Designer | Design Systems Expert'
+      }
+    };
+
+    // Syntax 1: Declarative Object Style
+    function updateDeclarativeStyle1() {
+      const data = users.alice;
+      
+      Components.update({
+        userName: { textContent: data.name },
+        userEmail: { textContent: data.email },
+        userAvatar: { 
+          src: data.avatar, 
+          alt: data.name || "User Avatar" 
+        },
+        userBio: { textContent: data.bio }
+      });
+    }
+
+    function updateDeclarativeStyle2() {
+      const data = users.bob;
+      
+      Components.update({
+        userName: { textContent: data.name },
+        userEmail: { textContent: data.email },
+        userAvatar: { 
+          src: data.avatar, 
+          alt: data.name || "User Avatar" 
+        },
+        userBio: { textContent: data.bio }
+      });
+    }
+
+    function updateDeclarativeStyle3() {
+      const data = users.charlie;
+      
+      Components.update({
+        userName: { textContent: data.name },
+        userEmail: { textContent: data.email },
+        userAvatar: { 
+          src: data.avatar, 
+          alt: data.name || "User Avatar" 
+        },
+        userBio: { textContent: data.bio }
+      });
+    }
+
+    // Syntax 2: Batch Update Method
+    function updateBatchStyle1() {
+      const data = products.laptop;
+      
+      Components.batchUpdate({
+        productName: { textContent: data.name },
+        productPrice: { textContent: `$${data.price.toLocaleString()}` },
+        productImage: { src: data.image, alt: data.name },
+        productDescription: { textContent: data.description }
+      });
+    }
+
+    function updateBatchStyle2() {
+      const data = products.phone;
+      
+      Components.batchUpdate({
+        productName: { textContent: data.name },
+        productPrice: { textContent: `$${data.price.toLocaleString()}` },
+        productImage: { src: data.image, alt: data.name },
+        productDescription: { textContent: data.description }
+      });
+    }
+
+    function updateBatchStyle3() {
+      const data = products.tablet;
+      
+      Components.batchUpdate({
+        productName: { textContent: data.name },
+        productPrice: { textContent: `$${data.price.toLocaleString()}` },
+        productImage: { src: data.image, alt: data.name },
+        productDescription: { textContent: data.description }
+      });
+    }
+
+    // Syntax 3: Data Binding
+    const authorBinding = Components.createBinding(
+      ['authorName', 'authorEmail', 'authorAvatar', 'authorBio'],
+      (data) => ({
+        authorName: { textContent: data.name },
+        authorEmail: { textContent: data.email },
+        authorAvatar: { src: data.avatar, alt: data.name },
+        authorBio: { textContent: data.bio }
+      })
+    );
+
+    function updateBinding1() {
+      authorBinding.update(authors.emma);
+    }
+
+    function updateBinding2() {
+      authorBinding.update(authors.frank);
+    }
+
+    function updateBinding3() {
+      authorBinding.update(authors.grace);
+    }
+
+    // Initialize
+    console.log('✅ Components Update Syntax Test Loaded');
+    console.log('📚 Available syntaxes:');
+    console.log('  1. Components.update() - Declarative style (recommended)');
+    console.log('  2. Components.batchUpdate() - Explicit batch updates');
+    console.log('  3. Components.createBinding() - Reactive data binding');
+  </script>
+</body>
+</html>

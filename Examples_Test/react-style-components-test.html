@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React-Style Components Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2.5em;
+    }
+
+    h2 {
+      color: #667eea;
+      margin: 30px 0 20px 0;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .info-box {
+      background: #ebf8ff;
+      border-left: 4px solid #4299e1;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+
+    .code-example {
+      background: #2d3748;
+      color: #48bb78;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      margin: 10px 10px 10px 0;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+    }
+
+    #components-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚛️ React-Style Component Tags Test</h1>
+
+    <div class="info-box">
+      <strong>🎯 Goal:</strong> Test if the library supports React-like component syntax with opening and closing tags: <code>&lt;ComponentName&gt;&lt;/ComponentName&gt;</code>
+    </div>
+
+    <h2>Test 1: Self-Closing Tag (Already Supported)</h2>
+    <div class="code-example">
+      &lt;UserCard /&gt;
+    </div>
+
+    <h2>Test 2: Open/Close Tag (React-Style)</h2>
+    <div class="code-example">
+      &lt;UserCard&gt;&lt;/UserCard&gt;
+    </div>
+
+    <h2>Test 3: With Attributes</h2>
+    <div class="code-example">
+      &lt;UserCard name="Alice" email="alice@example.com"&gt;&lt;/UserCard&gt;
+    </div>
+
+    <button onclick="testSelfClosing()">Test Self-Closing Tag</button>
+    <button onclick="testOpenClose()">Test Open/Close Tag</button>
+    <button onclick="testWithProps()">Test With Props</button>
+    <button onclick="clearComponents()">Clear All</button>
+
+    <h2>Components Container:</h2>
+    <div id="components-container">
+      <!-- Components will be rendered here -->
+    </div>
+  </div>
+
+  <!-- Load Libraries -->
+  <script src="../dom-helpers.js"></script>
+  <script src="../dom-helpers-components.js"></script>
+
+  <script>
+    // Register the UserCard component
+    Components.register('UserCard', `
+      <div class="user-card">
+        <img id="userAvatar" class="avatar" src="https://i.pravatar.cc/64?img=1" alt="User Avatar" />
+        <div class="user-info">
+          <h3 id="userName" class="name">Default User</h3>
+          <p id="userEmail" class="email">user@example.com</p>
+          <button id="contactBtn" class="contact-btn">Contact</button>
+        </div>
+      </div>
+
+      <style>
+        .user-card {
+          display: flex;
+          align-items: center;
+          padding: 16px;
+          border: 1px solid #e1e5e9;
+          border-radius: 8px;
+          background: white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          margin: 8px 0;
+        }
+        
+        .avatar {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          margin-right: 16px;
+        }
+        
+        .user-info {
+          flex: 1;
+        }
+        
+        .name {
+          margin: 0 0 4px 0;
+          color: #333;
+          font-size: 18px;
+        }
+        
+        .email {
+          margin: 0 0 8px 0;
+          color: #666;
+          font-size: 14px;
+        }
+        
+        .contact-btn {
+          background: #3b82f6;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+      </style>
+
+      <script>
+        // Initialize with props
+        if (data.name) {
+          Elements.userName.textContent = data.name;
+        }
+        if (data.email) {
+          Elements.userEmail.textContent = data.email;
+        }
+        if (data.avatar) {
+          Elements.userAvatar.src = data.avatar;
+        }
+
+        Elements.contactBtn.addEventListener('click', () => {
+          alert('Contacting ' + (data.name || 'user') + '...');
+        });
+      <\/script>
+    `);
+
+    function testSelfClosing() {
+      const container = Elements['components-container'];
+      container.innerHTML += '<usercard />';
+      
+      // Manually trigger component processing
+      Components.autoInit(container).then(() => {
+        console.log('✅ Self-closing tag processed');
+      });
+    }
+
+    function testOpenClose() {
+      const container = Elements['components-container'];
+      container.innerHTML += '<usercard></usercard>';
+      
+      // Manually trigger component processing
+      Components.autoInit(container).then(() => {
+        console.log('✅ Open/close tag processed');
+      });
+    }
+
+    function testWithProps() {
+      const container = Elements['components-container'];
+      container.innerHTML += '<usercard name="Alice Johnson" email="alice@example.com"></usercard>';
+      
+      // Manually trigger component processing
+      Components.autoInit(container).then(() => {
+        console.log('✅ Tag with props processed');
+      });
+    }
+
+    function clearComponents() {
+      Elements['components-container'].innerHTML = '';
+      console.log('🗑️ Components cleared');
+    }
+
+    console.log('✅ React-Style Components Test Loaded');
+    console.log('📚 Component registered: UserCard');
+    console.log('🧪 Click buttons to test different tag syntaxes');
+  </script>
+</body>
+</html>

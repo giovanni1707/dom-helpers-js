@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dot Notation Syntax Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .user-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      padding: 30px;
+      color: white;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .user-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+
+    .user-name {
+      font-size: 1.8em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .user-email {
+      font-size: 1.1em;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .user-bio {
+      font-size: 1em;
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .code-example {
+      background: #2d3748;
+      color: #48bb78;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .syntax-label {
+      display: inline-block;
+      background: #48bb78;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .info-box {
+      background: #ebf8ff;
+      border-left: 4px solid #4299e1;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+
+    .info-box strong {
+      color: #2c5282;
+    }
+
+    .highlight-box {
+      background: #fef5e7;
+      border-left: 4px solid #f39c12;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+
+    .color-box {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Dot Notation Syntax Test</h1>
+
+    <!-- Syntax 1: Dot Notation for Simple Properties -->
+    <div class="section">
+      <h2>Syntax 1: Dot Notation for Text Properties</h2>
+      
+      <div class="highlight-box">
+        <strong>✨ New Feature:</strong> Use dot notation to directly set element properties - ultra concise!
+      </div>
+
+      <div class="code-example">
+        <span class="syntax-label">Dot Notation</span><br>
+        Elements.update({<br>
+        &nbsp;&nbsp;"userName.textContent": data.name,<br>
+        &nbsp;&nbsp;"userEmail.textContent": data.email,<br>
+        &nbsp;&nbsp;"userBio.textContent": data.bio<br>
+        });
+      </div>
+
+      <div class="user-card">
+        <div id="userName" class="user-name">John Doe</div>
+        <div id="userEmail" class="user-email">john.doe@example.com</div>
+        <div id="userBio" class="user-bio">Software Developer | Tech Enthusiast</div>
+      </div>
+
+      <div class="controls">
+        <button onclick="updateDotNotation1()">Update (Alice)</button>
+        <button onclick="updateDotNotation2()">Update (Bob)</button>
+        <button onclick="updateDotNotation3()">Update (Charlie)</button>
+      </div>
+    </div>
+
+    <!-- Syntax 2: Nested Property Access -->
+    <div class="section">
+      <h2>Syntax 2: Nested Property Access (style.color, etc.)</h2>
+      
+      <div class="highlight-box">
+        <strong>🎨 Advanced:</strong> Access nested properties like style.color or style.fontSize directly!
+      </div>
+
+      <div class="code-example">
+        <span class="syntax-label">Nested Properties</span><br>
+        Elements.update({<br>
+        &nbsp;&nbsp;"colorBox.style.backgroundColor": "#3498db",<br>
+        &nbsp;&nbsp;"colorBox.style.color": "white",<br>
+        &nbsp;&nbsp;"colorBox.textContent": "Blue"<br>
+        });
+      </div>
+
+      <div id="colorBox" class="color-box" style="background-color: #95a5a6;">Gray</div>
+
+      <div class="controls">
+        <button onclick="changeColor('red')">Red</button>
+        <button onclick="changeColor('green')">Green</button>
+        <button onclick="changeColor('blue')">Blue</button>
+        <button onclick="changeColor('purple')">Purple</button>
+      </div>
+    </div>
+
+    <!-- Syntax 3: Mixed Approach -->
+    <div class="section">
+      <h2>Syntax 3: Mixed Approach (Dot Notation + Object Style)</h2>
+      
+      <div class="highlight-box">
+        <strong>🔥 Best of Both:</strong> Combine dot notation for simple updates with object style for complex ones!
+      </div>
+
+      <div class="code-example">
+        <span class="syntax-label">Mixed Syntax</span><br>
+        Elements.update({<br>
+        &nbsp;&nbsp;"profileName.textContent": data.name,<br>
+        &nbsp;&nbsp;"profileEmail.textContent": data.email,<br>
+        &nbsp;&nbsp;profileStatus: {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;textContent: data.status,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;style: { color: statusColor },<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;classList: { toggle: 'active' }<br>
+        &nbsp;&nbsp;}<br>
+        });
+      </div>
+
+      <div class="user-card">
+        <div id="profileName" class="user-name">Emma Wilson</div>
+        <div id="profileEmail" class="user-email">emma@example.com</div>
+        <div id="profileStatus" class="user-bio">Online</div>
+      </div>
+
+      <div class="controls">
+        <button onclick="updateMixed('online')">Set Online</button>
+        <button onclick="updateMixed('away')">Set Away</button>
+        <button onclick="updateMixed('offline')">Set Offline</button>
+      </div>
+    </div>
+
+    <!-- Comparison Section -->
+    <div class="section">
+      <h2>📊 Syntax Comparison</h2>
+      
+      <div class="info-box">
+        <strong>All Three Syntaxes Are Valid:</strong>
+        <ul style="margin-top: 10px; margin-left: 20px; line-height: 1.8;">
+          <li><strong>Dot Notation:</strong> <code>"userName.textContent": value</code> - Ultra concise, perfect for simple updates</li>
+          <li><strong>Object Style:</strong> <code>userName: { textContent: value }</code> - Best for multiple properties on same element</li>
+          <li><strong>Mixed:</strong> Use both in the same update call for maximum flexibility</li>
+        </ul>
+      </div>
+
+      <div class="code-example" style="background: #1a202c;">
+        <span class="syntax-label" style="background: #e74c3c;">Before (Verbose)</span><br>
+        Elements.userName.update({ textContent: "Alice" });<br>
+        Elements.userEmail.update({ textContent: "alice@example.com" });<br>
+        Elements.userBio.update({ textContent: "Developer" });<br>
+        <br>
+        <span class="syntax-label" style="background: #27ae60;">After (Dot Notation)</span><br>
+        Elements.update({<br>
+        &nbsp;&nbsp;"userName.textContent": "Alice",<br>
+        &nbsp;&nbsp;"userEmail.textContent": "alice@example.com",<br>
+        &nbsp;&nbsp;"userBio.textContent": "Developer"<br>
+        });
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Libraries -->
+  <script src="../dom-helpers.js"></script>
+  <script src="../dom-helpers-components.js"></script>
+
+  <script>
+    // Sample data
+    const users = {
+      alice: {
+        name: 'Alice Johnson',
+        email: 'alice.j@example.com',
+        bio: 'Frontend Developer | React Expert'
+      },
+      bob: {
+        name: 'Bob Smith',
+        email: 'bob.smith@example.com',
+        bio: 'Backend Developer | Node.js Specialist'
+      },
+      charlie: {
+        name: 'Charlie Brown',
+        email: 'charlie.b@example.com',
+        bio: 'Full Stack Developer | Cloud Architect'
+      }
+    };
+
+    // Syntax 1: Pure Dot Notation
+    function updateDotNotation1() {
+      const data = users.alice;
+      
+      Elements.update({
+        "userName.textContent": data.name,
+        "userEmail.textContent": data.email,
+        "userBio.textContent": data.bio
+      });
+    }
+
+    function updateDotNotation2() {
+      const data = users.bob;
+      
+      Elements.update({
+        "userName.textContent": data.name,
+        "userEmail.textContent": data.email,
+        "userBio.textContent": data.bio
+      });
+    }
+
+    function updateDotNotation3() {
+      const data = users.charlie;
+      
+      Elements.update({
+        "userName.textContent": data.name,
+        "userEmail.textContent": data.email,
+        "userBio.textContent": data.bio
+      });
+    }
+
+    // Syntax 2: Nested Property Access
+    function changeColor(color) {
+      const colors = {
+        red: { bg: '#e74c3c', text: 'Red' },
+        green: { bg: '#27ae60', text: 'Green' },
+        blue: { bg: '#3498db', text: 'Blue' },
+        purple: { bg: '#9b59b6', text: 'Purple' }
+      };
+
+      const colorData = colors[color];
+      
+      Elements.update({
+        "colorBox.style.backgroundColor": colorData.bg,
+        "colorBox.style.color": "white",
+        "colorBox.textContent": colorData.text
+      });
+    }
+
+    // Syntax 3: Mixed Approach
+    function updateMixed(status) {
+      const statusMap = {
+        online: { text: 'Online', color: '#27ae60' },
+        away: { text: 'Away', color: '#f39c12' },
+        offline: { text: 'Offline', color: '#95a5a6' }
+      };
+
+      const statusData = statusMap[status];
+      
+      // Using mixed syntax: dot notation for simple properties, object for complex
+      Elements.update({
+        "profileName.textContent": "Emma Wilson",
+        "profileEmail.textContent": "emma.wilson@example.com",
+        profileStatus: {
+          textContent: statusData.text,
+          style: { 
+            color: statusData.color,
+            fontWeight: 'bold',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            backgroundColor: 'rgba(255,255,255,0.2)'
+          }
+        }
+      });
+    }
+
+    // Initialize
+    console.log('✅ Dot Notation Syntax Test Loaded');
+    console.log('📚 New syntax available:');
+    console.log('  - "elementId.property": value');
+    console.log('  - "elementId.nested.property": value');
+    console.log('  - Mix with object style for flexibility');
+  </script>
+</body>
+</html>
