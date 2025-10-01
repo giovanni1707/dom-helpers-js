@@ -378,7 +378,11 @@
     }
 
     /**
-     * Update component data
+     * Update component data (SMART - avoids unnecessary re-renders)
+     * Use this to update the component's data without triggering a full re-render.
+     * The component's lifecycle hooks will still be called.
+     * 
+     * For full re-render, use refresh() instead.
      */
     async updateData(newData) {
       if (this.isDestroyed) return;
@@ -387,16 +391,342 @@
         await this._callLifecycle('beforeUpdate');
 
         // Update data
+        const oldData = { ...this.data };
         Object.assign(this.data, newData);
         componentData.set(this, this.data);
 
-        // Trigger re-render if needed
-        await this.render();
+        // Emit data change event
+        this.emit('dataChanged', { 
+          oldData, 
+          newData: this.data,
+          changes: newData 
+        });
 
         await this._callLifecycle('updated');
         
       } catch (error) {
         console.error(`[DOM Components] Error updating component ${this.name}:`, error);
+      }
+    }
+
+    /**
+     * Deep merge for style and dataset objects
+     * @private
+     */
+    _deepMergeUpdates(queue, updates) {
+      Object.entries(updates).forEach(([key, value]) => {
+        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          // Check if this is a style or dataset update
+          const hasStyleOrDataset = Object.keys(value).some(k => k === 'style' || k === 'dataset');
+          
+          if (hasStyleOrDataset && queue[key]) {
+            // Deep merge style and dataset objects
+            queue[key] = queue[key] || {};
+            Object.entries(value).forEach(([prop, val]) => {
+              if ((prop === 'style' || prop === 'dataset') && typeof val === 'object') {
+                // Merge style/dataset properties
+                queue[key][prop] = { ...queue[key][prop], ...val };
+              } else {
+                queue[key][prop] = val;
+              }
+            });
+          } else {
+            queue[key] = value;
+          }
+        } else {
+          queue[key] = value;
+        }
+      });
+    }
+
+    /**
+     * Granular update method - Update specific DOM elements without re-rendering
+     * This is the most efficient way to update the UI.
+     * 
+     * Features:
+     * - Shallow equality check (skips unchanged values)
+     * - Update batching with requestAnimationFrame
+     * - Deep merge for style/dataset objects
+     * - Efficient fallback implementation
+     * 
+     * @param {Object} updates - Updates object in Elements.update() format
+     * @param {Object} options - Update options
+     * @param {boolean} options.immediate - Skip batching, update immediately (default: false)
+     * 
+     * @example
+     * component.update({
+     *   "userName.textContent": "New Name",
+     *   "userEmail.textContent": "new@email.com",
+     *   userAvatar: { src: "new-avatar.jpg" }
+     * });
+     * 
+     * // Deep merge for style/dataset
+     * component.update({
+     *   myElement: { style: { color: "red" } }
+     * });
+     * component.update({
+     *   myElement: { style: { fontSize: "16px" } }
+     * });
+     * // Result: { color: "red", fontSize: "16px" } both applied!
+     */
+    update(updates, options = {}) {
+      if (this.isDestroyed) return;
+
+      // Initialize update queue if not exists
+      if (!this._updateQueue) {
+        this._updateQueue = {};
+        this._updateScheduled = false;
+      }
+
+      // Deep merge updates (especially for style/dataset objects)
+      this._deepMergeUpdates(this._updateQueue, updates);
+
+      // Immediate update or batch?
+      if (options.immediate) {
+        this._flushUpdates();
+      } else {
+        // Batch updates using requestAnimationFrame
+        if (!this._updateScheduled) {
+          this._updateScheduled = true;
+          
+          if (typeof requestAnimationFrame !== 'undefined') {
+            this._rafId = requestAnimationFrame(() => {
+              this._flushUpdates();
+            });
+          } else {
+            // Fallback for environments without requestAnimationFrame
+            this._rafId = setTimeout(() => {
+              this._flushUpdates();
+            }, 16); // ~60fps
+          }
+        }
+      }
+    }
+
+    /**
+     * Flush queued updates to DOM
+     * @private
+     */
+    _flushUpdates() {
+      if (this.isDestroyed || !this._updateQueue) return;
+
+      const updates = this._updateQueue;
+      this._updateQueue = {};
+      this._updateScheduled = false;
+
+      try {
+        // Use global Elements.update if available
+        if (typeof global.Elements !== 'undefined' && global.Elements.update) {
+          this._applyUpdatesWithEqualityCheck(updates, global.Elements);
+        } else {
+          // Enhanced fallback implementation
+          this._applyUpdatesFallback(updates);
+        }
+      } catch (error) {
+        console.error(`[DOM Components] Error flushing updates for ${this.name}:`, error);
+      }
+    }
+
+    /**
+     * Apply updates with shallow equality check
+     * @private
+     */
+    _applyUpdatesWithEqualityCheck(updates, Elements) {
+      Object.entries(updates).forEach(([key, value]) => {
+        // Dot notation: "userName.textContent"
+        if (key.includes('.')) {
+          const dotIndex = key.indexOf('.');
+          const elementId = key.substring(0, dotIndex);
+          const property = key.substring(dotIndex + 1);
+          
+          const element = Elements[elementId];
+          if (!element) return;
+
+          // Navigate to target property
+          if (property.includes('.')) {
+            const parts = property.split('.');
+            let target = element;
+            
+            for (let i = 0; i < parts.length - 1; i++) {
+              if (!target[parts[i]]) return;
+              target = target[parts[i]];
+            }
+            
+            const finalProp = parts[parts.length - 1];
+            // Shallow equality check
+            if (target[finalProp] !== value) {
+              target[finalProp] = value;
+            }
+          } else {
+            // Direct property
+            if (property in element) {
+              // Shallow equality check
+              if (element[property] !== value) {
+                element[property] = value;
+              }
+            } else {
+              // Try as attribute
+              if (element.getAttribute(property) !== value) {
+                element.setAttribute(property, value);
+              }
+            }
+          }
+        } else {
+          // Regular element ID
+          const element = Elements[key];
+          if (!element) return;
+
+          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+            // Object-style updates
+            Object.entries(value).forEach(([prop, val]) => {
+              if (prop === 'style' && typeof val === 'object') {
+                // Style object
+                Object.entries(val).forEach(([styleProp, styleVal]) => {
+                  if (element.style[styleProp] !== styleVal) {
+                    element.style[styleProp] = styleVal;
+                  }
+                });
+              } else if (prop === 'classList' && typeof val === 'object') {
+                // ClassList operations
+                Object.entries(val).forEach(([operation, classes]) => {
+                  const classList = Array.isArray(classes) ? classes : [classes];
+                  classList.forEach(cls => element.classList[operation](cls));
+                });
+              } else {
+                // Regular property
+                if (element[prop] !== val) {
+                  element[prop] = val;
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+
+    /**
+     * Enhanced fallback for environments without Elements
+     * @private
+     */
+    _applyUpdatesFallback(updates) {
+      Object.entries(updates).forEach(([key, value]) => {
+        if (key.includes('.')) {
+          // Dot notation
+          const [elementId, ...props] = key.split('.');
+          const element = this.container.querySelector(`#${elementId}`);
+          
+          if (element) {
+            let target = element;
+            
+            // Navigate to nested property
+            for (let i = 0; i < props.length - 1; i++) {
+              if (!target[props[i]]) {
+                console.warn(`[DOM Components] Property "${props[i]}" not found on element "${elementId}"`);
+                return;
+              }
+              target = target[props[i]];
+            }
+            
+            const finalProp = props[props.length - 1];
+            // Shallow equality check
+            if (target[finalProp] !== value) {
+              target[finalProp] = value;
+            }
+          }
+        } else {
+          // Element ID
+          const element = this.container.querySelector(`#${key}`);
+          
+          if (element && typeof value === 'object' && value !== null) {
+            Object.entries(value).forEach(([prop, val]) => {
+              if (prop === 'style' && typeof val === 'object') {
+                // Handle style object
+                Object.entries(val).forEach(([styleProp, styleVal]) => {
+                  if (element.style[styleProp] !== styleVal) {
+                    element.style[styleProp] = styleVal;
+                  }
+                });
+              } else if (prop === 'classList' && typeof val === 'object') {
+                // Handle classList operations
+                Object.entries(val).forEach(([operation, classes]) => {
+                  const classList = Array.isArray(classes) ? classes : [classes];
+                  if (typeof element.classList[operation] === 'function') {
+                    classList.forEach(cls => element.classList[operation](cls));
+                  }
+                });
+              } else if (prop === 'dataset' && typeof val === 'object') {
+                // Handle dataset
+                Object.entries(val).forEach(([dataKey, dataVal]) => {
+                  if (element.dataset[dataKey] !== dataVal) {
+                    element.dataset[dataKey] = dataVal;
+                  }
+                });
+              } else {
+                // Regular property with equality check
+                if (element[prop] !== val) {
+                  element[prop] = val;
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+
+    /**
+     * Force a full re-render of the component
+     * Use this when you need to completely rebuild the component's DOM.
+     * This is more expensive than update() but necessary for structural changes.
+     * 
+     * @example
+     * // After major data changes that affect structure
+     * component.refresh();
+     */
+    async refresh() {
+      if (this.isDestroyed) return;
+
+      try {
+        await this._callLifecycle('beforeUpdate');
+
+        // Trigger full re-render
+        await this.render();
+
+        await this._callLifecycle('updated');
+        
+      } catch (error) {
+        console.error(`[DOM Components] Error refreshing component ${this.name}:`, error);
+      }
+    }
+
+    /**
+     * Smart update - Updates data and DOM efficiently
+     * Combines updateData() with update() for convenience.
+     * 
+     * @param {Object} newData - New data to merge
+     * @param {Object} domUpdates - Optional DOM updates to apply
+     * 
+     * @example
+     * component.smartUpdate(
+     *   { name: "John", email: "john@example.com" },
+     *   { 
+     *     "userName.textContent": "John",
+     *     "userEmail.textContent": "john@example.com"
+     *   }
+     * );
+     */
+    async smartUpdate(newData, domUpdates = null) {
+      if (this.isDestroyed) return;
+
+      try {
+        // Update data
+        await this.updateData(newData);
+        
+        // Apply DOM updates if provided
+        if (domUpdates) {
+          this.update(domUpdates);
+        }
+      } catch (error) {
+        console.error(`[DOM Components] Error in smart update for ${this.name}:`, error);
       }
     }
 
@@ -453,6 +783,19 @@
 
       try {
         await this._callLifecycle('beforeDestroy');
+
+        // Cancel any pending RAF updates
+        if (this._updateScheduled && this._rafId) {
+          if (typeof cancelAnimationFrame !== 'undefined') {
+            cancelAnimationFrame(this._rafId);
+          }
+          this._updateScheduled = false;
+        }
+
+        // Clear update queue
+        if (this._updateQueue) {
+          this._updateQueue = {};
+        }
 
         // Destroy child components
         for (const child of this.children) {
