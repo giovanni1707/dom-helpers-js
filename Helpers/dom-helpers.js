@@ -2951,8 +2951,6 @@
         return element;
       }
 
-      // Protect classList first
-  protectClassList(element);
 
       // Use EnhancedUpdateUtility if available, otherwise create comprehensive inline update method
       if (EnhancedUpdateUtility && EnhancedUpdateUtility.enhanceElementWithUpdate) {
@@ -3078,7 +3076,7 @@
   if (collection._originalCollection) {
     Array.from(collection._originalCollection).forEach(element => {
       if (element && element.nodeType === Node.ELEMENT_NODE) {
-        protectClassList(element);
+      
       }
     });
   }
@@ -3532,7 +3530,7 @@
     if (element && !element._hasUpdateMethod) {
       // Protect classList first
       if (typeof protectClassList === 'function') {
-        protectClassList(element);
+      
       }
 
       try {
