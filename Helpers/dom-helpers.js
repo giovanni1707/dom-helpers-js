@@ -2046,90 +2046,10 @@
       }
     }
 
-    // Apply enhanced update to a single element (shared with Elements helper logic)
+    // Apply enhanced update to a single element (uses global fine-grained applyEnhancedUpdate)
     _applyEnhancedUpdateToElement(element, key, value) {
-      try {
-        // Handle special cases first
-        
-        // 1. Style object - batch apply CSS styles
-        if (key === 'style' && typeof value === 'object' && value !== null) {
-          Object.entries(value).forEach(([styleProperty, styleValue]) => {
-            if (styleValue !== null && styleValue !== undefined) {
-              element.style[styleProperty] = styleValue;
-            }
-          });
-          return;
-        }
-
-        // 2. classList methods - enhanced support with arrays
-        if (key === 'classList' && typeof value === 'object' && value !== null) {
-          this._handleClassListUpdate(element, value);
-          return;
-        }
-
-        // 3. setAttribute - enhanced support
-        if (key === 'setAttribute' && Array.isArray(value) && value.length >= 2) {
-          element.setAttribute(value[0], value[1]);
-          return;
-        }
-
-        // 4. removeAttribute - support for removing attributes
-        if (key === 'removeAttribute') {
-          if (Array.isArray(value)) {
-            value.forEach(attr => element.removeAttribute(attr));
-          } else if (typeof value === 'string') {
-            element.removeAttribute(value);
-          }
-          return;
-        }
-
-        // 5. addEventListener - ENHANCED: Support for multiple events and e.target/this.update
-        if (key === 'addEventListener') {
-          handleEnhancedEventListener(element, value);
-          return;
-        }
-
-        // 6. removeEventListener - support for removing event listeners
-        if (key === 'removeEventListener' && Array.isArray(value) && value.length >= 2) {
-          const [eventType, handler, options] = value;
-          element.removeEventListener(eventType, handler, options);
-          return;
-        }
-
-        // 7. dataset - support for data attributes
-        if (key === 'dataset' && typeof value === 'object' && value !== null) {
-          Object.entries(value).forEach(([dataKey, dataValue]) => {
-            element.dataset[dataKey] = dataValue;
-          });
-          return;
-        }
-
-        // 8. Handle DOM methods (value should be an array of arguments)
-        if (typeof element[key] === 'function') {
-          if (Array.isArray(value)) {
-            element[key](...value);
-          } else {
-            element[key](value);
-          }
-          return;
-        }
-
-        // 9. Handle regular DOM properties
-        if (key in element) {
-          element[key] = value;
-          return;
-        }
-
-        // 10. Fallback to setAttribute
-        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-          element.setAttribute(key, value);
-          return;
-        }
-
-        console.warn(`[DOM Helpers] Unknown property or method: ${key}`);
-      } catch (error) {
-        console.warn(`[DOM Helpers] Failed to apply update ${key}: ${error.message}`);
-      }
+      // Use the global fine-grained update function
+      applyEnhancedUpdate(element, key, value);
     }
 
     // Handle classList updates with enhanced functionality

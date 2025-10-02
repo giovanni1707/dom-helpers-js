@@ -515,23 +515,26 @@
       this._updateScheduled = false;
 
       try {
-        // Use global Elements.update if available
-        if (typeof global.Elements !== 'undefined' && global.Elements.update) {
-          this._applyUpdatesWithEqualityCheck(updates, global.Elements);
-        } else {
-          // Enhanced fallback implementation
-          this._applyUpdatesFallback(updates);
-        }
+        // Use core fine-grained update system
+        this._applyUpdatesWithCoreSystem(updates);
       } catch (error) {
         console.error(`[DOM Components] Error flushing updates for ${this.name}:`, error);
       }
     }
 
     /**
-     * Apply updates with shallow equality check
+     * Apply updates using core fine-grained applyEnhancedUpdate
      * @private
      */
-    _applyUpdatesWithEqualityCheck(updates, Elements) {
+    _applyUpdatesWithCoreSystem(updates) {
+      // Check if global applyEnhancedUpdate is available (from core dom-helpers.js)
+      const hasCoreFineGrained = typeof applyEnhancedUpdate !== 'undefined';
+      
+      if (!hasCoreFineGrained) {
+        console.warn('[DOM Components] Core fine-grained update system not available, using fallback');
+        return this._applyUpdatesFallback(updates);
+      }
+
       Object.entries(updates).forEach(([key, value]) => {
         // Dot notation: "userName.textContent"
         if (key.includes('.')) {
@@ -539,11 +542,15 @@
           const elementId = key.substring(0, dotIndex);
           const property = key.substring(dotIndex + 1);
           
-          const element = Elements[elementId];
+          // Try to find element in container
+          const element = this.container.querySelector(`#${elementId}`) || 
+                         (typeof Elements !== 'undefined' ? Elements[elementId] : null);
+          
           if (!element) return;
 
-          // Navigate to target property
+          // For dot notation, we need to handle it specially
           if (property.includes('.')) {
+            // Nested property like "style.color"
             const parts = property.split('.');
             let target = element;
             
@@ -553,59 +560,35 @@
             }
             
             const finalProp = parts[parts.length - 1];
-            // Shallow equality check
-            if (target[finalProp] !== value) {
-              target[finalProp] = value;
-            }
+            target[finalProp] = value;
           } else {
-            // Direct property
-            if (property in element) {
-              // Shallow equality check
-              if (element[property] !== value) {
-                element[property] = value;
-              }
-            } else {
-              // Try as attribute
-              if (element.getAttribute(property) !== value) {
-                element.setAttribute(property, value);
-              }
-            }
+            // Direct property - use core system
+            const updateObj = {};
+            updateObj[property] = value;
+            applyEnhancedUpdate(element, property, value);
           }
         } else {
-          // Regular element ID
-          const element = Elements[key];
+          // Regular element ID - use core fine-grained update for each property
+          const element = this.container.querySelector(`#${key}`) || 
+                         (typeof Elements !== 'undefined' ? Elements[key] : null);
+          
           if (!element) return;
 
           if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-            // Object-style updates
+            // Object-style updates - apply each property through core system
             Object.entries(value).forEach(([prop, val]) => {
-              if (prop === 'style' && typeof val === 'object') {
-                // Style object
-                Object.entries(val).forEach(([styleProp, styleVal]) => {
-                  if (element.style[styleProp] !== styleVal) {
-                    element.style[styleProp] = styleVal;
-                  }
-                });
-              } else if (prop === 'classList' && typeof val === 'object') {
-                // ClassList operations
-                Object.entries(val).forEach(([operation, classes]) => {
-                  const classList = Array.isArray(classes) ? classes : [classes];
-                  classList.forEach(cls => element.classList[operation](cls));
-                });
-              } else {
-                // Regular property
-                if (element[prop] !== val) {
-                  element[prop] = val;
-                }
-              }
+              applyEnhancedUpdate(element, prop, val);
             });
+          } else {
+            // Direct value update
+            applyEnhancedUpdate(element, 'textContent', value);
           }
         }
       });
     }
 
     /**
-     * Enhanced fallback for environments without Elements
+     * Enhanced fallback for environments without core fine-grained system
      * @private
      */
     _applyUpdatesFallback(updates) {
