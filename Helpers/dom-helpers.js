@@ -17,7 +17,7 @@
 
   // ===== UPDATE UTILITY =====
   /**
-   * Enhanced Update Implementation
+   * Enhanced Update Implementation with Fine-Grained Change Detection
    * This function can be applied to any element or collection
    */
 
@@ -30,6 +30,147 @@
     enableWarnings: !isDevelopment, // Only in production
     autoEnhanceCreateElement: false, // NEW: Opt-in only for safety!
   };
+
+  // ===== FINE-GRAINED UPDATE SYSTEM =====
+  /**
+   * WeakMap to store previous props for each element
+   * This allows us to compare and only update what changed
+   */
+  const elementPreviousProps = new WeakMap();
+  
+  /**
+   * WeakMap to store event listeners for each element
+   * Key: element, Value: Map of { eventType: Set of handler references }
+   */
+  const elementEventListeners = new WeakMap();
+
+  /**
+   * Get previous props for an element
+   */
+  function getPreviousProps(element) {
+    if (!elementPreviousProps.has(element)) {
+      elementPreviousProps.set(element, {});
+    }
+    return elementPreviousProps.get(element);
+  }
+
+  /**
+   * Store props for an element
+   */
+  function storePreviousProps(element, key, value) {
+    const prevProps = getPreviousProps(element);
+    prevProps[key] = value;
+  }
+
+  /**
+   * Get stored event listeners for an element
+   */
+  function getElementEventListeners(element) {
+    if (!elementEventListeners.has(element)) {
+      elementEventListeners.set(element, new Map());
+    }
+    return elementEventListeners.get(element);
+  }
+
+  /**
+   * Check if values are deeply equal
+   */
+  function isEqual(value1, value2) {
+    // Handle primitives
+    if (value1 === value2) return true;
+    
+    // Handle null/undefined
+    if (value1 == null || value2 == null) return value1 === value2;
+    
+    // Handle different types
+    if (typeof value1 !== typeof value2) return false;
+    
+    // Handle objects
+    if (typeof value1 === 'object') {
+      // Handle arrays
+      if (Array.isArray(value1) && Array.isArray(value2)) {
+        if (value1.length !== value2.length) return false;
+        return value1.every((val, idx) => isEqual(val, value2[idx]));
+      }
+      
+      // Handle plain objects
+      const keys1 = Object.keys(value1);
+      const keys2 = Object.keys(value2);
+      if (keys1.length !== keys2.length) return false;
+      return keys1.every(key => isEqual(value1[key], value2[key]));
+    }
+    
+    return false;
+  }
+
+  /**
+   * Compare and update style properties only if changed
+   */
+  function updateStyleProperties(element, newStyles) {
+    const prevProps = getPreviousProps(element);
+    const prevStyles = prevProps.style || {};
+    
+    // Check each new style property
+    Object.entries(newStyles).forEach(([property, newValue]) => {
+      if (newValue === null || newValue === undefined) return;
+      
+      // Get current computed value from element
+      const currentValue = element.style[property];
+      
+      // Only update if value actually changed
+      if (currentValue !== newValue && prevStyles[property] !== newValue) {
+        element.style[property] = newValue;
+        prevStyles[property] = newValue;
+      }
+    });
+    
+    // Store updated styles
+    prevProps.style = prevStyles;
+  }
+
+  /**
+   * Add event listener only if not already present
+   */
+  function addEventListenerOnce(element, eventType, handler, options) {
+    const listeners = getElementEventListeners(element);
+    
+    if (!listeners.has(eventType)) {
+      listeners.set(eventType, new Map());
+    }
+    
+    const handlersForEvent = listeners.get(eventType);
+    
+    // Create a unique key for this handler (using handler function as key)
+    const handlerKey = handler;
+    
+    // Check if this exact handler is already registered
+    if (!handlersForEvent.has(handlerKey)) {
+      element.addEventListener(eventType, handler, options);
+      handlersForEvent.set(handlerKey, { handler, options });
+    }
+  }
+
+  /**
+   * Remove event listener if present
+   */
+  function removeEventListenerIfPresent(element, eventType, handler, options) {
+    const listeners = getElementEventListeners(element);
+    
+    if (listeners.has(eventType)) {
+      const handlersForEvent = listeners.get(eventType);
+      const handlerKey = handler;
+      
+      if (handlersForEvent.has(handlerKey)) {
+        element.removeEventListener(eventType, handler, options);
+        handlersForEvent.delete(handlerKey);
+        
+        // Clean up empty event type entry
+        if (handlersForEvent.size === 0) {
+          listeners.delete(eventType);
+        }
+      }
+    }
+  }
 
   function createEnhancedUpdateMethod(context, isCollection = false) {
     return function update(updates = {}) {
@@ -121,81 +262,112 @@
   }
 
   /**
-   * Apply a single enhanced update to an element
+   * Apply a single enhanced update to an element with fine-grained change detection
    */
   function applyEnhancedUpdate(element, key, value) {
     try {
-      // Handle special cases first
+      const prevProps = getPreviousProps(element);
       
-      // 1. Style object - batch apply CSS styles
-      if (key === 'style' && typeof value === 'object' && value !== null) {
-        Object.entries(value).forEach(([styleProperty, styleValue]) => {
-          if (styleValue !== null && styleValue !== undefined) {
-            element.style[styleProperty] = styleValue;
-          }
-        });
+      // Handle special cases first with fine-grained updates
+      
+      // 1. textContent - only update if different
+      if (key === 'textContent' || key === 'innerText') {
+        if (element[key] !== value && prevProps[key] !== value) {
+          element[key] = value;
+          storePreviousProps(element, key, value);
+        }
         return;
       }
 
-      // 2. classList methods - enhanced support with arrays
+      // 2. innerHTML - only update if different
+      if (key === 'innerHTML') {
+        if (element.innerHTML !== value && prevProps.innerHTML !== value) {
+          element.innerHTML = value;
+          storePreviousProps(element, 'innerHTML', value);
+        }
+        return;
+      }
+
+      // 3. Style object - granular style property updates
+      if (key === 'style' && typeof value === 'object' && value !== null) {
+        updateStyleProperties(element, value);
+        return;
+      }
+
+      // 4. classList methods - enhanced support with arrays
       if (key === 'classList' && typeof value === 'object' && value !== null) {
         handleClassListUpdate(element, value);
         return;
       }
 
-      // 3. setAttribute - enhanced support for both array and object formats
+      // 5. setAttribute - enhanced support for both array and object formats with comparison
       if (key === 'setAttribute') {
         if (Array.isArray(value) && value.length >= 2) {
           // Legacy array format: ['src', 'image.png']
-          element.setAttribute(value[0], value[1]);
+          const [attrName, attrValue] = value;
+          const currentValue = element.getAttribute(attrName);
+          if (currentValue !== attrValue) {
+            element.setAttribute(attrName, attrValue);
+          }
         } else if (typeof value === 'object' && value !== null) {
           // New object format: { src: 'image.png', alt: 'Description' }
           Object.entries(value).forEach(([attrName, attrValue]) => {
-            element.setAttribute(attrName, attrValue);
+            const currentValue = element.getAttribute(attrName);
+            if (currentValue !== attrValue) {
+              element.setAttribute(attrName, attrValue);
+            }
           });
         }
         return;
       }
 
-      // 4. removeAttribute - support for removing attributes
+      // 6. removeAttribute - support for removing attributes
       if (key === 'removeAttribute') {
         if (Array.isArray(value)) {
-          value.forEach(attr => element.removeAttribute(attr));
+          value.forEach(attr => {
+            if (element.hasAttribute(attr)) {
+              element.removeAttribute(attr);
+            }
+          });
         } else if (typeof value === 'string') {
-          element.removeAttribute(value);
+          if (element.hasAttribute(value)) {
+            element.removeAttribute(value);
+          }
         }
         return;
       }
 
-      // 5. getAttribute - for reading attributes (mainly for debugging/logging)
+      // 7. getAttribute - for reading attributes (mainly for debugging/logging)
       if (key === 'getAttribute' && typeof value === 'string') {
         const attrValue = element.getAttribute(value);
         console.log(`[DOM Helpers] getAttribute('${value}'):`, attrValue);
         return;
       }
 
-      // 6. addEventListener - ENHANCED: Support for multiple events and e.target/this.update
+      // 8. addEventListener - ENHANCED with duplicate prevention
       if (key === 'addEventListener') {
-        handleEnhancedEventListener(element, value);
+        handleEnhancedEventListenerWithTracking(element, value);
         return;
       }
 
-      // 7. removeEventListener - support for removing event listeners
+      // 9. removeEventListener - support for removing event listeners with tracking
       if (key === 'removeEventListener' && Array.isArray(value) && value.length >= 2) {
         const [eventType, handler, options] = value;
-        element.removeEventListener(eventType, handler, options);
+        removeEventListenerIfPresent(element, eventType, handler, options);
         return;
       }
 
-      // 8. dataset - support for data attributes
+      // 10. dataset - support for data attributes with comparison
       if (key === 'dataset' && typeof value === 'object' && value !== null) {
         Object.entries(value).forEach(([dataKey, dataValue]) => {
-          element.dataset[dataKey] = dataValue;
+          if (element.dataset[dataKey] !== dataValue) {
+            element.dataset[dataKey] = dataValue;
+          }
         });
         return;
       }
 
-      // 9. Handle DOM methods (value should be an array of arguments)
+      // 11. Handle DOM methods (value should be an array of arguments)
       if (typeof element[key] === 'function') {
         if (Array.isArray(value)) {
           // Call method with provided arguments
@@ -207,15 +379,23 @@
         return;
       }
 
-      // 10. Handle regular DOM properties
+      // 12. Handle regular DOM properties with comparison
       if (key in element) {
-        element[key] = value;
+        // Only update if value actually changed
+        if (!isEqual(element[key], value) && !isEqual(prevProps[key], value)) {
+          element[key] = value;
+          storePreviousProps(element, key, value);
+        }
         return;
       }
 
-      // 11. If property doesn't exist on element, try setAttribute as fallback
+      // 13. If property doesn't exist on element, try setAttribute as fallback with comparison
       if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-        element.setAttribute(key, value);
+        const currentValue = element.getAttribute(key);
+        const stringValue = String(value);
+        if (currentValue !== stringValue) {
+          element.setAttribute(key, stringValue);
+        }
         return;
       }
 
@@ -249,6 +429,39 @@
           if (typeof handlerFunc === 'function') {
             const enhancedHandler = createEnhancedEventHandler(handlerFunc);
             element.addEventListener(eventType, enhancedHandler, options);
+          }
+        }
+      });
+      return;
+    }
+
+    console.warn('[DOM Helpers] Invalid addEventListener value format');
+  }
+
+  /**
+   * Enhanced event listener handler with duplicate prevention tracking
+   */
+  function handleEnhancedEventListenerWithTracking(element, value) {
+    // Handle legacy array format: ['click', handler, options]
+    if (Array.isArray(value) && value.length >= 2) {
+      const [eventType, handler, options] = value;
+      const enhancedHandler = createEnhancedEventHandler(handler);
+      addEventListenerOnce(element, eventType, enhancedHandler, options);
+      return;
+    }
+
+    // Handle new object format for multiple events
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.entries(value).forEach(([eventType, handler]) => {
+        if (typeof handler === 'function') {
+          const enhancedHandler = createEnhancedEventHandler(handler);
+          addEventListenerOnce(element, eventType, enhancedHandler);
+        } else if (Array.isArray(handler) && handler.length >= 1) {
+          // Support [handlerFunction, options] format
+          const [handlerFunc, options] = handler;
+          if (typeof handlerFunc === 'function') {
+            const enhancedHandler = createEnhancedEventHandler(handlerFunc);
+            addEventListenerOnce(element, eventType, enhancedHandler, options);
           }
         }
       });
