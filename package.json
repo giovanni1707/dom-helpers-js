@@ -1,0 +1,66 @@
+{
+  "name": "@giovanni1707/dom-helpers",
+  "version": "1.0.0",
+  "description": "A powerful, high-performance vanilla JavaScript DOM manipulation library with intelligent caching, automatic enhancement, and declarative APIs",
+  "main": "dom-helpers.js",
+  "module": "dom-helpers.js",
+  "types": "index.d.ts",
+  "files": [
+    "dom-helpers.js",
+    "dom-helpers-storage.js",
+    "dom-helpers-form.js",
+    "dom-helpers-animation.js",
+    "dom-helpers-components.js",
+    "dom-helpers-reactive.js",
+    "dom-helpers-async.js",
+    "dom-helpers-combined.js",
+    "helpers-min/*.min.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dom",
+    "dom-manipulation",
+    "vanilla-javascript",
+    "dom-helpers",
+    "javascript",
+    "browser",
+    "frontend",
+    "ui",
+    "declarative",
+    "performance",
+    "caching",
+    "reactive",
+    "components",
+    "animation",
+    "form-handling",
+    "storage"
+  ],
+  "author": "Giovanni S Marianne <giovannimarianne1@com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giovanni1707/dom-helpers-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/giovanni1707/dom-helpers-js/issues"
+  },
+  "homepage": "https://github.com/giovanni1707/dom-helpers-js#readme",
+  "devDependencies": {
+    "terser": "^5.19.0"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "IE 11"
+  ]
+}
