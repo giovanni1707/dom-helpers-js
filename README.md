@@ -69,7 +69,7 @@ npm install @giovanni1707/dom-helpers
 </html>
 ```
 
-### This is an example of how this simple code would be written withou the dom-helpers library
+### Without dom-helpers library
 
 ```html
 <!DOCTYPE html>
@@ -125,7 +125,7 @@ container.style.padding = '20px';
 **Makes imperative** DOM operations ***more declarative*** and ***concise***.
 
 
-## Improved Readability
+### Improved Readability
 
 Compare this:
 **Plain Vanilla JS:**
@@ -146,15 +146,9 @@ myButton.addEventListener('click', () => alert('Button clicked!'));
 <script>
 Elements.myButton.update({
    textContent: 'Enhanced Button!',
-   style: { 
-            backgroundColor: '#007bff',
-                color: 'white',
-                padding: '10px 20px'
-            },
-            addEventListener: {
-                click: () => alert('Button clicked!')
-            }
-        });
+   style: { backgroundColor: '#007bff', color: 'white', padding: '10px 20px' },
+   addEventListener: { click: () => alert('Button clicked!')}
+   });
 
 </script>
 ```
