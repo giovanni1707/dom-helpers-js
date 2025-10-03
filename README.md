@@ -24,7 +24,7 @@ npm install @giovanni1707/dom-helpers
 
 ## 🚀 Quick Start
 
-“**DOM Helpers** gives you the ***power of declarative updates with the simplicity of vanilla JS***. **No frameworks, no heavy abstractions—just a clean, unified API that saves time, reduces boilerplate, and keeps full control of the DOM in your hands.”
+“**DOM Helpers** gives you the ***power of declarative updates with the simplicity of vanilla JS***. No frameworks, no heavy abstractions—just a clean, unified API that saves time, reduces boilerplate, and keeps full control of the DOM in your hands.”
 
 ### Basic Usage with dom-helpers library
 
