@@ -24,7 +24,9 @@ npm install @giovanni1707/dom-helpers
 
 ## 🚀 Quick Start
 
-### Basic Usage
+“**DOM Helpers** gives you the ***power of declarative updates with the simplicity of vanilla JS***. **No frameworks, no heavy abstractions—just a clean, unified API that saves time, reduces boilerplate, and keeps full control of the DOM in your hands.”
+
+### Basic Usage with dom-helpers library
 
 ```html
 <!DOCTYPE html>
@@ -67,6 +69,116 @@ npm install @giovanni1707/dom-helpers
 </html>
 ```
 
+### This is an example of how this simple code would be written withou the dom-helpers library
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM Helpers Demo</title>
+</head>
+<body>
+    <button id="myButton" class="btn">Click Me</button>
+    <div class="container">
+        <p class="message">Hello World</p>
+    </div>
+    
+    <script>
+       // Access element by ID
+const myButton = document.getElementById('myButton');
+myButton.textContent = 'Enhanced Button!';
+myButton.style.backgroundColor = '#007bff';
+myButton.style.color = 'white';
+myButton.style.padding = '10px 20px';
+myButton.addEventListener('click', () => alert('Button clicked!'));
+
+// Access elements by class name
+const messages = document.getElementsByClassName('message');
+for (let msg of messages) {
+    msg.style.color = 'blue';
+    msg.style.fontWeight = 'bold';
+}
+
+// Use CSS selectors
+const container = document.querySelector('.container');
+container.style.border = '2px solid #ccc';
+container.style.padding = '20px';
+
+    </script>
+</body>
+</html>
+```
+### ✅ As you can see:
+
+ **Elements.myButton.update(...)** → replaced by ***document.getElementById("myButton")*** then manually setting textContent, style, and addEventListener.
+
+**Collections.ClassName.message.update(...)** → replaced by ***document.getElementsByClassName("message")*** loop and applying styles.
+
+**Selector.query(".container").update(...)** → replaced by ***document.querySelector(".container")*** and applying styles directly.
+
+### The library basically:
+
+***Removes boilerplate*** (like looping over collections).
+
+***Unifies updates*** (styles, attributes, listeners) into a single .update() call.
+
+**Makes imperative** DOM operations ***more declarative*** and ***concise***.
+
+
+## Improved Readability
+
+Compare this:
+**Plain Vanilla JS:**
+   ```html
+   <script>
+const myButton = document.getElementById('myButton');
+myButton.textContent = 'Enhanced Button!';
+myButton.style.backgroundColor = '#007bff';
+myButton.style.color = 'white';
+myButton.style.padding = '10px 20px';
+myButton.addEventListener('click', () => alert('Button clicked!'));
+
+</script>
+```
+## dom-helpers (***declarative style***):
+
+```html
+<script>
+Elements.myButton.update({
+   textContent: 'Enhanced Button!',
+   style: { 
+            backgroundColor: '#007bff',
+                color: 'white',
+                padding: '10px 20px'
+            },
+            addEventListener: {
+                click: () => alert('Button clicked!')
+            }
+        });
+
+</script>
+```
+
+## Simplicity Comparaison
+**Plain Vanilla js**
+```html
+<script>
+    const messages = document.getElementsByClassName('message');
+for (let msg of messages) {
+    msg.style.color = 'blue';
+    msg.style.fontWeight = 'bold';
+}
+</script>
+```
+
+**with dom helpers**
+```html
+<script>
+    Collections.ClassName.message.update({
+            style: { color: 'blue', fontWeight: 'bold' }
+        });
+</script>
+```
 ### ES6 Module Import
 
 ```javascript
