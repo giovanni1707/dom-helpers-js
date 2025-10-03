@@ -15,19 +15,19 @@ const files = [
 ];
 
 // Output folders
-const sourceFolder = __dirname;
-const minFolder = path.join(__dirname, 'helpers-min');
+const sourceFolder = path.join(__dirname, 'src');
+const distFolder = path.join(__dirname, 'dist');
 
-// Create minified folder if it doesn't exist
-if (!fs.existsSync(minFolder)) {
-  fs.mkdirSync(minFolder, { recursive: true });
+// Create dist folder if it doesn't exist
+if (!fs.existsSync(distFolder)) {
+  fs.mkdirSync(distFolder, { recursive: true });
 }
 
 // Utility function to read a file
-const readFile = file => fs.readFileSync(path.join(__dirname, file), 'utf8');
+const readFile = file => fs.readFileSync(path.join(sourceFolder, file), 'utf8');
 
 // Minify and save a file
-async function minifyFile(inputFile, outputFile, outputDir = minFolder) {
+async function minifyFile(inputFile, outputFile, outputDir = distFolder) {
   const code = readFile(inputFile);
   const minified = await minify(code, {
     compress: true,
@@ -49,15 +49,15 @@ async function build() {
   }
   const combinedFile = 'dom-helpers-combined.js';
   fs.writeFileSync(path.join(sourceFolder, combinedFile), combinedCode, 'utf8');
-  console.log(`${combinedFile} created in source folder.`);
+  console.log(`${combinedFile} created in src/ folder.`);
 
-  // 2. Minify individual files to helpers-min folder
+  // 2. Minify individual files to dist folder
   for (const file of files) {
     const name = path.basename(file, '.js');
     await minifyFile(file, `${name}.min.js`);
   }
 
-  // 3. Minify combined file to helpers-min folder
+  // 3. Minify combined file to dist folder
   await minifyFile(combinedFile, 'dom-helpers-combined.min.js');
 
   console.log('All files combined and minified successfully!');
