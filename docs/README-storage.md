@@ -18,12 +18,19 @@ The DOM Helpers Storage Module transforms the basic `localStorage` and `sessionS
 
 ## 📦 Installation
 
-### Direct Include
+### CDN Include
 ```html
 <!-- Include the main DOM Helpers library first -->
-<script src="dom-helpers.js"></script>
-<script src="dom-helpers-form.js"></script> <!-- Optional, for forms integration -->
-<script src="dom-helpers-storage.js"></script>
+
+<!-- Load core first -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+
+<!-- Then load the Storage module -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-storage.min.js"></script>
+
+<!-- Forms -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-form.min.js"></script> <!-- Optional, for forms integration -->
+
 ```
 
 ### Module Import

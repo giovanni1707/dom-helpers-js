@@ -44,12 +44,16 @@ The easiest way to use components is with custom HTML tags:
 
 1. Include DOM Helpers library:
 ```html
-<script src="dom-helpers.js"></script>
+<!-- Load core first -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+
 ```
 
 2. Include DOM Helpers Components:
 ```html
-<script src="dom-helpers-components.js"></script>
+<!-- Then load Components module -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-components.min.js"></script>
+
 ```
 
 The component system will be available globally as `Components` and integrates automatically with DOM Helpers.

@@ -18,9 +18,10 @@ DOM Helpers is a comprehensive suite of utilities that extends native DOM functi
 
 ## 📦 Installation
 
-### Direct Include
+### CDN 
 ```html
-<script src="dom-helpers.js"></script>
+<!-- Core library only -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
 ```
 
 ### Module Import
@@ -47,7 +48,9 @@ const { Elements, Collections, Selector, DOMHelpers } = require('./dom-helpers.j
         <p class="message">Another message</p>
     </div>
     
-    <script src="dom-helpers.js"></script>
+    <!-- Core library only -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+
     <script>
         // Access element by ID - automatically enhanced with .update() method
         Elements.myButton.update({
