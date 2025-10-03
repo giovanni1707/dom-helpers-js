@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +11,6 @@
     
     <!-- Prism.js for syntax highlighting -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/styles.css">
     
     <!-- Tailwind Config -->
     <script>
@@ -52,12 +49,29 @@
                             700: '#334155',
                             600: '#475569'
                         }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
                     }
                 }
             }
         }
     </script>
     <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseSoft {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
         .gradient-text {
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             -webkit-background-clip: text;
@@ -67,66 +81,87 @@
         .gradient-bg {
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
         }
+        .glass-effect {
+            backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+        .sidebar a {
+            display: block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        .sidebar a:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            padding-left: 1.5rem;
+        }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+<body class="bg-dark-900 text-white transition-colors duration-200">
     
-    <!-- Navigation (Same as index.html) -->
-    <nav class="fixed top-0 w-full bg-white dark:bg-gray-800 shadow-md z-50 transition-colors duration-200">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full glass-effect z-50 transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
                         <span class="text-white font-bold text-xl">D</span>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900 dark:text-white">DOM Helpers</h1>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">v1.0.0</p>
+                        <h1 class="text-xl font-bold gradient-text">DOM Helpers</h1>
+                        <p class="text-xs text-gray-400">v1.0.0</p>
                     </div>
                 </div>
                 
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Home</a>
-                    <a href="getting-started.html" class="text-primary-600 dark:text-primary-400 font-medium hover:text-primary-700">Getting Started</a>
-                    <a href="api-reference.html" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">API Reference</a>
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white">Home</a>
+                    <a href="getting-started.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 bg-primary-600 text-white">Getting Started</a>
+                    <a href="api-reference.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white">API Reference</a>
                     <div class="relative group">
-                        <button class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 flex items-center">
+                        <button class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white flex items-center">
                             Modules
                             <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="absolute hidden group-hover:block pt-2 w-56">
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border border-gray-200 dark:border-gray-700">
-                                <a href="modules/core.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Core Module</a>
-                                <a href="modules/storage.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Storage Module</a>
-                                <a href="modules/form.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Form Module</a>
-                                <a href="modules/animation.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Animation Module</a>
-                                <a href="modules/components.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Components Module</a>
-                                <a href="modules/reactive.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Reactive Module</a>
-                                <a href="modules/async.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Async Module</a>
+                            <div class="glass-effect rounded-lg shadow-xl py-2">
+                                <a href="modules/core.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Core Module</a>
+                                <a href="modules/storage.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Storage Module</a>
+                                <a href="modules/form.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Form Module</a>
+                                <a href="modules/animation.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Animation Module</a>
+                                <a href="modules/components.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Components Module</a>
+                                <a href="modules/reactive.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Reactive Module</a>
+                                <a href="modules/async.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Async Module</a>
                             </div>
                         </div>
                     </div>
-                    <a href="examples/index.html" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">Examples</a>
+                    <a href="examples/index.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white">Examples</a>
+                    <a href="about.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white">About</a>
                     
-                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                        </svg>
-                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-                        </svg>
-                    </button>
-                    
-                    <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">
+                    <!-- GitHub Link -->
+                    <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="text-gray-300 hover:text-primary-400 transition-colors">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
                         </svg>
                     </a>
                 </div>
                 
-                <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-dark-700 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -134,31 +169,43 @@
             </div>
         </div>
         
-        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-effect border-t border-gray-700">
             <div class="px-4 py-3 space-y-3">
-                <a href="index.html" class="block text-gray-700 dark:text-gray-300">Home</a>
-                <a href="getting-started.html" class="block text-primary-600 dark:text-primary-400 font-medium">Getting Started</a>
-                <a href="api-reference.html" class="block text-gray-700 dark:text-gray-300">API Reference</a>
-                <a href="examples/index.html" class="block text-gray-700 dark:text-gray-300">Examples</a>
+                <a href="index.html" class="block text-gray-300 hover:text-white transition-colors">Home</a>
+                <a href="getting-started.html" class="block text-primary-400 font-medium">Getting Started</a>
+                <a href="api-reference.html" class="block text-gray-300 hover:text-white transition-colors">API Reference</a>
+                <div class="space-y-2 pl-4">
+                    <p class="text-sm font-semibold text-gray-400">Modules</p>
+                    <a href="modules/core.html" class="block text-gray-300 hover:text-white transition-colors">Core Module</a>
+                    <a href="modules/storage.html" class="block text-gray-300 hover:text-white transition-colors">Storage Module</a>
+                    <a href="modules/form.html" class="block text-gray-300 hover:text-white transition-colors">Form Module</a>
+                    <a href="modules/animation.html" class="block text-gray-300 hover:text-white transition-colors">Animation Module</a>
+                    <a href="modules/components.html" class="block text-gray-300 hover:text-white transition-colors">Components Module</a>
+                    <a href="modules/reactive.html" class="block text-gray-300 hover:text-white transition-colors">Reactive Module</a>
+                    <a href="modules/async.html" class="block text-gray-300 hover:text-white transition-colors">Async Module</a>
+                </div>
+                <a href="examples/index.html" class="block text-gray-300 hover:text-white transition-colors">Examples</a>
+                <a href="about.html" class="block text-gray-300 hover:text-white transition-colors">About</a>
             </div>
         </div>
     </nav>
     
     <!-- Main Content -->
-    <div class="pt-16">
+    <div class="pt-16 animate-fade-in">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid lg:grid-cols-4 gap-8">
                 <!-- Sidebar -->
                 <aside class="lg:col-span-1">
-                    <nav class="sidebar space-y-1 sticky top-20">
-                        <h3 class="font-bold text-gray-900 dark:text-white mb-4 px-4">On This Page</h3>
-                        <a href="#installation" class="text-gray-700 dark:text-gray-300">Installation</a>
-                        <a href="#npm-setup" class="text-gray-700 dark:text-gray-300 pl-4">NPM Setup</a>
-                        <a href="#cdn-setup" class="text-gray-700 dark:text-gray-300 pl-4">CDN Setup</a>
-                        <a href="#first-steps" class="text-gray-700 dark:text-gray-300">First Steps</a>
-                        <a href="#basic-usage" class="text-gray-700 dark:text-gray-300">Basic Usage</a>
-                        <a href="#core-concepts" class="text-gray-700 dark:text-gray-300">Core Concepts</a>
-                        <a href="#next-steps" class="text-gray-700 dark:text-gray-300">Next Steps</a>
+                    <nav class="sidebar space-y-1 sticky top-20 glass-effect rounded-xl p-4">
+                        <h3 class="font-bold gradient-text mb-4 px-4">On This Page</h3>
+                        <a href="#installation" class="text-gray-300 hover:text-white">Installation</a>
+                        <a href="#npm-setup" class="text-gray-400 hover:text-white pl-4">NPM Setup</a>
+                        <a href="#cdn-setup" class="text-gray-400 hover:text-white pl-4">CDN Setup</a>
+                        <a href="#first-steps" class="text-gray-300 hover:text-white">First Steps</a>
+                        <a href="#basic-usage" class="text-gray-300 hover:text-white">Basic Usage</a>
+                        <a href="#core-concepts" class="text-gray-300 hover:text-white">Core Concepts</a>
+                        <a href="#next-steps" class="text-gray-300 hover:text-white">Next Steps</a>
                     </nav>
                 </aside>
                 
@@ -166,52 +213,52 @@
                 <main class="lg:col-span-3">
                     <div class="max-w-4xl">
                         <!-- Header -->
-                        <div class="mb-12">
-                            <h1 class="text-5xl font-bold mb-4">Getting Started</h1>
-                            <p class="text-xl text-gray-600 dark:text-gray-400">Learn how to install and start using DOM Helpers in your projects</p>
+                        <div class="mb-12 animate-slide-up">
+                            <h1 class="text-5xl font-bold mb-4 gradient-text">Getting Started</h1>
+                            <p class="text-xl text-gray-300">Learn how to install and start using DOM Helpers in your projects</p>
                         </div>
                         
                         <!-- Installation Section -->
                         <section id="installation" class="mb-16">
-                            <h2 class="text-3xl font-bold mb-6">Installation</h2>
-                            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Installation</h2>
+                            <p class="text-lg text-gray-300 mb-8">
                                 DOM Helpers can be installed in multiple ways depending on your project setup. Choose the method that works best for you.
                             </p>
                             
                             <!-- NPM Installation -->
                             <div id="npm-setup" class="mb-12">
-                                <h3 class="text-2xl font-bold mb-4 flex items-center">
-                                    <span class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mr-3 text-primary-600 dark:text-primary-400">1</span>
+                                <h3 class="text-2xl font-bold mb-4 flex items-center text-white">
+                                    <span class="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center mr-3 text-white">1</span>
                                     NPM Installation (Recommended)
                                 </h3>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                <p class="text-gray-300 mb-4">
                                     For projects using npm or yarn, install DOM Helpers as a dependency:
                                 </p>
                                 
-                                <div class="bg-gray-900 rounded-lg p-4 mb-4 relative group">
+                                <div class="bg-dark-800 rounded-lg p-4 mb-4 relative group border border-dark-600 hover:border-primary-500 transition-colors">
                                     <pre><code class="language-bash">npm install @giovanni1707/dom-helpers</code></pre>
                                 </div>
                                 
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">Or using yarn:</p>
+                                <p class="text-gray-300 mb-4">Or using yarn:</p>
                                 
-                                <div class="bg-gray-900 rounded-lg p-4 mb-6 relative group">
+                                <div class="bg-dark-800 rounded-lg p-4 mb-6 relative group border border-dark-600 hover:border-primary-500 transition-colors">
                                     <pre><code class="language-bash">yarn add @giovanni1707/dom-helpers</code></pre>
                                 </div>
                                 
-                                <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 mb-6">
+                                <div class="bg-gradient-to-r from-blue-500/10 to-primary-500/10 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
                                     <div class="flex">
-                                        <svg class="w-6 h-6 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-6 h-6 text-blue-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         <div>
-                                            <p class="font-semibold text-blue-900 dark:text-blue-100 mb-1">Module Usage</p>
-                                            <p class="text-blue-800 dark:text-blue-200">After installation, you can import specific modules using ES6 imports or require() syntax.</p>
+                                            <p class="font-semibold text-blue-100 mb-1">Module Usage</p>
+                                            <p class="text-blue-200">After installation, you can import specific modules using ES6 imports or require() syntax.</p>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <h4 class="text-xl font-semibold mb-3">Using ES6 Modules:</h4>
-                                <div class="bg-gray-900 rounded-lg p-4 mb-6 relative group">
+                                <h4 class="text-xl font-semibold mb-3 text-white">Using ES6 Modules:</h4>
+                                <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 mb-6 border border-primary-500/30">
                                     <pre><code class="language-javascript">// Import core module
 import { Elements, Collections, Selector } from '@giovanni1707/dom-helpers';
 
@@ -225,24 +272,24 @@ Elements.myButton.update({
 });</code></pre>
                                 </div>
                                 
-                                <h4 class="text-xl font-semibold mb-3">Using CommonJS:</h4>
-                                <div class="bg-gray-900 rounded-lg p-4 mb-6 relative group">
+                                <h4 class="text-xl font-semibold mb-3 text-white">Using CommonJS:</h4>
+                                <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 mb-6 border border-primary-500/30">
                                     <pre><code class="language-javascript">const { Elements, Collections, Selector } = require('@giovanni1707/dom-helpers');</code></pre>
                                 </div>
                             </div>
                             
                             <!-- CDN Installation -->
                             <div id="cdn-setup" class="mb-12">
-                                <h3 class="text-2xl font-bold mb-4 flex items-center">
-                                    <span class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mr-3 text-primary-600 dark:text-primary-400">2</span>
+                                <h3 class="text-2xl font-bold mb-4 flex items-center text-white">
+                                    <span class="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center mr-3 text-white">2</span>
                                     CDN Setup (Quick Start)
                                 </h3>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                <p class="text-gray-300 mb-4">
                                     For quick prototyping or simple projects, include DOM Helpers directly from a CDN:
                                 </p>
                                 
-                                <h4 class="text-xl font-semibold mb-3">Core Library Only:</h4>
-                                <div class="bg-gray-900 rounded-lg p-4 mb-6 relative group">
+                                <h4 class="text-xl font-semibold mb-3 text-white">Core Library Only:</h4>
+                                <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 mb-6 border border-primary-500/30">
                                     <pre><code class="language-html">&lt;!-- Core library (minified) --&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"&gt;&lt;/script&gt;
 
@@ -255,27 +302,27 @@ Elements.myButton.update({
 &lt;/script&gt;</code></pre>
                                 </div>
                                 
-                                <h4 class="text-xl font-semibold mb-3">All Modules (Combined):</h4>
-                                <div class="bg-gray-900 rounded-lg p-4 mb-6 relative group">
+                                <h4 class="text-xl font-semibold mb-3 text-white">All Modules (Combined):</h4>
+                                <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 mb-6 border border-primary-500/30">
                                     <pre><code class="language-html">&lt;!-- All modules in one file --&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-combined.min.js"&gt;&lt;/script&gt;</code></pre>
                                 </div>
                                 
-                                <h4 class="text-xl font-semibold mb-3">Individual Modules:</h4>
-                                <div class="bg-gray-900 rounded-lg p-4 mb-6 relative group">
+                                <h4 class="text-xl font-semibold mb-3 text-white">Individual Modules:</h4>
+                                <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 mb-6 border border-primary-500/30">
                                     <pre><code class="language-html">&lt;!-- Core + Storage module --&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"&gt;&lt;/script&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-storage.min.js"&gt;&lt;/script&gt;</code></pre>
                                 </div>
                                 
-                                <div class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4">
+                                <div class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-l-4 border-green-500 p-4 rounded-r-lg">
                                     <div class="flex">
-                                        <svg class="w-6 h-6 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-6 h-6 text-green-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         <div>
-                                            <p class="font-semibold text-green-900 dark:text-green-100 mb-1">Pro Tip</p>
-                                            <p class="text-green-800 dark:text-green-200">For production, always use a specific version number instead of <code>@latest</code> to ensure consistency.</p>
+                                            <p class="font-semibold text-green-100 mb-1">Pro Tip</p>
+                                            <p class="text-green-200">For production, always use a specific version number instead of <code class="text-green-300">@latest</code> to ensure consistency.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -284,13 +331,13 @@ Elements.myButton.update({
                         
                         <!-- First Steps -->
                         <section id="first-steps" class="mb-16">
-                            <h2 class="text-3xl font-bold mb-6">Your First DOM Helper Code</h2>
-                            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Your First DOM Helper Code</h2>
+                            <p class="text-lg text-gray-300 mb-8">
                                 Let's create a simple example to see DOM Helpers in action.
                             </p>
                             
-                            <h3 class="text-2xl font-semibold mb-4">Complete HTML Example:</h3>
-                            <div class="bg-gray-900 rounded-lg p-4 mb-6 relative group">
+                            <h3 class="text-2xl font-semibold mb-4 text-white">Complete HTML Example:</h3>
+                            <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 mb-6 border border-primary-500/30">
                                 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -342,19 +389,19 @@ Elements.myButton.update({
                         
                         <!-- Basic Usage -->
                         <section id="basic-usage" class="mb-16">
-                            <h2 class="text-3xl font-bold mb-6">Basic Usage</h2>
-                            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Basic Usage</h2>
+                            <p class="text-lg text-gray-300 mb-8">
                                 DOM Helpers provides three main ways to access and manipulate DOM elements.
                             </p>
                             
                             <div class="space-y-8">
                                 <!-- Elements Helper -->
-                                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-                                    <h3 class="text-2xl font-semibold mb-4">1. Elements Helper (By ID)</h3>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                <div class="card-hover bg-dark-700 rounded-xl p-6 border border-dark-600">
+                                    <h3 class="text-2xl font-semibold mb-4 text-white">1. Elements Helper (By ID)</h3>
+                                    <p class="text-gray-300 mb-4">
                                         Access elements by their ID using a simple, intuitive syntax:
                                     </p>
-                                    <div class="bg-gray-900 rounded-lg p-4 relative group">
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
                                         <pre><code class="language-javascript">// Access element by ID
 const myButton = Elements.myButton;
 
@@ -379,12 +426,12 @@ Elements.myButton.update({
                                 </div>
                                 
                                 <!-- Collections Helper -->
-                                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-                                    <h3 class="text-2xl font-semibold mb-4">2. Collections Helper (By Class/Tag)</h3>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                <div class="card-hover bg-dark-700 rounded-xl p-6 border border-dark-600">
+                                    <h3 class="text-2xl font-semibold mb-4 text-white">2. Collections Helper (By Class/Tag)</h3>
+                                    <p class="text-gray-300 mb-4">
                                         Work with groups of elements efficiently:
                                     </p>
-                                    <div class="bg-gray-900 rounded-lg p-4 relative group">
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
                                         <pre><code class="language-javascript">// Update all elements with class "btn"
 Collections.ClassName.btn.update({
     style: { padding: '8px 16px' },
@@ -405,12 +452,12 @@ const lastBtn = buttons.last();</code></pre>
                                 </div>
                                 
                                 <!-- Selector Helper -->
-                                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-                                    <h3 class="text-2xl font-semibold mb-4">3. Selector Helper (CSS Selectors)</h3>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                <div class="card-hover bg-dark-700 rounded-xl p-6 border border-dark-600">
+                                    <h3 class="text-2xl font-semibold mb-4 text-white">3. Selector Helper (CSS Selectors)</h3>
+                                    <p class="text-gray-300 mb-4">
                                         Use standard CSS selectors for maximum flexibility:
                                     </p>
-                                    <div class="bg-gray-900 rounded-lg p-4 relative group">
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
                                         <pre><code class="language-javascript">// Single element
 Selector.query('#header').update({
     style: { backgroundColor: '#333' }
@@ -432,33 +479,33 @@ Selector.Scoped.withinAll('#modal', '.btn').update({
                         
                         <!-- Core Concepts -->
                         <section id="core-concepts" class="mb-16">
-                            <h2 class="text-3xl font-bold mb-6">Core Concepts</h2>
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Core Concepts</h2>
                             
                             <div class="space-y-6">
-                                <div class="border-l-4 border-primary-500 pl-6">
-                                    <h3 class="text-xl font-semibold mb-2">Declarative Updates</h3>
-                                    <p class="text-gray-600 dark:text-gray-400">
-                                        The <code>.update()</code> method accepts an object with all the properties you want to change. This makes code more readable and maintainable.
+                                <div class="border-l-4 border-primary-500 pl-6 bg-gradient-to-r from-primary-500/5 to-transparent py-4 rounded-r-lg">
+                                    <h3 class="text-xl font-semibold mb-2 text-white">Declarative Updates</h3>
+                                    <p class="text-gray-300">
+                                        The <code class="text-primary-400">.update()</code> method accepts an object with all the properties you want to change. This makes code more readable and maintainable.
                                     </p>
                                 </div>
                                 
-                                <div class="border-l-4 border-primary-500 pl-6">
-                                    <h3 class="text-xl font-semibold mb-2">Intelligent Caching</h3>
-                                    <p class="text-gray-600 dark:text-gray-400">
+                                <div class="border-l-4 border-primary-500 pl-6 bg-gradient-to-r from-primary-500/5 to-transparent py-4 rounded-r-lg">
+                                    <h3 class="text-xl font-semibold mb-2 text-white">Intelligent Caching</h3>
+                                    <p class="text-gray-300">
                                         DOM Helpers automatically caches element references, so repeated access to the same element is lightning fast.
                                     </p>
                                 </div>
                                 
-                                <div class="border-l-4 border-primary-500 pl-6">
-                                    <h3 class="text-xl font-semibold mb-2">Fine-Grained Updates</h3>
-                                    <p class="text-gray-600 dark:text-gray-400">
+                                <div class="border-l-4 border-primary-500 pl-6 bg-gradient-to-r from-primary-500/5 to-transparent py-4 rounded-r-lg">
+                                    <h3 class="text-xl font-semibold mb-2 text-white">Fine-Grained Updates</h3>
+                                    <p class="text-gray-300">
                                         The library tracks what has changed and only updates what's necessary, minimizing DOM writes and improving performance.
                                     </p>
                                 </div>
                                 
-                                <div class="border-l-4 border-primary-500 pl-6">
-                                    <h3 class="text-xl font-semibold mb-2">Event Deduplication</h3>
-                                    <p class="text-gray-600 dark:text-gray-400">
+                                <div class="border-l-4 border-primary-500 pl-6 bg-gradient-to-r from-primary-500/5 to-transparent py-4 rounded-r-lg">
+                                    <h3 class="text-xl font-semibold mb-2 text-white">Event Deduplication</h3>
+                                    <p class="text-gray-300">
                                         Event listeners are automatically deduplicated to prevent memory leaks and duplicate event handlers.
                                     </p>
                                 </div>
@@ -467,60 +514,60 @@ Selector.Scoped.withinAll('#modal', '.btn').update({
                         
                         <!-- Next Steps -->
                         <section id="next-steps" class="mb-16">
-                            <h2 class="text-3xl font-bold mb-6">Next Steps</h2>
-                            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Next Steps</h2>
+                            <p class="text-lg text-gray-300 mb-8">
                                 Now that you understand the basics, explore more advanced features:
                             </p>
                             
                             <div class="grid md:grid-cols-2 gap-6">
-                                <a href="api-reference.html" class="group block bg-gradient-to-br from-primary-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 hover:shadow-xl transition-all hover:-translate-y-1">
+                                <a href="api-reference.html" class="group card-hover block bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-xl p-6 border-2 border-primary-500/50 hover:border-primary-500">
                                     <div class="flex items-center mb-4">
-                                        <svg class="w-8 h-8 text-primary-600 dark:text-primary-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-8 h-8 text-primary-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                         </svg>
-                                        <h3 class="text-xl font-bold">API Reference</h3>
+                                        <h3 class="text-xl font-bold text-white">API Reference</h3>
                                     </div>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Complete documentation of all functions, methods, and properties.</p>
-                                    <div class="flex items-center text-primary-600 dark:text-primary-400 font-medium group-hover:translate-x-2 transition-transform">
+                                    <p class="text-gray-300 mb-4">Complete documentation of all functions, methods, and properties.</p>
+                                    <div class="flex items-center text-primary-400 font-medium group-hover:translate-x-2 transition-transform">
                                         View API Docs →
                                     </div>
                                 </a>
                                 
-                                <a href="modules/core.html" class="group block bg-gradient-to-br from-primary-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 hover:shadow-xl transition-all hover:-translate-y-1">
+                                <a href="modules/core.html" class="group card-hover block bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-xl p-6 border-2 border-primary-500/50 hover:border-primary-500">
                                     <div class="flex items-center mb-4">
-                                        <svg class="w-8 h-8 text-primary-600 dark:text-primary-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-8 h-8 text-primary-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                         </svg>
-                                        <h3 class="text-xl font-bold">Explore Modules</h3>
+                                        <h3 class="text-xl font-bold text-white">Explore Modules</h3>
                                     </div>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Learn about specialized modules for storage, forms, animations, and more.</p>
-                                    <div class="flex items-center text-primary-600 dark:text-primary-400 font-medium group-hover:translate-x-2 transition-transform">
+                                    <p class="text-gray-300 mb-4">Learn about specialized modules for storage, forms, animations, and more.</p>
+                                    <div class="flex items-center text-primary-400 font-medium group-hover:translate-x-2 transition-transform">
                                         View Modules →
                                     </div>
                                 </a>
                                 
-                                <a href="examples/index.html" class="group block bg-gradient-to-br from-primary-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 hover:shadow-xl transition-all hover:-translate-y-1">
+                                <a href="examples/index.html" class="group card-hover block bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-xl p-6 border-2 border-primary-500/50 hover:border-primary-500">
                                     <div class="flex items-center mb-4">
-                                        <svg class="w-8 h-8 text-primary-600 dark:text-primary-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-8 h-8 text-primary-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                                         </svg>
-                                        <h3 class="text-xl font-bold">Code Examples</h3>
+                                        <h3 class="text-xl font-bold text-white">Code Examples</h3>
                                     </div>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">See real-world examples and interactive demos of DOM Helpers in action.</p>
-                                    <div class="flex items-center text-primary-600 dark:text-primary-400 font-medium group-hover:translate-x-2 transition-transform">
+                                    <p class="text-gray-300 mb-4">See real-world examples and interactive demos of DOM Helpers in action.</p>
+                                    <div class="flex items-center text-primary-400 font-medium group-hover:translate-x-2 transition-transform">
                                         View Examples →
                                     </div>
                                 </a>
                                 
-                                <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="group block bg-gradient-to-br from-primary-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 hover:shadow-xl transition-all hover:-translate-y-1">
+                                <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="group card-hover block bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-xl p-6 border-2 border-primary-500/50 hover:border-primary-500">
                                     <div class="flex items-center mb-4">
-                                        <svg class="w-8 h-8 text-primary-600 dark:text-primary-400 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-8 h-8 text-primary-400 mr-3" fill="currentColor" viewBox="0 0 24 24">
                                             <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <h3 class="text-xl font-bold">GitHub Repository</h3>
+                                        <h3 class="text-xl font-bold text-white">GitHub Repository</h3>
                                     </div>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Contribute, report issues, or browse the source code on GitHub.</p>
-                                    <div class="flex items-center text-primary-600 dark:text-primary-400 font-medium group-hover:translate-x-2 transition-transform">
+                                    <p class="text-gray-300 mb-4">Contribute, report issues, or browse the source code on GitHub.</p>
+                                    <div class="flex items-center text-primary-400 font-medium group-hover:translate-x-2 transition-transform">
                                         View on GitHub →
                                     </div>
                                 </a>
@@ -533,11 +580,16 @@ Selector.Scoped.withinAll('#modal', '.btn').update({
     </div>
     
     <!-- Footer -->
-    <footer class="bg-gray-900 dark:bg-gray-950 text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
+    <footer class="bg-dark-800 border-t border-dark-700 text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
                 <div>
-                    <h3 class="text-white font-bold text-lg mb-4">DOM Helpers</h3>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">D</span>
+                        </div>
+                        <h3 class="text-white font-bold text-lg">DOM Helpers</h3>
+                    </div>
                     <p class="text-sm text-gray-400">A powerful vanilla JavaScript DOM manipulation library for modern web development.</p>
                 </div>
                 <div>
@@ -566,8 +618,8 @@ Selector.Scoped.withinAll('#modal', '.btn').update({
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-sm">
-                <p>&copy; 2025 DOM Helpers. Released under the MIT License.</p>
+            <div class="border-t border-dark-700 pt-8 text-center text-sm">
+                <p class="text-gray-400">&copy; 2025 DOM Helpers. Released under the MIT License.</p>
             </div>
         </div>
     </footer>
@@ -579,6 +631,28 @@ Selector.Scoped.withinAll('#modal', '.btn').update({
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
     
     <!-- Custom JavaScript -->
-    <script src="js/main.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

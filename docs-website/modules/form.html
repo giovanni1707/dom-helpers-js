@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Module - DOM Helpers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: { 500: '#3b82f6', 600: '#2563eb' }, purple: { 600: '#8b5cf6' }, dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155' } } } } }</script>
+    <style>.gradient-text { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } .gradient-bg { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); } .glass-effect { backdrop-filter: blur(16px); background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); } .nav-item:hover { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); }</style>
+</head>
+<body class="bg-dark-900 text-white">
+    <nav class="fixed top-0 w-full glass-effect z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center space-x-3"><div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center"><span class="text-white font-bold text-xl">D</span></div><div><h1 class="text-xl font-bold gradient-text">DOM Helpers</h1><p class="text-xs text-gray-400">v1.0.0</p></div></div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="../index.html" class="nav-item px-4 py-2 rounded-lg text-gray-300">Home</a>
+                <a href="../api-reference.html" class="nav-item px-4 py-2 rounded-lg text-gray-300">API Reference</a>
+                <div class="relative group">
+                    <button class="nav-item px-4 py-2 rounded-lg bg-primary-600 text-white flex items-center">Modules<svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                    <div class="absolute hidden group-hover:block pt-2 w-56"><div class="glass-effect rounded-lg shadow-xl py-2">
+                        <a href="core.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300">Core</a>
+                        <a href="storage.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300">Storage</a>
+                        <a href="form.html" class="block px-4 py-2 bg-primary-600/20 text-white">Form</a>
+                        <a href="animation.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300">Animation</a>
+                        <a href="components.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300">Components</a>
+                        <a href="reactive.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300">Reactive</a>
+                        <a href="async.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300">Async</a>
+                    </div></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="pt-24 px-4 max-w-7xl mx-auto pb-20">
+        <h1 class="text-5xl font-bold mb-4 gradient-text">Form Module</h1>
+        <p class="text-xl text-gray-300 mb-12">Advanced form handling, validation, and data serialization</p>
+        
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 gradient-text">Installation</h2>
+            <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                <pre><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-form.min.js"&gt;&lt;/script&gt;</code></pre>
+            </div>
+        </section>
+        
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 gradient-text">Key Features</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-dark-700 rounded-xl p-6 border border-dark-600">
+                    <h3 class="text-xl font-bold mb-3 text-white">Form Serialization</h3>
+                    <p class="text-gray-300 mb-4">Convert form data to objects easily</p>
+                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                        <pre><code class="language-javascript">const data = Form.serialize(Elements.myForm);
+// { name: 'John', email: 'john@example.com' }</code></pre>
+                    </div>
+                </div>
+                
+                <div class="bg-dark-700 rounded-xl p-6 border border-dark-600">
+                    <h3 class="text-xl font-bold mb-3 text-white">Validation</h3>
+                    <p class="text-gray-300 mb-4">Built-in validation rules</p>
+                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                        <pre><code class="language-javascript">const isValid = Form.validate(Elements.myForm, {
+    email: 'required|email',
+    password: 'required|min:8'
+});</code></pre>
+                    </div>
+                </div>
+                
+                <div class="bg-dark-700 rounded-xl p-6 border border-dark-600">
+                    <h3 class="text-xl font-bold mb-3 text-white">Field Utilities</h3>
+                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                        <pre><code class="language-javascript">Form.reset(Elements.myForm);
+Form.populate(Elements.myForm, data);
+Form.clear(Elements.myForm);</code></pre>
+                    </div>
+                </div>
+                
+                <div class="bg-dark-700 rounded-xl p-6 border border-dark-600">
+                    <h3 class="text-xl font-bold mb-3 text-white">Error Handling</h3>
+                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                        <pre><code class="language-javascript">Form.showError('email', 'Invalid email');
+Form.clearErrors(Elements.myForm);</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 gradient-text">Complete Example</h2>
+            <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                <pre><code class="language-javascript">// Setup form handling
+Elements.contactForm.update({
+    addEventListener: {
+        submit: async (e) => {
+            e.preventDefault();
+            
+            // Validate
+            const isValid = Form.validate(Elements.contactForm, {
+                name: 'required|min:2',
+                email: 'required|email',
+                message: 'required|min:10'
+            });
+            
+            if (!isValid) return;
+            
+            // Serialize and submit
+            const data = Form.serialize(Elements.contactForm);
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                Form.reset(Elements.contactForm);
+                alert('Message sent!');
+            }
+        }
+    }
+});</code></pre>
+            </div>
+        </section>
+    </div>
+    
+    <footer class="bg-dark-800 border-t border-dark-700 text-gray-300 py-12 text-center">
+        <p class="text-gray-400">&copy; 2025 DOM Helpers. MIT License.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

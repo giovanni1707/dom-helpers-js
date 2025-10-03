@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples - DOM Helpers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+    <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{primary:{500:'#3b82f6',600:'#2563eb'},purple:{600:'#8b5cf6'},dark:{900:'#0f172a',800:'#1e293b',700:'#334155'}}}}}</script>
+    <style>
+        .gradient-text{
+            background:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);
+            -webkit-background-clip:text;
+            background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .gradient-bg{background:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%)}
+        .glass-effect{backdrop-filter:blur(16px);background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1)}
+        .nav-item:hover{background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(139,92,246,0.1))}
+        .demo-output{min-height:200px;background:rgba(30,41,59,0.5);border:1px solid rgba(71,85,105,0.3);border-radius:8px;padding:20px}
+        .btn-demo{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:white;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;transition:transform 0.2s}
+        .btn-demo:hover{transform:scale(1.05)}
+    </style>
+</head>
+<body class="bg-dark-900 text-white">
+    <nav class="fixed top-0 w-full glass-effect z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center"><span class="text-white font-bold text-xl">D</span></div>
+                <div><h1 class="text-xl font-bold gradient-text">DOM Helpers</h1><p class="text-xs text-gray-400">v1.0.0</p></div>
+            </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="../index.html" class="nav-item px-4 py-2 rounded-lg text-gray-300">Home</a>
+                <a href="../getting-started.html" class="nav-item px-4 py-2 rounded-lg text-gray-300">Getting Started</a>
+                <a href="../api-reference.html" class="nav-item px-4 py-2 rounded-lg text-gray-300">API Reference</a>
+                <a href="index.html" class="nav-item px-4 py-2 rounded-lg bg-primary-600 text-white">Examples</a>
+                <a href="../about.html" class="nav-item px-4 py-2 rounded-lg text-gray-300">About</a>
+                
+                <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="text-gray-300 hover:text-primary-400 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+            
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-dark-700 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <div id="mobile-menu" class="hidden md:hidden glass-effect border-t border-gray-700">
+            <div class="px-4 py-3 space-y-3">
+                <a href="../index.html" class="block text-gray-300 hover:text-white transition-colors">Home</a>
+                <a href="../getting-started.html" class="block text-gray-300 hover:text-white transition-colors">Getting Started</a>
+                <a href="../api-reference.html" class="block text-gray-300 hover:text-white transition-colors">API Reference</a>
+                <a href="index.html" class="block text-primary-400 font-medium">Examples</a>
+                <a href="../about.html" class="block text-gray-300 hover:text-white transition-colors">About</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="pt-24 px-4 max-w-7xl mx-auto pb-20">
+        <h1 class="text-5xl font-bold mb-4 gradient-text">Interactive Examples</h1>
+        <p class="text-xl text-gray-300 mb-12">Try DOM Helpers features with live, interactive demos</p>
+        
+        <!-- Example 1: Counter -->
+        <section class="mb-16 bg-dark-800 rounded-xl p-8 border border-dark-700">
+            <h2 class="text-3xl font-bold mb-4 gradient-text">Counter App</h2>
+            <p class="text-gray-300 mb-6">Basic element manipulation with the Elements helper</p>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Code</h3>
+                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                        <pre><code class="language-javascript">let count = 0;
+
+Elements.incrementBtn.update({
+    addEventListener: {
+        click: () => {
+            count++;
+            Elements.counterDisplay
+                .update({
+                    textContent: count
+                });
+        }
+    }
+});</code></pre>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Live Demo</h3>
+                    <div class="demo-output flex flex-col items-center justify-center space-y-4">
+                        <div class="text-6xl font-bold gradient-text" id="counterDisplay">0</div>
+                        <button class="btn-demo" id="incrementBtn">Increment</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Example 2: Todo List -->
+        <section class="mb-16 bg-dark-800 rounded-xl p-8 border border-dark-700">
+            <h2 class="text-3xl font-bold mb-4 gradient-text">Todo List</h2>
+            <p class="text-gray-300 mb-6">Dynamic list management with Collections</p>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Code</h3>
+                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                        <pre><code class="language-javascript">Elements.addTodoBtn.update({
+    addEventListener: {
+        click: () => {
+            const text = Elements.todoInput.value;
+            if (!text) return;
+            
+            const li = document.createElement('li');
+            li.textContent = text;
+            li.className = 'todo-item';
+            Elements.todoList.appendChild(li);
+            
+            Elements.todoInput.value = '';
+        }
+    }
+});</code></pre>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Live Demo</h3>
+                    <div class="demo-output">
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="todoInput" placeholder="Enter todo..." class="flex-1 px-4 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white">
+                            <button class="btn-demo" id="addTodoBtn">Add</button>
+                        </div>
+                        <ul id="todoList" class="space-y-2"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Example 3: Theme Switcher -->
+        <section class="mb-16 bg-dark-800 rounded-xl p-8 border border-dark-700">
+            <h2 class="text-3xl font-bold mb-4 gradient-text">Theme Switcher</h2>
+            <p class="text-gray-300 mb-6">Dynamic styling with the update method</p>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Code</h3>
+                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                        <pre><code class="language-javascript">const themes = {
+    blue: '#3b82f6',
+    purple: '#8b5cf6',
+    green: '#10b981',
+    red: '#ef4444'
+};
+
+Collections.ClassName.themeBtn
+    .forEach(btn => {
+        btn.addEventListener('click', () => {
+            const color = btn.dataset.theme;
+            Elements.themeBox.update({
+                style: {
+                    backgroundColor: themes[color]
+                }
+            });
+        });
+    });</code></pre>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Live Demo</h3>
+                    <div class="demo-output">
+                        <div id="themeBox" class="h-32 rounded-lg mb-4 flex items-center justify-center text-white font-bold" style="background-color: #3b82f6;">Theme Box</div>
+                        <div class="flex gap-2">
+                            <button class="themeBtn px-4 py-2 rounded bg-blue-500 text-white" data-theme="blue">Blue</button>
+                            <button class="themeBtn px-4 py-2 rounded bg-purple-500 text-white" data-theme="purple">Purple</button>
+                            <button class="themeBtn px-4 py-2 rounded bg-green-500 text-white" data-theme="green">Green</button>
+                            <button class="themeBtn px-4 py-2 rounded bg-red-500 text-white" data-theme="red">Red</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Example 4: Form Handling -->
+        <section class="mb-16 bg-dark-800 rounded-xl p-8 border border-dark-700">
+            <h2 class="text-3xl font-bold mb-4 gradient-text">Form Handling</h2>
+            <p class="text-gray-300 mb-6">Capture and display form data</p>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Code</h3>
+                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                        <pre><code class="language-javascript">Elements.demoForm.update({
+    addEventListener: {
+        submit: (e) => {
+            e.preventDefault();
+            const data = {
+                name: Elements.userName.value,
+                email: Elements.userEmail.value
+            };
+            Elements.formOutput.update({
+                innerHTML: `
+                    &lt;strong&gt;Name:&lt;/strong&gt; ${data.name}&lt;br&gt;
+                    &lt;strong&gt;Email:&lt;/strong&gt; ${data.email}
+                `
+            });
+        }
+    }
+});</code></pre>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Live Demo</h3>
+                    <div class="demo-output">
+                        <form id="demoForm" class="space-y-4">
+                            <input type="text" id="userName" placeholder="Name" required class="w-full px-4 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white">
+                            <input type="email" id="userEmail" placeholder="Email" required class="w-full px-4 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white">
+                            <button type="submit" class="btn-demo w-full">Submit</button>
+                        </form>
+                        <div id="formOutput" class="mt-4 p-4 bg-dark-700 rounded-lg text-gray-300"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- More Examples Link -->
+        <div class="text-center mt-16 p-8 bg-gradient-to-br from-primary-900/20 to-purple-900/20 rounded-xl border border-primary-500/30">
+            <h3 class="text-2xl font-bold mb-4 gradient-text">Want More Examples?</h3>
+            <p class="text-gray-300 mb-6">Check out the full example library in the GitHub repository</p>
+            <a href="https://github.com/giovanni1707/dom-helpers-js/tree/main/examples" target="_blank" class="inline-block btn-demo">View on GitHub</a>
+        </div>
+    </div>
+    
+    <footer class="bg-dark-800 border-t border-dark-700 text-gray-300 py-12 text-center">
+        <p class="text-gray-400">&copy; 2025 DOM Helpers. MIT License.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <script>
+        // Counter Example
+        let count = 0;
+        Elements.incrementBtn.update({
+            addEventListener: {
+                click: () => {
+                    count++;
+                    Elements.counterDisplay.update({ textContent: count });
+                }
+            }
+        });
+        
+        // Todo Example
+        Elements.addTodoBtn.update({
+            addEventListener: {
+                click: () => {
+                    const text = Elements.todoInput.value;
+                    if (!text) return;
+                    const li = document.createElement('li');
+                    li.textContent = text;
+                    li.className = 'text-white bg-dark-700 px-4 py-2 rounded-lg';
+                    Elements.todoList.appendChild(li);
+                    Elements.todoInput.value = '';
+                }
+            }
+        });
+        
+        // Theme Switcher
+        const themes = { blue: '#3b82f6', purple: '#8b5cf6', green: '#10b981', red: '#ef4444' };
+        Collections.ClassName.themeBtn.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const color = btn.dataset.theme;
+                Elements.themeBox.update({ style: { backgroundColor: themes[color] } });
+            });
+        });
+        
+        // Form Example
+        Elements.demoForm.update({
+            addEventListener: {
+                submit: (e) => {
+                    e.preventDefault();
+                    const data = {
+                        name: Elements.userName.value,
+                        email: Elements.userEmail.value
+                    };
+                    Elements.formOutput.update({
+                        innerHTML: `<strong>Name:</strong> ${data.name}<br><strong>Email:</strong> ${data.email}`
+                    });
+                }
+            }
+        });
+        
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

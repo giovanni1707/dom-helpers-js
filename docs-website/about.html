@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="About Giovanni S. Marianne - Creator of DOM Helpers JavaScript Library">
+    <title>About the Creator - DOM Helpers</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+                        purple: { 50: '#faf5ff', 100: '#f3e8ff', 200: '#e9d5ff', 300: '#d8b4fe', 400: '#c084fc', 500: '#a855f7', 600: '#8b5cf6', 700: '#7c3aed', 800: '#6d28d9', 900: '#5b21b6' },
+                        dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-bg { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); }
+        .glass-effect { backdrop-filter: blur(16px); background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .nav-item:hover { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); }
+        .profile-img { border: 4px solid transparent; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); background-clip: padding-box; border-radius: 50%; }
+        .contact-card { transition: all 0.3s ease; }
+        .contact-card:hover { transform: translateY(-4px); }
+    </style>
+</head>
+<body class="bg-dark-900 text-white">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full glass-effect z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">D</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">DOM Helpers</h1>
+                        <p class="text-xs text-gray-400">v1.0.0</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="nav-item px-4 py-2 rounded-lg text-gray-300 hover:text-white">Home</a>
+                    <a href="getting-started.html" class="nav-item px-4 py-2 rounded-lg text-gray-300 hover:text-white">Getting Started</a>
+                    <a href="api-reference.html" class="nav-item px-4 py-2 rounded-lg text-gray-300 hover:text-white">API Reference</a>
+                    <div class="relative group">
+                        <button class="nav-item px-4 py-2 rounded-lg text-gray-300 hover:text-white flex items-center">
+                            Modules
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute hidden group-hover:block pt-2 w-56">
+                            <div class="glass-effect rounded-lg shadow-xl py-2">
+                                <a href="modules/core.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white">Core Module</a>
+                                <a href="modules/storage.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white">Storage Module</a>
+                                <a href="modules/form.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white">Form Module</a>
+                                <a href="modules/animation.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white">Animation Module</a>
+                                <a href="modules/components.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white">Components Module</a>
+                                <a href="modules/reactive.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white">Reactive Module</a>
+                                <a href="modules/async.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white">Async Module</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="examples/index.html" class="nav-item px-4 py-2 rounded-lg text-gray-300 hover:text-white">Examples</a>
+                    <a href="about.html" class="nav-item px-4 py-2 rounded-lg bg-primary-600 text-white">About</a>
+                    
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600">
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                        <svg id="theme-toggle-light-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                    
+                    <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="text-gray-300 hover:text-primary-400">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <!-- Header Section with Photo and Info -->
+            <section class="mb-16">
+                <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-2xl p-8 md:p-12 border border-primary-500/30">
+                    <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                        <!-- Profile Photo -->
+                        <div class="flex-shrink-0">
+                            <div class="profile-img p-1 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full">
+                                <div class="w-48 h-48 rounded-full bg-dark-800 flex items-center justify-center overflow-hidden">
+                                    <!-- Placeholder avatar with initials -->
+                                   <!-- <div class="text-6xl font-bold gradient-text">GM</div> -->
+                                    <!-- You can replace the above with an actual image:
+                                    <img src="path-to-your-photo.jpg" alt="Giovanni S. Marianne" class="w-full h-full object-cover"> -->
+                               
+                               <img src="./images/profile.jpg" alt="Giovanni S. Marianne" class="w-full h-full object-cover" />
+
+                               
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Info -->
+                        <div class="flex-1 text-center md:text-left">
+                            <h1 class="text-5xl font-bold mb-4 gradient-text">Giovanni S. Marianne</h1>
+                            <p class="text-xl text-gray-300 mb-6">Creator of DOM Helpers Library</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                <div class="flex items-center justify-center md:justify-start space-x-3 text-gray-300">
+                                    <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <span>Mauritius Island</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-center md:justify-start space-x-3 text-gray-300">
+                                    <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <a href="mailto:giovannimarianne1@gmail.com" class="hover:text-primary-400 transition-colors">giovannimarianne1@gmail.com</a>
+                                </div>
+                                
+                                <div class="flex items-center justify-center md:justify-start space-x-3 text-gray-300">
+                                    <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                    </svg>
+                                    <a href="tel:+2305748398" class="hover:text-primary-400 transition-colors">+230 5748 3982</a>
+                                </div>
+                                
+                                <div class="flex items-center justify-center md:justify-start space-x-3 text-gray-300">
+                                    <svg class="w-5 h-5 text-primary-400" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <a href="https://github.com/giovanni1707" target="_blank" class="hover:text-primary-400 transition-colors">@giovanni1707</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Bio Section -->
+            <section class="mb-16">
+                <h2 class="text-4xl font-bold mb-8 gradient-text">Who I Am</h2>
+                <div class="bg-dark-800 rounded-xl p-8 border border-dark-700 space-y-6">
+                    <p class="text-lg text-gray-300 leading-relaxed">
+                        I'm a passionate JavaScript developer from Mauritius Island with a deep love for clean, efficient code. My journey with web development has taught me that sometimes the best solutions are the simplest ones—and that vanilla JavaScript, when used correctly, can be incredibly powerful.
+                    </p>
+                    
+                    <div class="border-l-4 border-primary-500 pl-6 py-2 bg-primary-900/20 rounded-r-lg">
+                        <h3 class="text-2xl font-bold mb-3 text-white">Why I Created DOM Helpers</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            After years of working with various JavaScript frameworks and libraries, I noticed a common problem: developers were losing touch with the fundamentals of DOM manipulation. Frameworks are amazing, but they often add unnecessary complexity for simple tasks. I created DOM Helpers to bridge this gap—providing a clean, intuitive API that enhances vanilla JavaScript without hiding it.
+                        </p>
+                    </div>
+                    
+                    <div class="border-l-4 border-purple-500 pl-6 py-2 bg-purple-900/20 rounded-r-lg">
+                        <h3 class="text-2xl font-bold mb-3 text-white">How It Helps Developers</h3>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            DOM Helpers strikes the perfect balance between <strong>imperative and declarative coding</strong>. It gives you:
+                        </p>
+                        <ul class="space-y-2 text-gray-300">
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-400 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span><strong>Clean, readable code</strong> that doesn't sacrifice performance</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-400 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span><strong>Efficient DOM manipulation</strong> with intelligent caching</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-400 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span><strong>Pure vanilla JavaScript</strong>—no dependencies, no bloat</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-400 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span><strong>Familiar APIs</strong> that respect JavaScript conventions</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-400 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span><strong>Modular architecture</strong>—use only what you need</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- My Goals Section -->
+            <section class="mb-16">
+                <h2 class="text-4xl font-bold mb-8 gradient-text">My Goals</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-primary-900/30 to-primary-700/30 rounded-xl p-6 border border-primary-500/30">
+                        <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-white">Keep It Open Source</h3>
+                        <p class="text-gray-300">
+                            DOM Helpers will always remain free and open source. Knowledge should be shared, not locked away. The community's growth is my success.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-purple-900/30 to-purple-700/30 rounded-xl p-6 border border-purple-500/30">
+                        <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-white">Continuously Improve</h3>
+                        <p class="text-gray-300">
+                            Add new features, improve performance, and enhance developer experience—all while respecting vanilla JavaScript APIs and conventions.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-primary-700/30 to-purple-700/30 rounded-xl p-6 border border-primary-500/30">
+                        <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-white">Make Vanilla JS Delightful</h3>
+                        <p class="text-gray-300">
+                            Prove that vanilla JavaScript can be as enjoyable and productive as any framework—sometimes even more so!
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Support & Contributions Section -->
+            <section class="mb-16">
+                <h2 class="text-4xl font-bold mb-8 gradient-text">Support & Contributions</h2>
+                <div class="bg-gradient-to-br from-primary-900/20 to-purple-900/20 rounded-2xl p-8 border border-primary-500/30">
+                    <div class="text-center mb-8">
+                        <p class="text-xl text-gray-300 leading-relaxed">
+                            DOM Helpers is a labor of love, but it takes time and effort to maintain and improve. Your support—whether through code contributions, bug reports, documentation improvements, or sponsorship—helps keep this project alive and growing.
+                        </p>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <!-- Contribute Code -->
+                        <div class="contact-card bg-dark-800 rounded-xl p-6 border border-dark-700 text-center">
+                            <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2 text-white">Contribute Code</h3>
+                            <p class="text-sm text-gray-400 mb-4">Help improve the library</p>
+                            <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="inline-block px-4 py-2 gradient-bg text-white rounded-lg hover:opacity-90 transition-opacity">
+                                View on GitHub
+                            </a>
+                        </div>
+                        
+                        <!-- Star on GitHub -->
+                        <div class="contact-card bg-dark-800 rounded-xl p-6 border border-dark-700 text-center">
+                            <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2 text-white">Star on GitHub</h3>
+                            <p class="text-sm text-gray-400 mb-4">Show your support</p>
+                            <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="inline-block px-4 py-2 gradient-bg text-white rounded-lg hover:opacity-90 transition-opacity">
+                                Give a Star ⭐
+                            </a>
+                        </div>
+                        
+                        <!-- Report Issues -->
+                        <div class="contact-card bg-dark-800 rounded-xl p-6 border border-dark-700 text-center">
+                            <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2 text-white">Report Issues</h3>
+                            <p class="text-sm text-gray-400 mb-4">Found a bug?</p>
+                            <a href="https://github.com/giovanni1707/dom-helpers-js/issues" target="_blank" class="inline-block px-4 py-2 gradient-bg text-white rounded-lg hover:opacity-90 transition-opacity">
+                                Report Bug
+                            </a>
+                        </div>
+                        
+                        <!-- Contact Direct -->
+                        <div class="contact-card bg-dark-800 rounded-xl p-6 border border-dark-700 text-center">
+                            <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2 text-white">Contact Me</h3>
+                            <p class="text-sm text-gray-400 mb-4">Get in touch directly</p>
+                            <a href="mailto:giovannimarianne1@gmail.com" class="inline-block px-4 py-2 gradient-bg text-white rounded-lg hover:opacity-90 transition-opacity">
+                                Send Email
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p class="text-gray-400 mb-4">Every contribution, big or small, makes a difference!</p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <span class="px-4 py-2 bg-dark-800 rounded-lg text-gray-300">💻 Code Contributions</span>
+                            <span class="px-4 py-2 bg-dark-800 rounded-lg text-gray-300">📖 Documentation</span>
+                            <span class="px-4 py-2 bg-dark-800 rounded-lg text-gray-300">🐛 Bug Reports</span>
+                            <span class="px-4 py-2 bg-dark-800 rounded-lg text-gray-300">💡 Feature Ideas</span>
+                            <span class="px-4 py-2 bg-dark-800 rounded-lg text-gray-300">⭐ GitHub Stars</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Call to Action -->
+            <section class="mb-16">
+                <div class="bg-gradient-to-r from-primary-600 to-purple-600 rounded-2xl p-12 text-center">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Let's Make Vanilla JS Amazing Together!</h2>
+                    <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
+                        Join me in building a community that celebrates clean code, performance, and the power of vanilla JavaScript.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                            </svg>
+                            View on GitHub
+                        </a>
+                        <a href="getting-started.html" class="inline-flex items-center px-8 py-4 bg-dark-800 text-white font-bold rounded-lg hover:bg-dark-700 transition-colors">
+                            Get Started
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-800 border-t border-dark-700 text-gray-300 py-12 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center">
+                <p class="text-gray-400 mb-2">&copy; 2025 DOM Helpers. Released under the MIT License.</p>
+                <p class="text-gray-500">Built with ❤️ in Mauritius Island by Giovanni S. Marianne</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Theme Toggle Script -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        const html = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        if (currentTheme === 'dark') {
+            html.classList.add('dark');
+            lightIcon.classList.remove('hidden');
+        } else {
+            darkIcon.classList.remove('hidden');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            if (html.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+            } else {
+                localStorage.setItem('theme', 'light');
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

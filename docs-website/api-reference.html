@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete API Reference for DOM Helpers - All functions, methods, and properties documented">
+    <title>API Reference - DOM Helpers Documentation</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        },
+                        purple: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#8b5cf6',
+                            700: '#7c3aed',
+                            800: '#6d28d9',
+                            900: '#5b21b6'
+                        },
+                        dark: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            600: '#475569'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+        }
+        .sidebar a {
+            display: block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        .sidebar a:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            padding-left: 1.5rem;
+        }
+        .api-method {
+            transition: all 0.3s ease;
+        }
+        .api-method:hover {
+            transform: translateX(4px);
+            border-left-color: #8b5cf6;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-white transition-colors duration-200">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full glass-effect z-50 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">D</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">DOM Helpers</h1>
+                        <p class="text-xs text-gray-400">v1.0.0</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white">Home</a>
+                    <a href="getting-started.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white">Getting Started</a>
+                    <a href="api-reference.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 bg-primary-600 text-white">API Reference</a>
+                    <div class="relative group">
+                        <button class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white flex items-center">
+                            Modules
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute hidden group-hover:block pt-2 w-56">
+                            <div class="glass-effect rounded-lg shadow-xl py-2">
+                                <a href="modules/core.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Core Module</a>
+                                <a href="modules/storage.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Storage Module</a>
+                                <a href="modules/form.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Form Module</a>
+                                <a href="modules/animation.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Animation Module</a>
+                                <a href="modules/components.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Components Module</a>
+                                <a href="modules/reactive.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Reactive Module</a>
+                                <a href="modules/async.html" class="block px-4 py-2 hover:bg-primary-600/20 text-gray-300 hover:text-white transition-colors">Async Module</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="examples/index.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white">Examples</a>
+                    <a href="about.html" class="nav-item px-4 py-2 rounded-lg transition-all duration-300 text-gray-300 hover:text-white">About</a>
+                    
+                    <a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                        <svg id="theme-toggle-light-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </div>
+                
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-dark-700 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </div>
+                
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-dark-700 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="hidden md:hidden glass-effect border-t border-gray-700">
+            <div class="px-4 py-3 space-y-3">
+                <a href="index.html" class="block text-gray-300 hover:text-white transition-colors">Home</a>
+                <a href="getting-started.html" class="block text-gray-300 hover:text-white transition-colors">Getting Started</a>
+                <a href="api-reference.html" class="block text-primary-400 font-medium">API Reference</a>
+                <a href="examples/index.html" class="block text-gray-300 hover:text-white transition-colors">Examples</a>
+                <a href="about.html" class="block text-gray-300 hover:text-white transition-colors">About</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="pt-16 animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Sidebar -->
+                <aside class="lg:col-span-1">
+                    <nav class="sidebar space-y-1 sticky top-20 glass-effect rounded-xl p-4">
+                        <h3 class="font-bold gradient-text mb-4 px-4">Quick Navigation</h3>
+                        <a href="#core" class="text-gray-300 hover:text-white">Core API</a>
+                        <a href="#storage" class="text-gray-300 hover:text-white">Storage API</a>
+                        <a href="#form" class="text-gray-300 hover:text-white">Form API</a>
+                        <a href="#animation" class="text-gray-300 hover:text-white">Animation API</a>
+                        <a href="#components" class="text-gray-300 hover:text-white">Components API</a>
+                        <a href="#reactive" class="text-gray-300 hover:text-white">Reactive API</a>
+                        <a href="#async" class="text-gray-300 hover:text-white">Async API</a>
+                    </nav>
+                </aside>
+                
+                <!-- Main Content -->
+                <main class="lg:col-span-3">
+                    <div class="max-w-4xl">
+                        <!-- Header -->
+                        <div class="mb-12 animate-slide-up">
+                            <h1 class="text-5xl font-bold mb-4 gradient-text">API Reference</h1>
+                            <p class="text-xl text-gray-300">Complete documentation for all DOM Helpers functions and methods</p>
+                        </div>
+                        
+                        <!-- Core API -->
+                        <section id="core" class="mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Core API</h2>
+                            <p class="text-lg text-gray-300 mb-8">
+                                The core module provides three main helpers for DOM manipulation: Elements, Collections, and Selector.
+                            </p>
+                            
+                            <a href="modules/core.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-xl transition-all mb-8">
+                                View Full Core Documentation
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </a>
+                            
+                            <div class="space-y-4">
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Elements.{id}</h4>
+                                    <p class="text-gray-300 mb-3">Access and manipulate elements by their ID</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">Elements.myButton.update({
+    textContent: 'Click Me',
+    style: { backgroundColor: '#007bff' }
+});</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Collections.ClassName.{name}</h4>
+                                    <p class="text-gray-300 mb-3">Work with all elements sharing a class name</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">Collections.ClassName.btn.update({
+    style: { padding: '10px 20px' }
+});</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Selector.query(selector)</h4>
+                                    <p class="text-gray-300 mb-3">Query elements using CSS selectors</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">Selector.query('.container').update({
+    style: { padding: '20px' }
+});</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Storage API -->
+                        <section id="storage" class="mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Storage API</h2>
+                            <p class="text-lg text-gray-300 mb-8">
+                                Enhanced localStorage and sessionStorage with automatic JSON serialization.
+                            </p>
+                            
+                            <a href="modules/storage.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-xl transition-all mb-8">
+                                View Full Storage Documentation
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </a>
+                            
+                            <div class="space-y-4">
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Storage.set(key, value)</h4>
+                                    <p class="text-gray-300 mb-3">Store data in localStorage with automatic serialization</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">Storage.set('user', { name: 'John', age: 30 });</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Storage.get(key)</h4>
+                                    <p class="text-gray-300 mb-3">Retrieve data with automatic deserialization</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">const user = Storage.get('user');</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Form API -->
+                        <section id="form" class="mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Form API</h2>
+                            <p class="text-lg text-gray-300 mb-8">
+                                Advanced form handling, validation, and data serialization.
+                            </p>
+                            
+                            <a href="modules/form.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-xl transition-all mb-8">
+                                View Full Form Documentation
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </a>
+                            
+                            <div class="space-y-4">
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Form.serialize(formElement)</h4>
+                                    <p class="text-gray-300 mb-3">Convert form data to JavaScript object</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">const data = Form.serialize(Elements.myForm);</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Form.validate(formElement, rules)</h4>
+                                    <p class="text-gray-300 mb-3">Validate form fields with custom rules</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">const isValid = Form.validate(Elements.myForm, {
+    email: 'required|email',
+    password: 'required|min:8'
+});</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Animation API -->
+                        <section id="animation" class="mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Animation API</h2>
+                            <p class="text-lg text-gray-300 mb-8">
+                                Create smooth animations and transitions with a chainable API.
+                            </p>
+                            
+                            <a href="modules/animation.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-xl transition-all mb-8">
+                                View Full Animation Documentation
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </a>
+                            
+                            <div class="space-y-4">
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Animate.fadeIn(element, duration)</h4>
+                                    <p class="text-gray-300 mb-3">Fade in an element with smooth animation</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">Animate.fadeIn(Elements.modal, 300);</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Animate.slideDown(element, duration)</h4>
+                                    <p class="text-gray-300 mb-3">Slide an element down with animation</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">Animate.slideDown(Elements.dropdown, 400);</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Components API -->
+                        <section id="components" class="mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Components API</h2>
+                            <p class="text-lg text-gray-300 mb-8">
+                                Build reusable, reactive components with lifecycle hooks and state management.
+                            </p>
+                            
+                            <a href="modules/components.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-xl transition-all mb-8">
+                                View Full Components Documentation
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </a>
+                            
+                            <div class="space-y-4">
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Components.register(name, definition)</h4>
+                                    <p class="text-gray-300 mb-3">Register a new reusable component</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">Components.register('UserCard', `
+    <div id="card">...</div>
+    <!-- Optional: Add valid CSS here or remove this line if not needed -->
+`);</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Components.render(name, container, data)</h4>
+                                    <p class="text-gray-300 mb-3">Render a component into a container</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">Components.render('UserCard', '#app', {
+    name: 'John Doe'
+});</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Reactive API -->
+                        <section id="reactive" class="mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Reactive API</h2>
+                            <p class="text-lg text-gray-300 mb-8">
+                                Reactive state management with automatic UI updates and computed properties.
+                            </p>
+                            
+                            <a href="modules/reactive.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-xl transition-all mb-8">
+                                View Full Reactive Documentation
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </a>
+                            
+                            <div class="space-y-4">
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">State.create(initialState)</h4>
+                                    <p class="text-gray-300 mb-3">Create reactive state with automatic UI updates</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">const state = State.create({ count: 0 });</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Async API -->
+                        <section id="async" class="mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Async API</h2>
+                            <p class="text-lg text-gray-300 mb-8">
+                                Simplified async operations and data fetching utilities.
+                            </p>
+                            
+                            <a href="modules/async.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-xl transition-all mb-8">
+                                View Full Async Documentation
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </a>
+                            
+                            <div class="space-y-4">
+                                <div class="api-method bg-dark-700 rounded-lg p-6 border-l-4 border-primary-500">
+                                    <h4 class="text-xl font-bold mb-2 text-white">Async.fetch(url, options)</h4>
+                                    <p class="text-gray-300 mb-3">Enhanced fetch with automatic error handling</p>
+                                    <div class="bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg p-4 border border-primary-500/30">
+                                        <pre><code class="language-javascript">const data = await Async.fetch('/api/users');</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-800 border-t border-dark-700 text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">D</span>
+                        </div>
+                        <h3 class="text-white font-bold text-lg">DOM Helpers</h3>
+                    </div>
+                    <p class="text-sm text-gray-400">A powerful vanilla JavaScript DOM manipulation library for modern web development.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Documentation</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="getting-started.html" class="hover:text-primary-400 transition-colors">Getting Started</a></li>
+                        <li><a href="api-reference.html" class="hover:text-primary-400 transition-colors">API Reference</a></li>
+                        <li><a href="examples/index.html" class="hover:text-primary-400 transition-colors">Examples</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Modules</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="modules/core.html" class="hover:text-primary-400 transition-colors">Core</a></li>
+                        <li><a href="modules/storage.html" class="hover:text-primary-400 transition-colors">Storage</a></li>
+                        <li><a href="modules/form.html" class="hover:text-primary-400 transition-colors">Form</a></li>
+                        <li><a href="modules/animation.html" class="hover:text-primary-400 transition-colors">Animation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Community</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="https://github.com/giovanni1707/dom-helpers-js" target="_blank" class="hover:text-primary-400 transition-colors">GitHub</a></li>
+                        <li><a href="https://www.npmjs.com/package/@giovanni1707/dom-helpers" target="_blank" class="hover:text-primary-400 transition-colors">NPM</a></li>
+                        <li><a href="https://github.com/giovanni1707/dom-helpers-js/issues" target="_blank" class="hover:text-primary-400 transition-colors">Issues</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-dark-700 pt-8 text-center text-sm">
+                <p class="text-gray-400">&copy; 2025 DOM Helpers. Released under the MIT License.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
