@@ -25,7 +25,7 @@ Load from npm registry via jsDelivr:
 Load directly from GitHub repository:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/giovanni1707/dom-helpers-js@main/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/giovanni1707/dom-helpers-js@main/dist/dom-helpers-combined.min.js"></script>
 ```
 
 ## 🎯 Choosing the Right File
@@ -35,14 +35,13 @@ Load directly from GitHub repository:
 <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
 ```
 **Use when**: You only need basic DOM manipulation (Elements, Collections, Selector)
-**Size**: ~47 KB minified
-
+**Size**
 ### Combined Library
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-combined.min.js"></script>
 ```
 **Use when**: You need all features (storage, forms, animations, components, reactive, async)
-**Size**: ~111 KB minified
+**Size**
 
 ### Individual Modules
 ```html
@@ -50,8 +49,24 @@ Load directly from GitHub repository:
 <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
 
 <!-- Then load only the modules you need -->
+
+ <!-- Storage -->
 <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-storage.min.js"></script>
+
+<!-- Forms -->
 <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-form.min.js"></script>
+
+<!-- Animations -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-animation.min.js"></script>
+
+<!-- Components -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-components.min.js"></script>
+
+<!-- Reactive -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-reactive.min.js"></script>
+
+<!-- Async -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-async.min.js"></script>
 ```
 
 ## 🔢 Version Management
@@ -110,7 +125,9 @@ Load directly from GitHub repository:
     <div id="output"></div>
 
     <!-- Load DOM Helpers from CDN -->
+   
     <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+   
     
     <script>
         // Style the buttons
