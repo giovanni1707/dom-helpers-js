@@ -18,8 +18,43 @@ A powerful, high-performance vanilla JavaScript DOM manipulation library that tr
 
 ## 📦 Installation
 
+### Option 1: NPM (Recommended for projects)
+
 ```bash
 npm install @giovanni1707/dom-helpers
+```
+
+### Option 2: CDN (No installation required!)
+
+Include directly in your HTML using jsDelivr CDN:
+
+```html
+<!-- Core library (minified) -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+
+<!-- Or use the combined version with all modules -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-combined.min.js"></script>
+
+<!-- Individual modules -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-storage.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-form.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-animation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-components.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-reactive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-async.min.js"></script>
+```
+
+**Pro Tip**: For production, always use a specific version number. For latest version, use `@latest`:
+```html
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@latest/dist/dom-helpers.min.js"></script>
+```
+
+### Option 3: GitHub CDN
+
+Alternatively, load directly from GitHub:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/giovanni1707/dom-helpers-js@main/dist/dom-helpers.min.js"></script>
 ```
 
 ## 🚀 Quick Start
@@ -27,6 +62,8 @@ npm install @giovanni1707/dom-helpers
 “**DOM Helpers** gives you the ***power of declarative updates with the simplicity of vanilla JS***. No frameworks, no heavy abstractions—just a clean, unified API that saves time, reduces boilerplate, and keeps full control of the DOM in your hands.”
 
 ### Basic Usage with dom-helpers library
+
+#### Using CDN (Quick & Easy)
 
 ```html
 <!DOCTYPE html>
@@ -40,7 +77,49 @@ npm install @giovanni1707/dom-helpers
         <p class="message">Hello World</p>
     </div>
     
-    <script src="node_modules/@giovanni1707/dom-helpers/dom-helpers.js"></script>
+    <!-- Load from jsDelivr CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+    <script>
+        // Library is ready to use - no imports needed!
+        Elements.myButton.update({
+            textContent: 'Enhanced Button!',
+            style: { 
+                backgroundColor: '#007bff',
+                color: 'white',
+                padding: '10px 20px'
+            },
+            addEventListener: {
+                click: () => alert('Button clicked!')
+            }
+        });
+
+        Collections.ClassName.message.update({
+            style: { color: 'blue', fontWeight: 'bold' }
+        });
+
+        Selector.query('.container').update({
+            style: { border: '2px solid #ccc', padding: '20px' }
+        });
+    </script>
+</body>
+</html>
+```
+
+#### Using NPM Installation
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM Helpers Demo</title>
+</head>
+<body>
+    <button id="myButton" class="btn">Click Me</button>
+    <div class="container">
+        <p class="message">Hello World</p>
+    </div>
+    
+    <script src="node_modules/@giovanni1707/dom-helpers/src/dom-helpers.js"></script>
     <script>
         // Access element by ID - automatically enhanced with .update() method
         Elements.myButton.update({
