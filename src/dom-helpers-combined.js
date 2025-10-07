@@ -1459,6 +1459,79 @@
     return Elements;
   };
 
+  /**
+   * Bulk update method for Elements helper
+   * Allows updating multiple elements by their IDs in a single call
+   * 
+   * @param {Object} updates - Object where keys are element IDs and values are update objects
+   * @returns {Object} - Object with results for each element ID
+   * 
+   * @example
+   * Elements.update({
+   *   title: { textContent: 'New Title', style: { color: 'red' } },
+   *   description: { textContent: 'New Description', style: { fontSize: '16px' } },
+   *   submitBtn: { 
+   *     textContent: 'Submit',
+   *     addEventListener: ['click', () => console.log('Clicked!')]
+   *   }
+   * });
+   */
+  Elements.update = (updates = {}) => {
+    if (!updates || typeof updates !== 'object' || Array.isArray(updates)) {
+      console.warn('[DOM Helpers] Elements.update() requires an object with element IDs as keys');
+      return {};
+    }
+
+    const results = {};
+    const successful = [];
+    const failed = [];
+
+    Object.entries(updates).forEach(([elementId, updateData]) => {
+      try {
+        // Get the element using the Elements helper
+        const element = Elements[elementId];
+        
+        if (element && element.nodeType === Node.ELEMENT_NODE) {
+          // Apply updates using the element's update method
+          if (typeof element.update === 'function') {
+            element.update(updateData);
+            results[elementId] = { success: true, element };
+            successful.push(elementId);
+          } else {
+            // Fallback if update method doesn't exist
+            Object.entries(updateData).forEach(([key, value]) => {
+              applyEnhancedUpdate(element, key, value);
+            });
+            results[elementId] = { success: true, element };
+            successful.push(elementId);
+          }
+        } else {
+          results[elementId] = { 
+            success: false, 
+            error: `Element with ID '${elementId}' not found` 
+          };
+          failed.push(elementId);
+        }
+      } catch (error) {
+        results[elementId] = { 
+          success: false, 
+          error: error.message 
+        };
+        failed.push(elementId);
+      }
+    });
+
+    // Log summary if logging is enabled
+    if (ElementsHelper.options.enableLogging) {
+      console.log(`[Elements] Bulk update completed: ${successful.length} successful, ${failed.length} failed`);
+      if (failed.length > 0) {
+        console.warn(`[Elements] Failed IDs:`, failed);
+      }
+    }
+
+    return results;
+  };
+
   // Export for different environments
   if (typeof module !== 'undefined' && module.exports) {
     // Node.js/CommonJS
@@ -2339,6 +2412,130 @@
       Object.assign(CollectionHelper.options, options);
       return Collections;
     }
+  };
+
+  /**
+   * Bulk update method for Collections helper
+   * Allows updating multiple collections (class, tag, name) in a single call
+   * 
+   * @param {Object} updates - Object where keys are collection identifiers and values are update objects
+   * @returns {Object} - Object with results for each collection
+   * 
+   * @example
+   * Collections.update({
+   *   'class:btn': { style: { padding: '10px', color: 'white' } },
+   *   'tag:p': { style: { lineHeight: '1.6' } },
+   *   'name:username': { disabled: false }
+   * });
+   */
+  Collections.update = (updates = {}) => {
+    if (!updates || typeof updates !== 'object' || Array.isArray(updates)) {
+      console.warn('[DOM Helpers] Collections.update() requires an object with collection identifiers as keys');
+      return {};
+    }
+
+    const results = {};
+    const successful = [];
+    const failed = [];
+
+    Object.entries(updates).forEach(([identifier, updateData]) => {
+      try {
+        // Parse identifier format: "type:value" (e.g., "class:btn", "tag:div", "name:username")
+        let type, value, collection;
+
+        if (identifier.includes(':')) {
+          [type, value] = identifier.split(':', 2);
+          
+          // Get collection based on type
+          switch (type.toLowerCase()) {
+            case 'class':
+            case 'classname':
+              collection = Collections.ClassName[value];
+              break;
+            case 'tag':
+            case 'tagname':
+              collection = Collections.TagName[value];
+              break;
+            case 'name':
+              collection = Collections.Name[value];
+              break;
+            default:
+              results[identifier] = { 
+                success: false, 
+                error: `Unknown collection type: ${type}. Use 'class', 'tag', or 'name'` 
+              };
+              failed.push(identifier);
+              return;
+          }
+        } else {
+          // Assume it's a class name if no type specified
+          collection = Collections.ClassName[identifier];
+          value = identifier;
+        }
+
+        if (collection && collection.length > 0) {
+          // Apply updates using the collection's update method
+          if (typeof collection.update === 'function') {
+            collection.update(updateData);
+            results[identifier] = { 
+              success: true, 
+              collection, 
+              elementsUpdated: collection.length 
+            };
+            successful.push(identifier);
+          } else {
+            // Fallback if update method doesn't exist
+            const elements = Array.from(collection);
+            elements.forEach(element => {
+              if (element && element.nodeType === Node.ELEMENT_NODE) {
+                Object.entries(updateData).forEach(([key, val]) => {
+                  applyEnhancedUpdate(element, key, val);
+                });
+              }
+            });
+            results[identifier] = { 
+              success: true, 
+              collection, 
+              elementsUpdated: elements.length 
+            };
+            successful.push(identifier);
+          }
+        } else if (collection) {
+          results[identifier] = { 
+            success: true, 
+            collection, 
+            elementsUpdated: 0,
+            warning: 'Collection is empty - no elements to update'
+          };
+          successful.push(identifier);
+        } else {
+          results[identifier] = { 
+            success: false, 
+            error: `Collection '${identifier}' not found or invalid` 
+          };
+          failed.push(identifier);
+        }
+      } catch (error) {
+        results[identifier] = { 
+          success: false, 
+          error: error.message 
+        };
+        failed.push(identifier);
+      }
+    });
+
+    // Log summary if logging is enabled
+    if (CollectionHelper.options.enableLogging) {
+      const totalElements = successful.reduce((sum, id) => {
+        return sum + (results[id].elementsUpdated || 0);
+      }, 0);
+      console.log(`[Collections] Bulk update completed: ${successful.length} collections (${totalElements} elements), ${failed.length} failed`);
+      if (failed.length > 0) {
+        console.warn(`[Collections] Failed identifiers:`, failed);
+      }
+    }
+
+    return results;
   };
 
   // Export for different environments
@@ -3470,6 +3667,94 @@
       Object.assign(SelectorHelper.options, options);
       return Selector;
     }
+  };
+
+  /**
+   * Bulk update method for Selector helper
+   * Allows updating multiple elements/collections using CSS selectors in a single call
+   * 
+   * @param {Object} updates - Object where keys are CSS selectors and values are update objects
+   * @returns {Object} - Object with results for each selector
+   * 
+   * @example
+   * Selector.update({
+   *   '#header': { textContent: 'Welcome!', style: { fontSize: '24px' } },
+   *   '.btn': { style: { padding: '10px 20px' } },
+   *   'input[type="text"]': { placeholder: 'Enter text...' }
+   * });
+   */
+  Selector.update = (updates = {}) => {
+    if (!updates || typeof updates !== 'object' || Array.isArray(updates)) {
+      console.warn('[DOM Helpers] Selector.update() requires an object with CSS selectors as keys');
+      return {};
+    }
+
+    const results = {};
+    const successful = [];
+    const failed = [];
+
+    Object.entries(updates).forEach(([selector, updateData]) => {
+      try {
+        // Query for elements matching the selector
+        const elements = Selector.queryAll(selector);
+
+        if (elements && elements.length > 0) {
+          // Apply updates using the collection's update method
+          if (typeof elements.update === 'function') {
+            elements.update(updateData);
+            results[selector] = { 
+              success: true, 
+              elements, 
+              elementsUpdated: elements.length 
+            };
+            successful.push(selector);
+          } else {
+            // Fallback if update method doesn't exist
+            const elementsArray = Array.from(elements);
+            elementsArray.forEach(element => {
+              if (element && element.nodeType === Node.ELEMENT_NODE) {
+                Object.entries(updateData).forEach(([key, val]) => {
+                  applyEnhancedUpdate(element, key, val);
+                });
+              }
+            });
+            results[selector] = { 
+              success: true, 
+              elements, 
+              elementsUpdated: elementsArray.length 
+            };
+            successful.push(selector);
+          }
+        } else {
+          results[selector] = { 
+            success: true, 
+            elements: null, 
+            elementsUpdated: 0,
+            warning: 'No elements found matching selector'
+          };
+          successful.push(selector);
+        }
+      } catch (error) {
+        results[selector] = { 
+          success: false, 
+          error: error.message 
+        };
+        failed.push(selector);
+      }
+    });
+
+    // Log summary if logging is enabled
+    if (SelectorHelper.options.enableLogging) {
+      const totalElements = successful.reduce((sum, sel) => {
+        return sum + (results[sel].elementsUpdated || 0);
+      }, 0);
+      console.log(`[Selector] Bulk update completed: ${successful.length} selectors (${totalElements} elements), ${failed.length} failed`);
+      if (failed.length > 0) {
+        console.warn(`[Selector] Failed selectors:`, failed);
+      }
+    }
+
+    return results;
   };
 
   // Export for different environments

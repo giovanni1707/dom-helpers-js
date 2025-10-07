@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/giovanni1707/dom-helpers-js#readme",
   "devDependencies": {
-    "terser": "^5.19.0"
+    "terser": "^5.44.0"
   },
   "engines": {
     "node": ">=12.0.0"
