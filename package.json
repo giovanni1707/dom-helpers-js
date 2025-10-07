@@ -1,6 +1,6 @@
 {
   "name": "@giovanni1707/dom-helpers",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A powerful, high-performance vanilla JavaScript DOM manipulation library with intelligent caching, automatic enhancement, and declarative APIs",
   "main": "src/dom-helpers.js",
   "module": "src/dom-helpers.js",
