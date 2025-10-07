@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # 📖 API Reference - DOM Helpers Components
 
 Complete API documentation for all features and methods.

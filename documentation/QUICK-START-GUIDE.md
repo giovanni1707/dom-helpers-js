@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # 🚀 Quick Start Guide - DOM Helpers Components
 
 **Build your first component in 5 minutes!**

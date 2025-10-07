@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # 🎓 DOM Helpers Component Library - Complete Guide
 
 > **From Beginner to Pro**: Learn to build real-world apps with ease!

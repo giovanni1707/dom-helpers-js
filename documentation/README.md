@@ -1,3 +1,6 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
+
 # DOM Helpers
 
 A powerful, high-performance vanilla JavaScript DOM manipulation library that transforms how you interact with the DOM. Built with intelligent caching, automatic enhancement, and a declarative API that makes complex DOM operations simple and intuitive.

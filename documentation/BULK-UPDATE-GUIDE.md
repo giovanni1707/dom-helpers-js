@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # Bulk Update Feature Guide
 
 ## Overview

@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # ⚡ Performance Optimization Guide
 
 **Master efficient component updates for lightning-fast apps!**

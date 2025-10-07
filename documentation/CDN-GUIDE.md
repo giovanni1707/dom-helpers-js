@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # CDN Usage Guide - DOM Helpers
 
 This guide explains how to use DOM Helpers directly from CDN without any installation or build process.

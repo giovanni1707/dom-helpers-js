@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # DOM Helpers Animation Module
 
 A powerful, lightweight JavaScript animation library that seamlessly integrates with the DOM Helpers ecosystem. This module provides smooth, hardware-accelerated animations while keeping you close to vanilla JavaScript fundamentals.

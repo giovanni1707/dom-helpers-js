@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # DOM Helpers Async Module
 
 A comprehensive, production-ready JavaScript async utilities library that seamlessly integrates with the DOM Helpers ecosystem. This module provides powerful asynchronous functionality while maintaining the core philosophy of enhancing vanilla JavaScript without hiding native APIs.

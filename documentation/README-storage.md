@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # DOM Helpers Storage Module
 
 A powerful, feature-rich storage utility library that extends the native Web Storage API with advanced functionality including automatic JSON serialization, expiry system, namespaces, and seamless forms integration.

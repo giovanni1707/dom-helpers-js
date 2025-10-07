@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # DOM Helpers Form Module
 
 A powerful, intelligent form handling library that transforms HTML forms into feature-rich, interactive components with automatic validation, data binding, serialization, and seamless integration with modern web applications.

@@ -1,3 +1,5 @@
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/giovanni1707?style=social)](https://github.com/sponsors/giovanni1707)
+
 # DOM Helpers Components
 
 A lightweight component system that extends DOM Helpers with traditional HTML5 and vanilla JavaScript. Build component-based applications following the DOM Helpers philosophy without framework dependencies.
