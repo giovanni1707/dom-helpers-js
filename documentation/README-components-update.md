@@ -20,10 +20,10 @@ The DOM Helpers Components library provides multiple intuitive ways to update DO
 
 ```javascript
 <!-- Load core first -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.0.0/dist/dom-helpers.min.js"></script>
 
 <!-- The load Components module -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-components.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.0.0/dist/dom-helpers-components.min.js"></script>
 
 // Use the declarative syntax (recommended)
 Components.update({

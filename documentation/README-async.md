@@ -54,10 +54,10 @@ The DOM Helpers Async module bridges the gap between complex async operations an
 ### Quick Start
 ```html
 <!-- Load core first -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.0.0/dist/dom-helpers.min.js"></script>
 
 <!-- Then load Async module -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-async.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.0.0/dist/dom-helpers-async.min.js"></script>
 
 ```
 

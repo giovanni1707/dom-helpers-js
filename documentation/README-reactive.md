@@ -22,10 +22,10 @@ Include the reactive extension after the core library:
 
 ```html
 <!-- Load core first -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.0.0/dist/dom-helpers.min.js"></script>
 
 <!-- Then load Reactive module -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1.0.0/dist/dom-helpers-reactive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.0.0/dist/dom-helpers-reactive.min.js"></script>
 
 ```
 
