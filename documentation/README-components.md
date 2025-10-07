@@ -45,14 +45,14 @@ The easiest way to use components is with custom HTML tags:
 1. Include DOM Helpers library:
 ```html
 <!-- Load core first -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.0.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers.min.js"></script>
 
 ```
 
 2. Include DOM Helpers Components:
 ```html
 <!-- Then load Components module -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.0.0/dist/dom-helpers-components.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-components.min.js"></script>
 
 ```
 

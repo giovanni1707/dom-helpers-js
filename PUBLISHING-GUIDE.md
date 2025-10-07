@@ -383,8 +383,8 @@ git push && git push --tags          # Push to GitHub
 npm publish --access public           # Publish update
 
 # Maintenance
-npm unpublish @yourusername/dom-helpers@1.0.0  # Unpublish specific version
-npm deprecate @yourusername/dom-helpers@1.0.0 "message"  # Deprecate version
+npm unpublish @yourusername/dom-helpers@2.2.1  # Unpublish specific version
+npm deprecate @yourusername/dom-helpers@2.2.1 "message"  # Deprecate version
 ```
 
 ## 🎯 Final Checklist
