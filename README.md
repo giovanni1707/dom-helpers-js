@@ -11,8 +11,9 @@ A powerful, high-performance vanilla JavaScript DOM manipulation library that tr
 
 - 🎯 **Intelligent Element Access**: Smart caching system for lightning-fast element retrieval
 - 🔄 **Universal Update Method**: Declarative `.update()` method for all DOM elements and collections
+- ⚡ **Bulk Element Creation**: Create multiple elements in one call with `createElement.bulk()`
 - 📦 **Multiple Access Patterns**: Access elements by ID, class, tag name, or CSS selectors
-- ⚡ **Performance Optimized**: Built-in fine-grained updates and automatic cleanup
+- 🚀 **Performance Optimized**: Built-in fine-grained updates and automatic cleanup
 - 🛡️ **Error Resilient**: Comprehensive error handling with graceful fallbacks
 - 🔧 **Zero Dependencies**: Pure vanilla JavaScript with no external dependencies
 - 📱 **Browser Compatible**: Works across all modern browsers (IE 9+)
@@ -32,18 +33,18 @@ Include directly in your HTML using jsDelivr CDN:
 
 ```html
 <!-- Core library (minified) -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
 
 <!-- Or use the combined version with all modules -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-combined.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-combined.min.js"></script>
 
 <!-- Individual modules -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-storage.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-form.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-animation.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-components.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-reactive.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-async.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-storage.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-form.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-animation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-components.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-reactive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-async.min.js"></script>
 ```
 
 **Pro Tip**: For production, always use a specific version number. For latest version, use `@latest`:
@@ -80,7 +81,7 @@ Alternatively, load directly from GitHub:
     </div>
     
     <!-- Load from jsDelivr CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
     <script>
         // Library is ready to use - no imports needed!
         Elements.myButton.update({
@@ -338,6 +339,94 @@ const allButtons = Selector.queryAll('.btn');
 // Scoped queries
 const modalButtons = Selector.Scoped.withinAll('#modal', '.btn');
 ```
+
+### 4. Bulk Element Creation - NEW in v2.2.1 🎉
+
+Create multiple elements in one declarative call:
+
+```javascript
+// Create multiple elements at once
+const elements = createElement.bulk({
+    H1: {
+        textContent: 'Welcome!',
+        style: { color: '#333', fontSize: '28px' }
+    },
+    P: {
+        textContent: 'This is a paragraph',
+        style: { color: '#666', lineHeight: '1.6' }
+    },
+    BUTTON: {
+        textContent: 'Click Me',
+        style: { padding: '10px 20px', background: '#007bff', color: 'white' },
+        addEventListener: ['click', () => alert('Clicked!')]
+    }
+});
+
+// Access created elements
+elements.H1          // The H1 element
+elements.P           // The P element
+elements.BUTTON      // The button element
+
+// Append all to DOM
+document.body.append(...elements.all);
+
+// Or append in custom order
+document.body.append(...elements.ordered('BUTTON', 'H1', 'P'));
+
+// Create multiple instances with numbered suffixes
+const cards = createElement.bulk({
+    DIV_1: { className: 'card', textContent: 'Card 1' },
+    DIV_2: { className: 'card', textContent: 'Card 2' },
+    DIV_3: { className: 'card', textContent: 'Card 3' }
+});
+
+// Helper methods available
+elements.count                    // Get total elements
+elements.keys                     // Get all element keys
+elements.has('H1')               // Check if element exists
+elements.get('H1', null)         // Safe retrieval with fallback
+elements.forEach((el, key) => {}) // Iterate over elements
+elements.map((el, key) => {})    // Map over elements
+elements.filter((el, key) => {}) // Filter elements
+elements.appendTo('#container')  // Append all to container
+elements.updateMultiple({        // Update multiple at once
+    H1: { style: { color: 'blue' } },
+    P: { style: { fontSize: '16px' } }
+});
+```
+
+**Why Use Bulk Creation?**
+
+Compare traditional approach vs bulk creation:
+
+```javascript
+// ❌ Traditional - Verbose and repetitive
+const h1 = document.createElement('h1');
+h1.textContent = 'Title';
+h1.style.color = 'blue';
+
+const p = document.createElement('p');
+p.textContent = 'Description';
+p.style.fontSize = '16px';
+
+const div = document.createElement('div');
+div.className = 'container';
+div.appendChild(h1);
+div.appendChild(p);
+
+// ✅ Bulk Creation - Clean and declarative
+const elements = createElement.bulk({
+    H1: { textContent: 'Title', style: { color: 'blue' } },
+    P: { textContent: 'Description', style: { fontSize: '16px' } },
+    DIV: { className: 'container' }
+});
+
+elements.DIV.append(elements.H1, elements.P);
+```
+
+**Learn More:**
+- [Complete Bulk Element Creation Guide](https://github.com/giovanni1707/dom-helpers-js/blob/main/documentation/BULK-ELEMENT-CREATION-GUIDE.md)
+- [Interactive Examples](https://github.com/giovanni1707/dom-helpers-js/blob/main/examples/test/bulk-element-creation-test.html)
 
 ## 📚 Available Modules
 

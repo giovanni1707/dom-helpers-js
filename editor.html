@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Preview with Typewriter Effect</title>
+
+  <!-- Prism.js for syntax highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #000920;
+      font-family: "Fira Code", monospace;
+      color: #fff;
+    }
+
+    #controls {
+      background: #1a1a2e;
+      padding: 10px 20px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .controls-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .speed-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .toggle-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      background: #16213e;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid #333;
+    }
+
+    button:hover {
+      background: #0f3460;
+    }
+
+    button.active {
+      background: #4CAF50;
+    }
+
+    button.toggle-btn {
+      background: #dc2626;
+    }
+
+    button.toggle-btn.active {
+      background: #16a34a;
+    }
+
+    .speed-btn {
+      padding: 8px 12px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .speed-display {
+      font-size: 14px;
+      color: #fff;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    #editor, #output, #rendered {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      width: 100%;
+      font-size: 1rem;
+      display: none;
+    }
+
+    #editor {
+      border: none;
+      resize: none;
+      outline: none;
+      font-family: "Fira Code", monospace;
+      display: block;
+      background: #0d1117;
+      color: #fff;
+    }
+
+    pre {
+      background: #0d1117 !important;
+      border-radius: 10px;
+      padding: 16px;
+      color: #00ffcc !important;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+
+    code {
+      font-family: "Fira Code", monospace;
+      font-size: 1rem;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .blinking-caret {
+      border-right: 2px solid rgba(255, 255, 255, 0.8);
+      animation: blink 0.8s infinite;
+      display: inline-block;
+    }
+
+    @keyframes blink {
+      0%, 100% { border-color: transparent; }
+      50% { border-color: rgba(255, 255, 255, 0.8); }
+    }
+
+    #rendered {
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    .script-label {
+      background: #2d2d2d;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px 5px 0 0;
+      font-size: 0.85rem;
+      margin-top: 15px;
+      display: inline-block;
+    }
+
+    .style-label {
+      background: #1e3a8a;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px 5px 0 0;
+      font-size: 0.85rem;
+      margin-top: 15px;
+      display: inline-block;
+    }
+
+    #fullscreenBtn {
+      margin-left: 10px;
+    }
+
+    /* Render container to isolate styles */
+    #rendered-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Hide code blocks when toggled off */
+    .code-block {
+      transition: all 0.3s ease;
+    }
+
+    .code-block.hidden {
+      display: none;
+    }
+
+    .separator {
+      color: #999;
+      margin: 0 5px;
+    }
+
+    .status-indicator {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: #333;
+      color: #fff;
+    }
+
+    .status-indicator.active {
+      background: #16a34a;
+    }
+
+    .status-indicator.inactive {
+      background: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <div class="controls-group">
+      <div class="speed-controls">
+        <button class="speed-btn" id="decreaseSpeed">-</button>
+        <div class="speed-display" id="speedDisplay">Speed: 20ms</div>
+        <button class="speed-btn" id="increaseSpeed">+</button>
+      </div>
+    </div>
+
+    <div class="controls-group">
+      <div class="mode-controls">
+        <button id="editModeBtn" class="active">Edit Mode</button>
+        <button id="rawCodeBtn">Show Raw Code</button>
+        <button id="renderModeBtn">Rendered HTML</button>
+        <button id="fullscreenBtn">⛶ Fullscreen</button>
+      </div>
+    </div>
+
+    <div class="controls-group">
+      <div class="toggle-controls">
+        <span class="status-indicator" id="cssStatusIndicator">CSS: ON</span>
+        <span class="status-indicator" id="jsStatusIndicator">JS: ON</span>
+      </div>
+    </div>
+  </div>
+
+  <textarea id="editor" placeholder="Write HTML or JS code here..."></textarea>
+  <div id="output"></div>
+  <div id="rendered"></div>
+
+  <script>
+    // DOM Elements
+    const editModeBtn = document.getElementById('editModeBtn');
+    const rawCodeBtn = document.getElementById('rawCodeBtn');
+    const renderModeBtn = document.getElementById('renderModeBtn');
+    const decreaseSpeedBtn = document.getElementById('decreaseSpeed');
+    const increaseSpeedBtn = document.getElementById('increaseSpeed');
+    const speedDisplay = document.getElementById('speedDisplay');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const cssStatusIndicator = document.getElementById('cssStatusIndicator');
+    const jsStatusIndicator = document.getElementById('jsStatusIndicator');
+    const editor = document.getElementById('editor');
+    const output = document.getElementById('output');
+    const rendered = document.getElementById('rendered');
+
+    // App State
+    const appState = {
+      mode: 'edit',
+      index: 0,
+      content: '',
+      typingInterval: null,
+      typingSpeed: 20,
+      parsedSegments: [],
+      extractedStyles: '',
+      showCssCode: true,
+      showJsCode: true
+    };
+
+    // Initialize the app
+    function init() {
+      setupEventListeners();
+      updateActiveButton();
+      updateStatusIndicators();
+      loadDemoContent();
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+      // Mode buttons
+      editModeBtn.addEventListener('click', switchToEditMode);
+      rawCodeBtn.addEventListener('click', switchToRawCodeMode);
+      renderModeBtn.addEventListener('click', switchToRenderMode);
+      
+      // Speed controls
+      decreaseSpeedBtn.addEventListener('click', decreaseSpeed);
+      increaseSpeedBtn.addEventListener('click', increaseSpeed);
+      
+      // Fullscreen
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenButton);
+      
+      // Toggle code visibility
+      cssStatusIndicator.addEventListener('click', toggleCssCode);
+      jsStatusIndicator.addEventListener('click', toggleJsCode);
+    }
+
+    // Update active button state
+    function updateActiveButton() {
+      editModeBtn.classList.toggle('active', appState.mode === 'edit');
+      rawCodeBtn.classList.toggle('active', appState.mode === 'raw');
+      renderModeBtn.classList.toggle('active', appState.mode === 'render');
+    }
+
+    // Update status indicators
+    function updateStatusIndicators() {
+      cssStatusIndicator.textContent = `CSS: ${appState.showCssCode ? 'ON' : 'OFF'}`;
+      cssStatusIndicator.className = `status-indicator ${appState.showCssCode ? 'active' : 'inactive'}`;
+      
+      jsStatusIndicator.textContent = `JS: ${appState.showJsCode ? 'ON' : 'OFF'}`;
+      jsStatusIndicator.className = `status-indicator ${appState.showJsCode ? 'active' : 'inactive'}`;
+    }
+
+    // Encode HTML so tags show visibly
+    function encodeHTML(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    // Typewriter effect for raw code
+    function typeRawCode() {
+      if (appState.index < appState.content.length) {
+        const visibleText = encodeHTML(appState.content.slice(0, appState.index));
+        output.innerHTML = '<pre><code class="language-markup">' + visibleText + '</code></pre><span class="blinking-caret"></span>';
+        Prism.highlightAll();
+        appState.index++;
+      } else {
+        output.innerHTML = '<pre><code class="language-markup">' + encodeHTML(appState.content) + '</code></pre>';
+        Prism.highlightAll();
+        clearInterval(appState.typingInterval);
+      }
+    }
+
+    // Extract and separate style tags from HTML
+    function extractStyles(html) {
+      const stylePattern = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+      let styles = '';
+      let match;
+      
+      while ((match = stylePattern.exec(html)) !== null) {
+        styles += match[1] + '\n';
+      }
+      
+      return styles;
+    }
+
+    // Parse HTML into segments (html, script, style)
+    function parseHTMLIntoSegments(html) {
+      const segments = [];
+      const allMatches = [];
+      
+      // Find all script tags
+      const scriptPattern = /<script[^>]*>([\s\S]*?)<\/script>/gi;
+      let match;
+      
+      while ((match = scriptPattern.exec(html)) !== null) {
+        allMatches.push({
+          type: 'script',
+          start: match.index,
+          end: match.index + match[0].length,
+          content: match[1].trim()
+        });
+      }
+      
+      // Find all style tags
+      const stylePattern = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+      
+      while ((match = stylePattern.exec(html)) !== null) {
+        allMatches.push({
+          type: 'style',
+          start: match.index,
+          end: match.index + match[0].length,
+          content: match[1].trim()
+        });
+      }
+      
+      // Sort matches by position
+      allMatches.sort((a, b) => a.start - b.start);
+      
+      let lastIndex = 0;
+      
+      for (let i = 0; i < allMatches.length; i++) {
+        // Add HTML segment before current tag
+        if (allMatches[i].start > lastIndex) {
+          segments.push({
+            type: 'html',
+            content: html.substring(lastIndex, allMatches[i].start)
+          });
+        }
+        
+        // Add script or style segment
+        segments.push({
+          type: allMatches[i].type,
+          content: allMatches[i].content
+        });
+        
+        lastIndex = allMatches[i].end;
+      }
+      
+      // Add remaining HTML
+      if (lastIndex < html.length) {
+        segments.push({
+          type: 'html',
+          content: html.substring(lastIndex)
+        });
+      }
+      
+      return segments;
+    }
+
+    // Build rendered output based on current character index
+    function buildRenderedOutput(charIndex) {
+      let htmlContent = '';
+      let codeBlocks = '';
+      let currentIndex = 0;
+      
+      for (let i = 0; i < appState.parsedSegments.length; i++) {
+        const segment = appState.parsedSegments[i];
+        const segmentLength = segment.content.length;
+        
+        if (currentIndex + segmentLength <= charIndex) {
+          // This segment is fully typed
+          if (segment.type === 'html') {
+            htmlContent += segment.content;
+          } else if (segment.type === 'script') {
+            const hiddenClass = appState.showJsCode ? '' : ' hidden';
+            codeBlocks += '<div class="code-block js-code-block' + hiddenClass + '">';
+            codeBlocks += '<div class="script-label">JavaScript Code:</div>';
+            codeBlocks += '<pre><code class="language-javascript">' + encodeHTML(segment.content) + '</code></pre>';
+            codeBlocks += '</div>';
+          } else if (segment.type === 'style') {
+            const hiddenClass = appState.showCssCode ? '' : ' hidden';
+            codeBlocks += '<div class="code-block css-code-block' + hiddenClass + '">';
+            codeBlocks += '<div class="style-label">CSS Code:</div>';
+            codeBlocks += '<pre><code class="language-css">' + encodeHTML(segment.content) + '</code></pre>';
+            codeBlocks += '</div>';
+          }
+          currentIndex += segmentLength;
+        } else {
+          // This segment is partially typed
+          const partialLength = charIndex - currentIndex;
+          if (partialLength > 0) {
+            if (segment.type === 'html') {
+              htmlContent += segment.content.substring(0, partialLength);
+            } else if (segment.type === 'script') {
+              const hiddenClass = appState.showJsCode ? '' : ' hidden';
+              codeBlocks += '<div class="code-block js-code-block' + hiddenClass + '">';
+              codeBlocks += '<div class="script-label">JavaScript Code:</div>';
+              codeBlocks += '<pre><code class="language-javascript">' + encodeHTML(segment.content.substring(0, partialLength)) + '</code></pre>';
+              codeBlocks += '</div>';
+            } else if (segment.type === 'style') {
+              const hiddenClass = appState.showCssCode ? '' : ' hidden';
+              codeBlocks += '<div class="code-block css-code-block' + hiddenClass + '">';
+              codeBlocks += '<div class="style-label">CSS Code:</div>';
+              codeBlocks += '<pre><code class="language-css">' + encodeHTML(segment.content.substring(0, partialLength)) + '</code></pre>';
+              codeBlocks += '</div>';
+            }
+          }
+          break;
+        }
+      }
+      
+      // Combine HTML content with code blocks
+      let result = '';
+      if (htmlContent) {
+        result += '<div id="rendered-content">' + htmlContent + '</div>';
+      }
+      if (codeBlocks) {
+        result += codeBlocks;
+      }
+      
+      return result;
+    }
+
+    // Calculate total character count across all segments
+    function getTotalCharCount() {
+      let total = 0;
+      for (let i = 0; i < appState.parsedSegments.length; i++) {
+        total += appState.parsedSegments[i].content.length;
+      }
+      return total;
+    }
+
+    // Apply extracted styles to the rendered content
+    function applyStyles(styles) {
+      // Remove existing dynamic style tag if present
+      const existingStyle = document.getElementById('dynamic-styles');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+      
+      if (styles) {
+        const styleTag = document.createElement('style');
+        styleTag.id = 'dynamic-styles';
+        styleTag.textContent = styles;
+        document.head.appendChild(styleTag);
+      }
+    }
+
+    // Typewriter effect for rendered HTML
+    function typeRenderedHTML() {
+      const totalChars = getTotalCharCount();
+      
+      if (appState.index < totalChars) {
+        const output = buildRenderedOutput(appState.index);
+        rendered.innerHTML = output + '<span class="blinking-caret"></span>';
+        
+        // Apply styles
+        applyStyles(appState.extractedStyles);
+        
+        setTimeout(function() {
+          Prism.highlightAll();
+        }, 0);
+        
+        appState.index++;
+      } else {
+        const output = buildRenderedOutput(totalChars);
+        rendered.innerHTML = output;
+        
+        // Apply styles
+        applyStyles(appState.extractedStyles);
+        
+        setTimeout(function() {
+          Prism.highlightAll();
+        }, 0);
+        
+        clearInterval(appState.typingInterval);
+      }
+    }
+
+    // Toggle CSS Code visibility
+    function toggleCssCode() {
+      appState.showCssCode = !appState.showCssCode;
+      updateStatusIndicators();
+      
+      // Update rendered output if in render mode
+      if (appState.mode === 'render') {
+        const cssBlocks = document.querySelectorAll('.css-code-block');
+        cssBlocks.forEach(function(block) {
+          block.classList.toggle('hidden', !appState.showCssCode);
+        });
+      }
+    }
+
+    // Toggle JavaScript Code visibility
+    function toggleJsCode() {
+      appState.showJsCode = !appState.showJsCode;
+      updateStatusIndicators();
+      
+      // Update rendered output if in render mode
+      if (appState.mode === 'render') {
+        const jsBlocks = document.querySelectorAll('.js-code-block');
+        jsBlocks.forEach(function(block) {
+          block.classList.toggle('hidden', !appState.showJsCode);
+        });
+      }
+    }
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(function() {
+          fullscreenBtn.textContent = '⛶ Exit Fullscreen';
+        }).catch(function(err) {
+          console.error('Error attempting to enable fullscreen:', err);
+        });
+      } else {
+        document.exitFullscreen().then(function() {
+          fullscreenBtn.textContent = '⛶ Fullscreen';
+        });
+      }
+    }
+
+    // Update fullscreen button text
+    function updateFullscreenButton() {
+      if (!document.fullscreenElement) {
+        fullscreenBtn.textContent = '⛶ Fullscreen';
+      } else {
+        fullscreenBtn.textContent = '⛶ Exit Fullscreen';
+      }
+    }
+
+    // Edit Mode
+    function switchToEditMode() {
+      clearInterval(appState.typingInterval);
+      appState.mode = 'edit';
+      editor.style.display = 'block';
+      output.style.display = 'none';
+      rendered.style.display = 'none';
+      
+      // Remove dynamic styles when leaving render mode
+      const existingStyle = document.getElementById('dynamic-styles');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+      
+      updateActiveButton();
+    }
+
+    // Show Raw Code with typing effect
+    function switchToRawCodeMode() {
+      clearInterval(appState.typingInterval);
+      appState.content = editor.value;
+      appState.index = 0;
+      appState.mode = 'raw';
+      editor.style.display = 'none';
+      rendered.style.display = 'none';
+      output.style.display = 'block';
+      output.innerHTML = '';
+      
+      // Remove dynamic styles when leaving render mode
+      const existingStyle = document.getElementById('dynamic-styles');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+      
+      updateActiveButton();
+      appState.typingInterval = setInterval(typeRawCode, appState.typingSpeed);
+    }
+
+    // Rendered HTML Mode with typing effect
+    function switchToRenderMode() {
+      clearInterval(appState.typingInterval);
+      appState.content = editor.value;
+      
+      // Extract styles first
+      appState.extractedStyles = extractStyles(appState.content);
+      
+      // Parse content into segments
+      appState.parsedSegments = parseHTMLIntoSegments(appState.content);
+      
+      appState.index = 0;
+      appState.mode = 'render';
+      editor.style.display = 'none';
+      output.style.display = 'none';
+      rendered.style.display = 'block';
+      rendered.innerHTML = '';
+      updateActiveButton();
+      appState.typingInterval = setInterval(typeRenderedHTML, appState.typingSpeed);
+    }
+
+    // Decrease typing speed (increase delay)
+    function decreaseSpeed() {
+      appState.typingSpeed = Math.min(appState.typingSpeed + 10, 200);
+      updateSpeedDisplay();
+      
+      if (appState.typingInterval && (appState.mode === 'raw' || appState.mode === 'render')) {
+        clearInterval(appState.typingInterval);
+        if (appState.mode === 'raw') {
+          appState.typingInterval = setInterval(typeRawCode, appState.typingSpeed);
+        } else if (appState.mode === 'render') {
+          appState.typingInterval = setInterval(typeRenderedHTML, appState.typingSpeed);
+        }
+      }
+    }
+
+    // Increase typing speed (decrease delay)
+    function increaseSpeed() {
+      appState.typingSpeed = Math.max(appState.typingSpeed - 10, 10);
+      updateSpeedDisplay();
+      
+      if (appState.typingInterval && (appState.mode === 'raw' || appState.mode === 'render')) {
+        clearInterval(appState.typingInterval);
+        if (appState.mode === 'raw') {
+          appState.typingInterval = setInterval(typeRawCode, appState.typingSpeed);
+        } else if (appState.mode === 'render') {
+          appState.typingInterval = setInterval(typeRenderedHTML, appState.typingSpeed);
+        }
+      }
+    }
+
+    // Update speed display
+    function updateSpeedDisplay() {
+      speedDisplay.textContent = 'Speed: ' + appState.typingSpeed + 'ms';
+    }
+
+    // Load demo content
+    function loadDemoContent() {
+      editor.value = `<style>
+.card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 30px;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.card h1 {
+  margin: 0 0 15px 0;
+  font-size: 2em;
+}
+
+.card p {
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.btn {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+</style>
+
+<div class="card">
+  <h1>Hello JavaScript</h1>
+  <p>Welcome to this interactive tutorial with styles and classes!</p>
+  <button id="button" class="btn">Click Me!</button>
+</div>
+
+<script>
+const btn = document.getElementById("button");
+if (btn) {
+  btn.addEventListener("click", () => {
+    alert("Button clicked!");
+  });
+}
+<\/script>`;
+    }
+
+    // Initialize the application
+    init();
+  </script>
+</body>
+</html>

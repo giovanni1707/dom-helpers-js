@@ -1,7 +1,7 @@
 {
   "name": "@giovanni1707/dom-helpers",
-  "version": "2.2.1",
-  "description": "A powerful, high-performance vanilla JavaScript DOM manipulation library with intelligent caching, automatic enhancement, and declarative APIs",
+  "version": "2.3.0",
+  "description": "A powerful, high-performance vanilla JavaScript DOM manipulation library with intelligent caching, automatic enhancement, declarative APIs, and bulk element creation",
   "main": "src/dom-helpers.js",
   "module": "src/dom-helpers.js",
   "types": "index.d.ts",

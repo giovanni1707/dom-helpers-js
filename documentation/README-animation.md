@@ -52,10 +52,10 @@ The DOM Helpers Animation module enhances vanilla JavaScript with declarative an
 ### Basic Setup
 ```html
 <!-- Load core first -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
 
 <!-- Then load the Animation module -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers-animation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-animation.min.js"></script>
 
 ```
 

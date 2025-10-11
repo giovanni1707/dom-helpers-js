@@ -3925,6 +3925,355 @@
     }
   }
 
+  // ===== BULK ELEMENT CREATION =====
+  /**
+   * Bulk element creation method
+   * Creates multiple elements with configurations in a single call
+   * 
+   * @param {Object} definitions - Object where keys are tag names and values are configuration objects
+   * @returns {Object} - Object with created elements and helper methods
+   * 
+   * @example
+   * const elements = createElement.bulk({
+   *   P: { textContent: 'Hello', style: { color: 'red' } },
+   *   H1: { textContent: 'Title' },
+   *   DIV_1: { className: 'container' },
+   *   DIV_2: { className: 'sidebar' }
+   * });
+   * 
+   * // Access elements
+   * elements.P      // The P element
+   * elements.H1     // The H1 element
+   * elements.all    // Array of all elements
+   * elements.toArray('P', 'H1')  // Get specific elements as array
+   * elements.ordered('H1', 'P')  // Get elements in specific order
+   */
+  function createElementsBulk(definitions = {}) {
+    if (!definitions || typeof definitions !== 'object') {
+      console.warn('[DOM Helpers] createElement.bulk() requires an object');
+      return null;
+    }
+
+    const createdElements = {};
+    const elementsList = [];
+
+    // Create all elements
+    Object.entries(definitions).forEach(([tagName, config]) => {
+      try {
+        // Handle numbered instances: DIV_1, DIV_2, etc.
+        let actualTagName = tagName;
+        const match = tagName.match(/^([A-Z]+)(_\d+)?$/i);
+        if (match) {
+          actualTagName = match[1];
+        }
+
+        // Create element using the enhanced createElement or original
+        const element = DEFAULTS.autoEnhanceCreateElement 
+          ? enhancedCreateElement(actualTagName)
+          : originalCreateElement.call(document, actualTagName);
+
+        // Apply configuration if provided
+        if (config && typeof config === 'object') {
+          Object.entries(config).forEach(([key, value]) => {
+            try {
+              // Handle style object
+              if (key === 'style' && typeof value === 'object' && value !== null) {
+                Object.assign(element.style, value);
+                return;
+              }
+
+              // Handle classList methods
+              if (key === 'classList' && typeof value === 'object' && value !== null) {
+                Object.entries(value).forEach(([method, classes]) => {
+                  try {
+                    switch (method) {
+                      case 'add':
+                        const addClasses = Array.isArray(classes) ? classes : [classes];
+                        element.classList.add(...addClasses);
+                        break;
+                      case 'remove':
+                        const removeClasses = Array.isArray(classes) ? classes : [classes];
+                        element.classList.remove(...removeClasses);
+                        break;
+                      case 'toggle':
+                        const toggleClasses = Array.isArray(classes) ? classes : [classes];
+                        toggleClasses.forEach(cls => element.classList.toggle(cls));
+                        break;
+                      case 'replace':
+                        if (Array.isArray(classes) && classes.length === 2) {
+                          element.classList.replace(classes[0], classes[1]);
+                        }
+                        break;
+                    }
+                  } catch (error) {
+                    console.warn(`[DOM Helpers] Error in classList.${method}: ${error.message}`);
+                  }
+                });
+                return;
+              }
+
+              // Handle setAttribute - support both array and object formats
+              if (key === 'setAttribute') {
+                if (typeof value === 'object' && !Array.isArray(value)) {
+                  // Object format: { src: 'image.png', alt: 'Description' }
+                  Object.entries(value).forEach(([attr, attrValue]) => {
+                    element.setAttribute(attr, attrValue);
+                  });
+                } else if (Array.isArray(value) && value.length >= 2) {
+                  // Array format: ['src', 'image.png']
+                  element.setAttribute(value[0], value[1]);
+                }
+                return;
+              }
+
+              // Handle dataset
+              if (key === 'dataset' && typeof value === 'object' && value !== null) {
+                Object.entries(value).forEach(([dataKey, dataValue]) => {
+                  element.dataset[dataKey] = dataValue;
+                });
+                return;
+              }
+
+              // Handle addEventListener
+              if (key === 'addEventListener') {
+                if (Array.isArray(value) && value.length >= 2) {
+                  const [eventType, handler, options] = value;
+                  element.addEventListener(eventType, handler, options);
+                } else if (typeof value === 'object' && value !== null) {
+                  // Object format for multiple events
+                  Object.entries(value).forEach(([eventType, handler]) => {
+                    if (typeof handler === 'function') {
+                      element.addEventListener(eventType, handler);
+                    } else if (Array.isArray(handler) && handler.length >= 1) {
+                      const [handlerFunc, options] = handler;
+                      element.addEventListener(eventType, handlerFunc, options);
+                    }
+                  });
+                }
+                return;
+              }
+
+              // Handle removeAttribute
+              if (key === 'removeAttribute') {
+                if (Array.isArray(value)) {
+                  value.forEach(attr => element.removeAttribute(attr));
+                } else if (typeof value === 'string') {
+                  element.removeAttribute(value);
+                }
+                return;
+              }
+
+              // Handle DOM methods
+              if (typeof element[key] === 'function') {
+                if (Array.isArray(value)) {
+                  element[key](...value);
+                } else {
+                  element[key](value);
+                }
+                return;
+              }
+
+              // Handle regular properties
+              if (key in element) {
+                element[key] = value;
+                return;
+              }
+
+              // Fallback to setAttribute
+              if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                element.setAttribute(key, String(value));
+              }
+            } catch (error) {
+              console.warn(`[DOM Helpers] Failed to apply config ${key} to ${tagName}:`, error.message);
+            }
+          });
+        }
+
+        // Enhance element with update method if not already enhanced
+        if (!element._hasUpdateMethod && !DEFAULTS.autoEnhanceCreateElement) {
+          addBasicUpdateMethod(element);
+        }
+
+        createdElements[tagName] = element;
+        elementsList.push({ key: tagName, element });
+
+      } catch (error) {
+        console.warn(`[DOM Helpers] Failed to create element ${tagName}:`, error.message);
+      }
+    });
+
+    // Return object with elements and helper methods
+    return {
+      ...createdElements,
+
+      /**
+       * Get elements as array in specified order
+       * If no arguments provided, returns all elements in creation order
+       * @param {...string} tagNames - Element keys to retrieve
+       * @returns {Array} Array of elements
+       */
+      toArray(...tagNames) {
+        if (tagNames.length === 0) {
+          return elementsList.map(({ element }) => element);
+        }
+        return tagNames.map(key => createdElements[key]).filter(Boolean);
+      },
+
+      /**
+       * Get elements in specified order (alias for toArray)
+       * @param {...string} tagNames - Element keys to retrieve
+       * @returns {Array} Array of elements in specified order
+       */
+      ordered(...tagNames) {
+        return this.toArray(...tagNames);
+      },
+
+      /**
+       * Get all elements as array (getter)
+       */
+      get all() {
+        return elementsList.map(({ element }) => element);
+      },
+
+      /**
+       * Update multiple elements at once
+       * @param {Object} updates - Object where keys are element keys and values are update objects
+       * @returns {Object} This object for chaining
+       */
+      updateMultiple(updates = {}) {
+        Object.entries(updates).forEach(([tagName, updateData]) => {
+          const element = createdElements[tagName];
+          if (element) {
+            // Use element's update method if available
+            if (typeof element.update === 'function') {
+              element.update(updateData);
+            } else {
+              // Fallback to applying updates directly
+              Object.entries(updateData).forEach(([key, value]) => {
+                try {
+                  if (key === 'style' && typeof value === 'object' && value !== null) {
+                    Object.assign(element.style, value);
+                  } else if (key in element) {
+                    element[key] = value;
+                  } else if (typeof value === 'string' || typeof value === 'number') {
+                    element.setAttribute(key, value);
+                  }
+                } catch (error) {
+                  console.warn(`[DOM Helpers] Failed to update ${key} on ${tagName}:`, error.message);
+                }
+              });
+            }
+          }
+        });
+        return this;
+      },
+
+      /**
+       * Get count of created elements (getter)
+       */
+      get count() {
+        return elementsList.length;
+      },
+
+      /**
+       * Get array of all element keys (getter)
+       */
+      get keys() {
+        return elementsList.map(({ key }) => key);
+      },
+
+      /**
+       * Check if an element exists by key
+       * @param {string} key - Element key to check
+       * @returns {boolean}
+       */
+      has(key) {
+        return key in createdElements;
+      },
+
+      /**
+       * Get element by key with fallback
+       * @param {string} key - Element key
+       * @param {*} fallback - Fallback value if element not found
+       * @returns {Element|*}
+       */
+      get(key, fallback = null) {
+        return createdElements[key] || fallback;
+      },
+
+      /**
+       * Execute a callback for each element
+       * @param {Function} callback - Callback function(element, key, index)
+       */
+      forEach(callback) {
+        elementsList.forEach(({ key, element }, index) => {
+          callback(element, key, index);
+        });
+      },
+
+      /**
+       * Map over elements
+       * @param {Function} callback - Callback function(element, key, index)
+       * @returns {Array}
+       */
+      map(callback) {
+        return elementsList.map(({ key, element }, index) => {
+          return callback(element, key, index);
+        });
+      },
+
+      /**
+       * Filter elements
+       * @param {Function} callback - Callback function(element, key, index)
+       * @returns {Array}
+       */
+      filter(callback) {
+        return elementsList
+          .filter(({ key, element }, index) => callback(element, key, index))
+          .map(({ element }) => element);
+      },
+
+      /**
+       * Append all elements to a container
+       * @param {Element|string} container - Container element or selector
+       * @returns {Object} This object for chaining
+       */
+      appendTo(container) {
+        const containerEl = typeof container === 'string' 
+          ? document.querySelector(container) 
+          : container;
+        
+        if (containerEl) {
+          this.all.forEach(element => containerEl.appendChild(element));
+        }
+        return this;
+      },
+
+      /**
+       * Append specific elements to a container
+       * @param {Element|string} container - Container element or selector
+       * @param {...string} tagNames - Element keys to append
+       * @returns {Object} This object for chaining
+       */
+      appendToOrdered(container, ...tagNames) {
+        const containerEl = typeof container === 'string' 
+          ? document.querySelector(container) 
+          : container;
+        
+        if (containerEl) {
+          this.ordered(...tagNames).forEach(element => {
+            if (element) containerEl.appendChild(element);
+          });
+        }
+        return this;
+      }
+    };
+  }
+
+  // Attach bulk creation method to enhanced createElement
+  enhancedCreateElement.bulk = createElementsBulk;
+  enhancedCreateElement.update = createElementsBulk; // Alias
+
   // ✅ NEW: Only override if explicitly enabled (OPT-IN)
   if (DEFAULTS.autoEnhanceCreateElement) {
     document.createElement = enhancedCreateElement;
@@ -4097,6 +4446,16 @@
   document.createElement.restore = function() {
     document.createElement = originalCreateElement;
   };
+
+  // ===== EXPORT createElement GLOBALLY =====
+  // Make createElement.bulk() and createElement.update() available globally
+  if (typeof global.DOMHelpers !== 'undefined') {
+    // Add to DOMHelpers object
+    global.DOMHelpers.createElement = enhancedCreateElement;
+  }
+  
+  // Also expose directly on window for easy access
+  global.createElement = enhancedCreateElement;
 
 })();
 

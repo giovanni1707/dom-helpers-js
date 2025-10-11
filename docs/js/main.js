@@ -341,7 +341,7 @@ function createCodePlayground(elementId, code) {
                     margin: 0;
                 }
             </style>
-            <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.2.1/dist/dom-helpers.min.js"><\/script>
+            <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"><\/script>
         </head>
         <body>
             ${code}
