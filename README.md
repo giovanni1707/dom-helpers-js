@@ -33,18 +33,18 @@ Include directly in your HTML using jsDelivr CDN:
 
 ```html
 <!-- Core library (minified) -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 
 <!-- Or use the combined version with all modules -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-combined.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-combined.min.js"></script>
 
 <!-- Individual modules -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-storage.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-form.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-animation.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-components.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-reactive.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-async.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-storage.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-form.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-animation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-components.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-reactive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-async.min.js"></script>
 ```
 
 **Pro Tip**: For production, always use a specific version number. For latest version, use `@latest`:
@@ -81,7 +81,7 @@ Alternatively, load directly from GitHub:
     </div>
     
     <!-- Load from jsDelivr CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
     <script>
         // Library is ready to use - no imports needed!
         Elements.myButton.update({

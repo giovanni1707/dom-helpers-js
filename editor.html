@@ -103,13 +103,75 @@
       text-align: center;
     }
 
-    #editor, #output, #rendered {
+    /* Split panel container */
+    #main-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .split-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .panel-header {
+      background: #16213e;
+      padding: 8px 15px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .panel-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .panel-controls button {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .resizer {
+      width: 5px;
+      background: #333;
+      cursor: col-resize;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .resizer:hover {
+      background: #4CAF50;
+    }
+
+    .resizer::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 2px;
+      height: 40px;
+      background: #666;
+    }
+
+    #editor, #output, #rendered, .panel-content {
       flex: 1;
       padding: 20px;
       overflow-y: auto;
       width: 100%;
       font-size: 1rem;
-      display: none;
     }
 
     #editor {
@@ -117,9 +179,13 @@
       resize: none;
       outline: none;
       font-family: "Fira Code", monospace;
-      display: block;
       background: #0d1117;
       color: #fff;
+      display: block;
+    }
+
+    .panel-content {
+      background: #0d1117;
     }
 
     pre {
@@ -149,7 +215,7 @@
       50% { border-color: rgba(255, 255, 255, 0.8); }
     }
 
-    #rendered {
+    #rendered, .panel-content.rendered-mode {
       background: #f9f9f9;
       color: #333;
     }
@@ -179,7 +245,7 @@
     }
 
     /* Render container to isolate styles */
-    #rendered-content {
+    #rendered-content, .rendered-html-content {
       background: #fff;
       padding: 20px;
       border-radius: 8px;
@@ -206,6 +272,12 @@
       border-radius: 10px;
       background: #333;
       color: #fff;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .status-indicator:hover {
+      opacity: 0.8;
     }
 
     .status-indicator.active {
@@ -215,9 +287,44 @@
     .status-indicator.inactive {
       background: #dc2626;
     }
+
+    /* Hide split view in edit mode */
+    body.edit-mode #main-container {
+      display: block;
+    }
+
+    body.edit-mode .split-panel:not(.left-panel) {
+      display: none;
+    }
+
+    body.edit-mode .resizer {
+      display: none;
+    }
+
+    body.edit-mode .left-panel {
+      width: 100%;
+    }
+
+    /* Single panel mode */
+    body.single-panel-mode .split-panel.right-panel,
+    body.single-panel-mode .resizer {
+      display: none;
+    }
+
+    body.single-panel-mode .split-panel.left-panel {
+      width: 100%;
+    }
+
+    .pause-icon::before {
+      content: '⏸';
+    }
+
+    button.paused .pause-icon::before {
+      content: '▶';
+    }
   </style>
 </head>
-<body>
+<body class="edit-mode">
   <div id="controls">
     <div class="controls-group">
       <div class="speed-controls">
@@ -238,15 +345,39 @@
 
     <div class="controls-group">
       <div class="toggle-controls">
+        <button id="pauseBtn" style="display: none;"><span class="pause-icon"></span> Pause</button>
+        <button id="resetBtn" style="display: none;">↻ Reset</button>
+        <button id="splitViewBtn">⚏ Split View</button>
         <span class="status-indicator" id="cssStatusIndicator">CSS: ON</span>
         <span class="status-indicator" id="jsStatusIndicator">JS: ON</span>
       </div>
     </div>
   </div>
 
-  <textarea id="editor" placeholder="Write HTML or JS code here..."></textarea>
-  <div id="output"></div>
-  <div id="rendered"></div>
+  <div id="main-container">
+    <!-- Left Panel -->
+    <div class="split-panel left-panel">
+      <div class="panel-header">
+        <div class="panel-title">Left Panel</div>
+      </div>
+      <div class="panel-content left-content">
+        <textarea id="editor" placeholder="Write HTML or JS code here..."></textarea>
+      </div>
+    </div>
+
+    <!-- Resizer -->
+    <div class="resizer" id="resizer"></div>
+
+    <!-- Right Panel -->
+    <div class="split-panel right-panel">
+      <div class="panel-header">
+        <div class="panel-title">Right Panel</div>
+      </div>
+      <div class="panel-content right-content">
+        <textarea id="editorRight" placeholder="Write HTML or JS code here..."></textarea>
+      </div>
+    </div>
+  </div>
 
   <script>
     // DOM Elements
@@ -257,21 +388,42 @@
     const increaseSpeedBtn = document.getElementById('increaseSpeed');
     const speedDisplay = document.getElementById('speedDisplay');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const splitViewBtn = document.getElementById('splitViewBtn');
     const cssStatusIndicator = document.getElementById('cssStatusIndicator');
     const jsStatusIndicator = document.getElementById('jsStatusIndicator');
     const editor = document.getElementById('editor');
-    const output = document.getElementById('output');
-    const rendered = document.getElementById('rendered');
+    const editorRight = document.getElementById('editorRight');
+    const leftContent = document.querySelector('.left-content');
+    const rightContent = document.querySelector('.right-content');
+    const resizer = document.getElementById('resizer');
+    const leftPanel = document.querySelector('.left-panel');
+    const rightPanel = document.querySelector('.right-panel');
 
     // App State
     const appState = {
       mode: 'edit',
-      index: 0,
-      content: '',
-      typingInterval: null,
+      splitViewEnabled: false,
+      leftPanel: {
+        index: 0,
+        content: '',
+        typingInterval: null,
+        parsedSegments: [],
+        extractedStyles: '',
+        isPaused: false,
+        isComplete: false
+      },
+      rightPanel: {
+        index: 0,
+        content: '',
+        typingInterval: null,
+        parsedSegments: [],
+        extractedStyles: '',
+        isPaused: false,
+        isComplete: false
+      },
       typingSpeed: 20,
-      parsedSegments: [],
-      extractedStyles: '',
       showCssCode: true,
       showJsCode: true
     };
@@ -282,6 +434,7 @@
       updateActiveButton();
       updateStatusIndicators();
       loadDemoContent();
+      setupResizer();
     }
 
     // Set up event listeners
@@ -299,9 +452,61 @@
       fullscreenBtn.addEventListener('click', toggleFullscreen);
       document.addEventListener('fullscreenchange', updateFullscreenButton);
       
+      // Pause and Reset
+      pauseBtn.addEventListener('click', togglePause);
+      resetBtn.addEventListener('click', resetTyping);
+      
+      // Split view
+      splitViewBtn.addEventListener('click', toggleSplitView);
+      
       // Toggle code visibility
       cssStatusIndicator.addEventListener('click', toggleCssCode);
       jsStatusIndicator.addEventListener('click', toggleJsCode);
+    }
+
+    // Setup resizer for split panel
+    function setupResizer() {
+      let isResizing = false;
+      
+      resizer.addEventListener('mousedown', function(e) {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+      });
+      
+      document.addEventListener('mousemove', function(e) {
+        if (!isResizing) return;
+        
+        const container = document.getElementById('main-container');
+        const containerRect = container.getBoundingClientRect();
+        const leftWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+        
+        if (leftWidth > 20 && leftWidth < 80) {
+          leftPanel.style.flex = leftWidth;
+          rightPanel.style.flex = 100 - leftWidth;
+        }
+      });
+      
+      document.addEventListener('mouseup', function() {
+        isResizing = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      });
+    }
+
+    // Toggle split view
+    function toggleSplitView() {
+      appState.splitViewEnabled = !appState.splitViewEnabled;
+      
+      if (appState.splitViewEnabled) {
+        document.body.classList.remove('single-panel-mode');
+        splitViewBtn.textContent = '⚏ Single View';
+        splitViewBtn.classList.add('active');
+      } else {
+        document.body.classList.add('single-panel-mode');
+        splitViewBtn.textContent = '⚏ Split View';
+        splitViewBtn.classList.remove('active');
+      }
     }
 
     // Update active button state
@@ -309,6 +514,22 @@
       editModeBtn.classList.toggle('active', appState.mode === 'edit');
       rawCodeBtn.classList.toggle('active', appState.mode === 'raw');
       renderModeBtn.classList.toggle('active', appState.mode === 'render');
+      
+      // Show/hide pause and reset buttons
+      const showControls = appState.mode !== 'edit';
+      pauseBtn.style.display = showControls ? 'block' : 'none';
+      resetBtn.style.display = showControls ? 'block' : 'none';
+      
+      // Update body class
+      if (appState.mode === 'edit') {
+        document.body.classList.add('edit-mode');
+        document.body.classList.remove('single-panel-mode');
+      } else {
+        document.body.classList.remove('edit-mode');
+        if (!appState.splitViewEnabled) {
+          document.body.classList.add('single-panel-mode');
+        }
+      }
     }
 
     // Update status indicators
@@ -318,6 +539,50 @@
       
       jsStatusIndicator.textContent = `JS: ${appState.showJsCode ? 'ON' : 'OFF'}`;
       jsStatusIndicator.className = `status-indicator ${appState.showJsCode ? 'active' : 'inactive'}`;
+      
+      // Only show CSS/JS toggles in raw or render mode
+      const showToggles = appState.mode === 'raw' || appState.mode === 'render';
+      cssStatusIndicator.style.display = (showToggles && appState.mode === 'raw') ? 'inline-block' : 'none';
+      jsStatusIndicator.style.display = showToggles ? 'inline-block' : 'none';
+    }
+
+    // Toggle pause/resume
+    function togglePause() {
+      if (appState.splitViewEnabled) {
+        appState.leftPanel.isPaused = !appState.leftPanel.isPaused;
+        appState.rightPanel.isPaused = !appState.rightPanel.isPaused;
+      } else {
+        appState.leftPanel.isPaused = !appState.leftPanel.isPaused;
+      }
+      
+      pauseBtn.classList.toggle('paused', appState.leftPanel.isPaused);
+      pauseBtn.innerHTML = appState.leftPanel.isPaused ? '<span class="pause-icon"></span> Resume' : '<span class="pause-icon"></span> Pause';
+    }
+
+    // Reset typing
+    function resetTyping() {
+      // Clear intervals
+      clearInterval(appState.leftPanel.typingInterval);
+      clearInterval(appState.rightPanel.typingInterval);
+      
+      // Reset state
+      appState.leftPanel.index = 0;
+      appState.leftPanel.isComplete = false;
+      appState.leftPanel.isPaused = false;
+      appState.rightPanel.index = 0;
+      appState.rightPanel.isComplete = false;
+      appState.rightPanel.isPaused = false;
+      
+      // Reset pause button
+      pauseBtn.classList.remove('paused');
+      pauseBtn.innerHTML = '<span class="pause-icon"></span> Pause';
+      
+      // Restart typing based on mode
+      if (appState.mode === 'raw') {
+        switchToRawCodeMode();
+      } else if (appState.mode === 'render') {
+        switchToRenderMode();
+      }
     }
 
     // Encode HTML so tags show visibly
@@ -329,16 +594,19 @@
     }
 
     // Typewriter effect for raw code
-    function typeRawCode() {
-      if (appState.index < appState.content.length) {
-        const visibleText = encodeHTML(appState.content.slice(0, appState.index));
-        output.innerHTML = '<pre><code class="language-markup">' + visibleText + '</code></pre><span class="blinking-caret"></span>';
+    function typeRawCode(panel, panelState, container) {
+      if (panelState.isPaused) return;
+      
+      if (panelState.index < panelState.content.length) {
+        const visibleText = encodeHTML(panelState.content.slice(0, panelState.index));
+        container.innerHTML = '<pre><code class="language-markup">' + visibleText + '</code></pre><span class="blinking-caret"></span>';
         Prism.highlightAll();
-        appState.index++;
+        panelState.index++;
       } else {
-        output.innerHTML = '<pre><code class="language-markup">' + encodeHTML(appState.content) + '</code></pre>';
+        container.innerHTML = '<pre><code class="language-markup">' + encodeHTML(panelState.content) + '</code></pre>';
         Prism.highlightAll();
-        clearInterval(appState.typingInterval);
+        clearInterval(panelState.typingInterval);
+        panelState.isComplete = true;
       }
     }
 
@@ -420,13 +688,14 @@
     }
 
     // Build rendered output based on current character index
-    function buildRenderedOutput(charIndex) {
+    function buildRenderedOutput(panelState, charIndex) {
       let htmlContent = '';
-      let codeBlocks = '';
+      let jsCodeBlocks = '';
+      let cssCodeBlocks = '';
       let currentIndex = 0;
       
-      for (let i = 0; i < appState.parsedSegments.length; i++) {
-        const segment = appState.parsedSegments[i];
+      for (let i = 0; i < panelState.parsedSegments.length; i++) {
+        const segment = panelState.parsedSegments[i];
         const segmentLength = segment.content.length;
         
         if (currentIndex + segmentLength <= charIndex) {
@@ -434,17 +703,15 @@
           if (segment.type === 'html') {
             htmlContent += segment.content;
           } else if (segment.type === 'script') {
-            const hiddenClass = appState.showJsCode ? '' : ' hidden';
-            codeBlocks += '<div class="code-block js-code-block' + hiddenClass + '">';
-            codeBlocks += '<div class="script-label">JavaScript Code:</div>';
-            codeBlocks += '<pre><code class="language-javascript">' + encodeHTML(segment.content) + '</code></pre>';
-            codeBlocks += '</div>';
+            jsCodeBlocks += '<div class="code-block js-code-block' + (appState.showJsCode ? '' : ' hidden') + '">';
+            jsCodeBlocks += '<div class="script-label">JavaScript Code:</div>';
+            jsCodeBlocks += '<pre><code class="language-javascript">' + encodeHTML(segment.content) + '</code></pre>';
+            jsCodeBlocks += '</div>';
           } else if (segment.type === 'style') {
-            const hiddenClass = appState.showCssCode ? '' : ' hidden';
-            codeBlocks += '<div class="code-block css-code-block' + hiddenClass + '">';
-            codeBlocks += '<div class="style-label">CSS Code:</div>';
-            codeBlocks += '<pre><code class="language-css">' + encodeHTML(segment.content) + '</code></pre>';
-            codeBlocks += '</div>';
+            cssCodeBlocks += '<div class="code-block css-code-block' + (appState.showCssCode ? '' : ' hidden') + '">';
+            cssCodeBlocks += '<div class="style-label">CSS Code:</div>';
+            cssCodeBlocks += '<pre><code class="language-css">' + encodeHTML(segment.content) + '</code></pre>';
+            cssCodeBlocks += '</div>';
           }
           currentIndex += segmentLength;
         } else {
@@ -454,88 +721,93 @@
             if (segment.type === 'html') {
               htmlContent += segment.content.substring(0, partialLength);
             } else if (segment.type === 'script') {
-              const hiddenClass = appState.showJsCode ? '' : ' hidden';
-              codeBlocks += '<div class="code-block js-code-block' + hiddenClass + '">';
-              codeBlocks += '<div class="script-label">JavaScript Code:</div>';
-              codeBlocks += '<pre><code class="language-javascript">' + encodeHTML(segment.content.substring(0, partialLength)) + '</code></pre>';
-              codeBlocks += '</div>';
+              jsCodeBlocks += '<div class="code-block js-code-block' + (appState.showJsCode ? '' : ' hidden') + '">';
+              jsCodeBlocks += '<div class="script-label">JavaScript Code:</div>';
+              jsCodeBlocks += '<pre><code class="language-javascript">' + encodeHTML(segment.content.substring(0, partialLength)) + '</code></pre>';
+              jsCodeBlocks += '</div>';
             } else if (segment.type === 'style') {
-              const hiddenClass = appState.showCssCode ? '' : ' hidden';
-              codeBlocks += '<div class="code-block css-code-block' + hiddenClass + '">';
-              codeBlocks += '<div class="style-label">CSS Code:</div>';
-              codeBlocks += '<pre><code class="language-css">' + encodeHTML(segment.content.substring(0, partialLength)) + '</code></pre>';
-              codeBlocks += '</div>';
+              cssCodeBlocks += '<div class="code-block css-code-block' + (appState.showCssCode ? '' : ' hidden') + '">';
+              cssCodeBlocks += '<div class="style-label">CSS Code:</div>';
+              cssCodeBlocks += '<pre><code class="language-css">' + encodeHTML(segment.content.substring(0, partialLength)) + '</code></pre>';
+              cssCodeBlocks += '</div>';
             }
           }
           break;
         }
       }
       
-      // Combine HTML content with code blocks
+      // In render mode: HTML first, then JS, then CSS
       let result = '';
       if (htmlContent) {
-        result += '<div id="rendered-content">' + htmlContent + '</div>';
+        result += '<div class="rendered-html-content">' + htmlContent + '</div>';
       }
-      if (codeBlocks) {
-        result += codeBlocks;
+      if (jsCodeBlocks) {
+        result += jsCodeBlocks;
+      }
+      if (cssCodeBlocks) {
+        result += cssCodeBlocks;
       }
       
       return result;
     }
 
     // Calculate total character count across all segments
-    function getTotalCharCount() {
+    function getTotalCharCount(panelState) {
       let total = 0;
-      for (let i = 0; i < appState.parsedSegments.length; i++) {
-        total += appState.parsedSegments[i].content.length;
+      for (let i = 0; i < panelState.parsedSegments.length; i++) {
+        total += panelState.parsedSegments[i].content.length;
       }
       return total;
     }
 
     // Apply extracted styles to the rendered content
-    function applyStyles(styles) {
+    function applyStyles(styles, panelId) {
       // Remove existing dynamic style tag if present
-      const existingStyle = document.getElementById('dynamic-styles');
+      const styleId = 'dynamic-styles-' + panelId;
+      const existingStyle = document.getElementById(styleId);
       if (existingStyle) {
         existingStyle.remove();
       }
       
       if (styles) {
         const styleTag = document.createElement('style');
-        styleTag.id = 'dynamic-styles';
+        styleTag.id = styleId;
         styleTag.textContent = styles;
         document.head.appendChild(styleTag);
       }
     }
 
     // Typewriter effect for rendered HTML
-    function typeRenderedHTML() {
-      const totalChars = getTotalCharCount();
+    function typeRenderedHTML(panel, panelState, container, panelId) {
+      if (panelState.isPaused) return;
       
-      if (appState.index < totalChars) {
-        const output = buildRenderedOutput(appState.index);
-        rendered.innerHTML = output + '<span class="blinking-caret"></span>';
+      const totalChars = getTotalCharCount(panelState);
+      
+      if (panelState.index < totalChars) {
+        const output = buildRenderedOutput(panelState, panelState.index);
+        container.innerHTML = output + '<span class="blinking-caret"></span>';
         
         // Apply styles
-        applyStyles(appState.extractedStyles);
+        applyStyles(panelState.extractedStyles, panelId);
         
         setTimeout(function() {
           Prism.highlightAll();
         }, 0);
         
-        appState.index++;
+        panelState.index++;
       } else {
-        const output = buildRenderedOutput(totalChars);
-        rendered.innerHTML = output;
+        const output = buildRenderedOutput(panelState, totalChars);
+        container.innerHTML = output;
         
         // Apply styles
-        applyStyles(appState.extractedStyles);
+        applyStyles(panelState.extractedStyles, panelId);
         
         setTimeout(function() {
           Prism.highlightAll();
         }, 0);
         
-        clearInterval(appState.typingInterval);
+        clearInterval(panelState.typingInterval);
+        panelState.isComplete = true;
       }
     }
 
@@ -544,12 +816,16 @@
       appState.showCssCode = !appState.showCssCode;
       updateStatusIndicators();
       
-      // Update rendered output if in render mode
+      // Update rendered output if in render or raw mode
       if (appState.mode === 'render') {
         const cssBlocks = document.querySelectorAll('.css-code-block');
         cssBlocks.forEach(function(block) {
           block.classList.toggle('hidden', !appState.showCssCode);
         });
+      } else if (appState.mode === 'raw') {
+        // In raw mode, CSS toggle should hide/show CSS code
+        // Re-render the content
+        updateRawCodeDisplay();
       }
     }
 
@@ -565,6 +841,33 @@
           block.classList.toggle('hidden', !appState.showJsCode);
         });
       }
+    }
+
+    // Update raw code display with CSS toggle
+    function updateRawCodeDisplay() {
+      // Left panel
+      if (appState.leftPanel.isComplete) {
+        const filteredContent = filterRawCode(appState.leftPanel.content);
+        leftContent.innerHTML = '<pre><code class="language-markup">' + encodeHTML(filteredContent) + '</code></pre>';
+        Prism.highlightAll();
+      }
+      
+      // Right panel
+      if (appState.splitViewEnabled && appState.rightPanel.isComplete) {
+        const filteredContent = filterRawCode(appState.rightPanel.content);
+        rightContent.innerHTML = '<pre><code class="language-markup">' + encodeHTML(filteredContent) + '</code></pre>';
+        Prism.highlightAll();
+      }
+    }
+
+    // Filter raw code based on CSS visibility
+    function filterRawCode(content) {
+      if (appState.showCssCode) {
+        return content;
+      }
+      
+      // Remove CSS style tags
+      return content.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
     }
 
     // Fullscreen Toggle
@@ -593,61 +896,161 @@
 
     // Edit Mode
     function switchToEditMode() {
-      clearInterval(appState.typingInterval);
-      appState.mode = 'edit';
-      editor.style.display = 'block';
-      output.style.display = 'none';
-      rendered.style.display = 'none';
+      clearInterval(appState.leftPanel.typingInterval);
+      clearInterval(appState.rightPanel.typingInterval);
       
-      // Remove dynamic styles when leaving render mode
-      const existingStyle = document.getElementById('dynamic-styles');
-      if (existingStyle) {
-        existingStyle.remove();
-      }
+      appState.mode = 'edit';
+      
+      // Show editors
+      editor.style.display = 'block';
+      editorRight.style.display = 'block';
+      
+      // Clear content areas
+      leftContent.innerHTML = '';
+      rightContent.innerHTML = '';
+      leftContent.appendChild(editor);
+      rightContent.appendChild(editorRight);
+      
+      // Remove dynamic styles
+      removeDynamicStyles();
       
       updateActiveButton();
+      updateStatusIndicators();
     }
 
     // Show Raw Code with typing effect
     function switchToRawCodeMode() {
-      clearInterval(appState.typingInterval);
-      appState.content = editor.value;
-      appState.index = 0;
-      appState.mode = 'raw';
-      editor.style.display = 'none';
-      rendered.style.display = 'none';
-      output.style.display = 'block';
-      output.innerHTML = '';
+      clearInterval(appState.leftPanel.typingInterval);
+      clearInterval(appState.rightPanel.typingInterval);
       
-      // Remove dynamic styles when leaving render mode
-      const existingStyle = document.getElementById('dynamic-styles');
-      if (existingStyle) {
-        existingStyle.remove();
+      appState.mode = 'raw';
+      
+      // If typing was complete, preserve it
+      if (!appState.leftPanel.isComplete) {
+        appState.leftPanel.content = editor.value;
+        appState.leftPanel.index = 0;
       }
       
+      if (appState.splitViewEnabled && !appState.rightPanel.isComplete) {
+        appState.rightPanel.content = editorRight.value;
+        appState.rightPanel.index = 0;
+      }
+      
+      // Hide editors
+      editor.style.display = 'none';
+      editorRight.style.display = 'none';
+      
+      // Clear and setup left panel
+      leftContent.innerHTML = '';
+      leftContent.classList.remove('rendered-mode');
+      
+      if (appState.leftPanel.isComplete) {
+        // Show completed content immediately
+        const filteredContent = filterRawCode(appState.leftPanel.content);
+        leftContent.innerHTML = '<pre><code class="language-markup">' + encodeHTML(filteredContent) + '</code></pre>';
+        Prism.highlightAll();
+      } else {
+        // Start typing
+        appState.leftPanel.typingInterval = setInterval(function() {
+          typeRawCode('left', appState.leftPanel, leftContent);
+        }, appState.typingSpeed);
+      }
+      
+      // Setup right panel if split view
+      if (appState.splitViewEnabled) {
+        rightContent.innerHTML = '';
+        rightContent.classList.remove('rendered-mode');
+        
+        if (appState.rightPanel.isComplete) {
+          const filteredContent = filterRawCode(appState.rightPanel.content);
+          rightContent.innerHTML = '<pre><code class="language-markup">' + encodeHTML(filteredContent) + '</code></pre>';
+          Prism.highlightAll();
+        } else {
+          appState.rightPanel.typingInterval = setInterval(function() {
+            typeRawCode('right', appState.rightPanel, rightContent);
+          }, appState.typingSpeed);
+        }
+      }
+      
+      // Remove dynamic styles when leaving render mode
+      removeDynamicStyles();
+      
       updateActiveButton();
-      appState.typingInterval = setInterval(typeRawCode, appState.typingSpeed);
+      updateStatusIndicators();
     }
 
     // Rendered HTML Mode with typing effect
     function switchToRenderMode() {
-      clearInterval(appState.typingInterval);
-      appState.content = editor.value;
+      clearInterval(appState.leftPanel.typingInterval);
+      clearInterval(appState.rightPanel.typingInterval);
       
-      // Extract styles first
-      appState.extractedStyles = extractStyles(appState.content);
-      
-      // Parse content into segments
-      appState.parsedSegments = parseHTMLIntoSegments(appState.content);
-      
-      appState.index = 0;
       appState.mode = 'render';
+      
+      // If typing was complete, preserve it
+      if (!appState.leftPanel.isComplete) {
+        appState.leftPanel.content = editor.value;
+        appState.leftPanel.extractedStyles = extractStyles(appState.leftPanel.content);
+        appState.leftPanel.parsedSegments = parseHTMLIntoSegments(appState.leftPanel.content);
+        appState.leftPanel.index = 0;
+      }
+      
+      if (appState.splitViewEnabled && !appState.rightPanel.isComplete) {
+        appState.rightPanel.content = editorRight.value;
+        appState.rightPanel.extractedStyles = extractStyles(appState.rightPanel.content);
+        appState.rightPanel.parsedSegments = parseHTMLIntoSegments(appState.rightPanel.content);
+        appState.rightPanel.index = 0;
+      }
+      
+      // Hide editors
       editor.style.display = 'none';
-      output.style.display = 'none';
-      rendered.style.display = 'block';
-      rendered.innerHTML = '';
+      editorRight.style.display = 'none';
+      
+      // Clear and setup left panel
+      leftContent.innerHTML = '';
+      leftContent.classList.add('rendered-mode');
+      
+      if (appState.leftPanel.isComplete) {
+        // Show completed content immediately
+        const totalChars = getTotalCharCount(appState.leftPanel);
+        const output = buildRenderedOutput(appState.leftPanel, totalChars);
+        leftContent.innerHTML = output;
+        applyStyles(appState.leftPanel.extractedStyles, 'left');
+        Prism.highlightAll();
+      } else {
+        // Start typing
+        appState.leftPanel.typingInterval = setInterval(function() {
+          typeRenderedHTML('left', appState.leftPanel, leftContent, 'left');
+        }, appState.typingSpeed);
+      }
+      
+      // Setup right panel if split view
+      if (appState.splitViewEnabled) {
+        rightContent.innerHTML = '';
+        rightContent.classList.add('rendered-mode');
+        
+        if (appState.rightPanel.isComplete) {
+          const totalChars = getTotalCharCount(appState.rightPanel);
+          const output = buildRenderedOutput(appState.rightPanel, totalChars);
+          rightContent.innerHTML = output;
+          applyStyles(appState.rightPanel.extractedStyles, 'right');
+          Prism.highlightAll();
+        } else {
+          appState.rightPanel.typingInterval = setInterval(function() {
+            typeRenderedHTML('right', appState.rightPanel, rightContent, 'right');
+          }, appState.typingSpeed);
+        }
+      }
+      
       updateActiveButton();
-      appState.typingInterval = setInterval(typeRenderedHTML, appState.typingSpeed);
+      updateStatusIndicators();
+    }
+
+    // Remove all dynamic styles
+    function removeDynamicStyles() {
+      const leftStyle = document.getElementById('dynamic-styles-left');
+      const rightStyle = document.getElementById('dynamic-styles-right');
+      if (leftStyle) leftStyle.remove();
+      if (rightStyle) rightStyle.remove();
     }
 
     // Decrease typing speed (increase delay)
@@ -655,12 +1058,33 @@
       appState.typingSpeed = Math.min(appState.typingSpeed + 10, 200);
       updateSpeedDisplay();
       
-      if (appState.typingInterval && (appState.mode === 'raw' || appState.mode === 'render')) {
-        clearInterval(appState.typingInterval);
-        if (appState.mode === 'raw') {
-          appState.typingInterval = setInterval(typeRawCode, appState.typingSpeed);
-        } else if (appState.mode === 'render') {
-          appState.typingInterval = setInterval(typeRenderedHTML, appState.typingSpeed);
+      // Restart intervals with new speed
+      if (appState.mode === 'raw' || appState.mode === 'render') {
+        clearInterval(appState.leftPanel.typingInterval);
+        clearInterval(appState.rightPanel.typingInterval);
+        
+        if (!appState.leftPanel.isComplete) {
+          if (appState.mode === 'raw') {
+            appState.leftPanel.typingInterval = setInterval(function() {
+              typeRawCode('left', appState.leftPanel, leftContent);
+            }, appState.typingSpeed);
+          } else {
+            appState.leftPanel.typingInterval = setInterval(function() {
+              typeRenderedHTML('left', appState.leftPanel, leftContent, 'left');
+            }, appState.typingSpeed);
+          }
+        }
+        
+        if (appState.splitViewEnabled && !appState.rightPanel.isComplete) {
+          if (appState.mode === 'raw') {
+            appState.rightPanel.typingInterval = setInterval(function() {
+              typeRawCode('right', appState.rightPanel, rightContent);
+            }, appState.typingSpeed);
+          } else {
+            appState.rightPanel.typingInterval = setInterval(function() {
+              typeRenderedHTML('right', appState.rightPanel, rightContent, 'right');
+            }, appState.typingSpeed);
+          }
         }
       }
     }
@@ -670,12 +1094,33 @@
       appState.typingSpeed = Math.max(appState.typingSpeed - 10, 10);
       updateSpeedDisplay();
       
-      if (appState.typingInterval && (appState.mode === 'raw' || appState.mode === 'render')) {
-        clearInterval(appState.typingInterval);
-        if (appState.mode === 'raw') {
-          appState.typingInterval = setInterval(typeRawCode, appState.typingSpeed);
-        } else if (appState.mode === 'render') {
-          appState.typingInterval = setInterval(typeRenderedHTML, appState.typingSpeed);
+      // Restart intervals with new speed
+      if (appState.mode === 'raw' || appState.mode === 'render') {
+        clearInterval(appState.leftPanel.typingInterval);
+        clearInterval(appState.rightPanel.typingInterval);
+        
+        if (!appState.leftPanel.isComplete) {
+          if (appState.mode === 'raw') {
+            appState.leftPanel.typingInterval = setInterval(function() {
+              typeRawCode('left', appState.leftPanel, leftContent);
+            }, appState.typingSpeed);
+          } else {
+            appState.leftPanel.typingInterval = setInterval(function() {
+              typeRenderedHTML('left', appState.leftPanel, leftContent, 'left');
+            }, appState.typingSpeed);
+          }
+        }
+        
+        if (appState.splitViewEnabled && !appState.rightPanel.isComplete) {
+          if (appState.mode === 'raw') {
+            appState.rightPanel.typingInterval = setInterval(function() {
+              typeRawCode('right', appState.rightPanel, rightContent);
+            }, appState.typingSpeed);
+          } else {
+            appState.rightPanel.typingInterval = setInterval(function() {
+              typeRenderedHTML('right', appState.rightPanel, rightContent, 'right');
+            }, appState.typingSpeed);
+          }
         }
       }
     }
@@ -687,7 +1132,7 @@
 
     // Load demo content
     function loadDemoContent() {
-      editor.value = `<style>
+      const demoCode = `<style>
 .card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 30px;
@@ -739,6 +1184,42 @@ if (btn) {
   });
 }
 <\/script>`;
+
+      editor.value = demoCode;
+      
+      // Load different demo for right panel
+      const demoCode2 = `<style>
+.info-box {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  padding: 25px;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  max-width: 350px;
+  margin: 20px auto;
+}
+
+.info-box h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.8em;
+}
+
+.info-box p {
+  font-size: 1em;
+  line-height: 1.5;
+}
+</style>
+
+<div class="info-box">
+  <h2>Comparison Panel</h2>
+  <p>This is a different code example for comparison!</p>
+</div>
+
+<script>
+console.log("Right panel loaded!");
+<\/script>`;
+      
+      editorRight.value = demoCode2;
     }
 
     // Initialize the application

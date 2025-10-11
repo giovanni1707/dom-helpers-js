@@ -16,10 +16,10 @@ Load from npm registry via jsDelivr:
 
 ```html
 <!-- Core library only -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 
 <!-- Combined version (all modules) -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-combined.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-combined.min.js"></script>
 ```
 
 ### Option 2: GitHub-based CDN
@@ -34,13 +34,13 @@ Load directly from GitHub repository:
 
 ### Core Library
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 ```
 **Use when**: You only need basic DOM manipulation (Elements, Collections, Selector)
 **Size**
 ### Combined Library
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-combined.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-combined.min.js"></script>
 ```
 **Use when**: You need all features (storage, forms, animations, components, reactive, async)
 **Size**
@@ -48,27 +48,27 @@ Load directly from GitHub repository:
 ### Individual Modules
 ```html
 <!-- Load core first -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 
 <!-- Then load only the modules you need -->
 
  <!-- Storage -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-storage.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-storage.min.js"></script>
 
 <!-- Forms -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-form.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-form.min.js"></script>
 
 <!-- Animations -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-animation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-animation.min.js"></script>
 
 <!-- Components -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-components.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-components.min.js"></script>
 
 <!-- Reactive -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-reactive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-reactive.min.js"></script>
 
 <!-- Async -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-async.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-async.min.js"></script>
 ```
 
 ## 🔢 Version Management
@@ -76,7 +76,7 @@ Load directly from GitHub repository:
 ### Specific Version (Production)
 ```html
 <!-- Always use specific version in production -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 ```
 
 ### Latest Version (Development)
@@ -128,7 +128,7 @@ Load directly from GitHub repository:
 
     <!-- Load DOM Helpers from CDN -->
    
-    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
    
     
     <script>
@@ -198,7 +198,7 @@ Load directly from GitHub repository:
     </div>
 
     <!-- Load combined version with all modules -->
-    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-combined.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-combined.min.js"></script>
     
     <script>
         // Initialize storage for todos
@@ -284,9 +284,9 @@ Load directly from GitHub repository:
     <div id="status"></div>
 
     <!-- Load only the modules you need -->
-    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-form.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-storage.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-form.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-storage.min.js"></script>
     
     <script>
         // Use form utilities
@@ -324,7 +324,7 @@ For production, add integrity checks:
 
 ```html
 <script 
-    src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"
+    src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"
     integrity="sha384-..."
     crossorigin="anonymous">
 </script>
@@ -336,7 +336,7 @@ Generate SRI hash at: https://www.srihash.org/
 
 ```html
 <link rel="preload" 
-      href="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js" 
+      href="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js" 
       as="script">
 ```
 
@@ -345,14 +345,14 @@ Generate SRI hash at: https://www.srihash.org/
 ```html
 <script 
     defer
-    src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js">
+    src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js">
 </script>
 ```
 
 ### 4. Load from Multiple CDNs (Fallback)
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 <script>
     // Fallback to GitHub CDN if jsDelivr fails
     if (typeof Elements === 'undefined') {
@@ -384,28 +384,28 @@ Generate SRI hash at: https://www.srihash.org/
 
 ```html
 <!-- Core -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js
 
 <!-- Storage -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-storage.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-storage.min.js
 
 <!-- Forms -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-form.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-form.min.js
 
 <!-- Animations -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-animation.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-animation.min.js
 
 <!-- Components -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-components.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-components.min.js
 
 <!-- Reactive -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-reactive.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-reactive.min.js
 
 <!-- Async -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-async.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-async.min.js
 
 <!-- Combined (All modules) -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-combined.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-combined.min.js
 ```
 
 ## 🎓 Quick Start for Beginners
@@ -415,7 +415,7 @@ If you're new to CDNs, here's the simplest way to get started:
 1. Create an HTML file
 2. Add this script tag before your code:
    ```html
-   <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
    ```
 3. Start using DOM Helpers immediately - no installation needed!
 

@@ -8,7 +8,7 @@
  * - Collections Helper (Class/Tag/Name-based DOM access)
  * - Selector Helper (querySelector/querySelectorAll with caching)
  * 
- * @version 2.2.1
+ * @version 2.3.1
  * @license MIT
  */
 
@@ -3789,7 +3789,7 @@
     ProductionSelectorHelper: global.ProductionSelectorHelper,
     
     // Utility methods
-    version: '2.2.1',
+    version: '2.3.1',
     
     // Check if all helpers are available
     isReady() {

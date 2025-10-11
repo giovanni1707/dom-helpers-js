@@ -144,7 +144,7 @@ Update your CDN link to use the latest version:
 
 ```html
 <!-- Update from 2.2.1 to 2.3.0 -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 
 <!-- Or use @latest for automatic updates -->
 <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@latest/dist/dom-helpers.min.js"></script>

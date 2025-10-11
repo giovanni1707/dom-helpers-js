@@ -269,7 +269,7 @@ npm view @giovanni1707/dom-helpers version
 ### 4. Verify CDN (wait 10 minutes after npm publish)
 Test URL:
 ```
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js
 ```
 
 ### 5. Update Documentation Links

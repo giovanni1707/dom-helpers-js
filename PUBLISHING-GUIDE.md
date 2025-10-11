@@ -308,12 +308,12 @@ git push origin v2.3.0
    
    **npm:**
    ```bash
-   npm install @giovanni1707/dom-helpers@2.3.0
+   npm install @giovanni1707/dom-helpers@2.3.1
    ```
    
    **CDN:**
    ```html
-   <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
    ```
    
    ### Upgrade Notes
@@ -382,7 +382,7 @@ Wait 5-10 minutes after npm publish, then test:
     <div id="test"></div>
     
     <!-- Test version-specific URL -->
-    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
     
     <script>
         // Verify bulk creation works
@@ -404,7 +404,7 @@ Test all these URLs:
 
 ```html
 <!-- Version-specific -->
-https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js
+https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js
 
 <!-- Latest version -->
 https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@latest/dist/dom-helpers.min.js
@@ -434,7 +434,7 @@ Ensure all README and documentation links point to correct version:
 
 ```markdown
 <!-- Update version numbers in README.md -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 ```
 
 ### 2. Announce the Release

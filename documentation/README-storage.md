@@ -25,13 +25,13 @@ The DOM Helpers Storage Module transforms the basic `localStorage` and `sessionS
 <!-- Include the main DOM Helpers library first -->
 
 <!-- Load core first -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
 
 <!-- Then load the Storage module -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-storage.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-storage.min.js"></script>
 
 <!-- Forms -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.0/dist/dom-helpers-form.min.js"></script> <!-- Optional, for forms integration -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers-form.min.js"></script> <!-- Optional, for forms integration -->
 
 ```
 
