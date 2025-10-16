@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOM Helpers Documentation</title>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/vue.css" />
+</head>
+<body>
+  <div id="app">Loading Documentation...</div>
+
+
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
+
+
+  <script>
+    window.$docsify = {
+      name: 'DOM Helpers',
+      repo: 'https://github.com/giovanni1707/dom-helpers-js',
+      loadSidebar: true,            
+      subMaxLevel: 1,                 
+      auto2top: true,   
+             alias: {
+      '/.*/_sidebar.md': '/_sidebar.md'  
+    },   
+        basePath: './',
+    sidebarDisplayLevel: 1, 
+      themeColor: '#42b983',          
+      homepage: 'README.md',         
+    };
+  </script>
+</body>
+</html>

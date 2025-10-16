@@ -94,12 +94,13 @@
     </div>
   </div>
 
-  <!-- Load the DOM helpers library -->
- <!-- Always use specific version in production -->
-<!-- Automatically gets the latest version -->
-<!-- Get latest 1.x version -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@1/dist/dom-helpers.min.js"></script><script>
-    // ===== EXAMPLES USING createElement.bulk() =====
+<!-- GitHub-based with cache bypass -->
+<script src="https://cdn.jsdelivr.net/gh/giovanni1707/dom-helpers-js@main/dist/dom-helpers-combined.min.js?v=2.3.1"></script>
+
+<!-- npm @latest with cache bypass -->
+<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@latest/dist/dom-helpers.min.js?v=2.3.1"></script>
+
+<script>// ===== EXAMPLES USING createElement.bulk() =====
 
     // Example 1: Basic Usage - Append all to same place
     document.querySelector('#example1 h2').insertAdjacentHTML('afterend', 
