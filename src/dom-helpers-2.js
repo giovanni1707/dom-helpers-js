@@ -1330,7 +1330,7 @@
       const missing = [];
       
       ids.forEach(id => {
-        const element = this.Elements[id];
+        const element = this._getElement(id);
         if (element) {
           result[id] = element;
         } else {
@@ -1390,27 +1390,8 @@
     getMultiple(...ids) {
       return this.destructure(...ids);
     }
-    // Enhanced methods for destructuring support
-    destructure(...ids) {
-      const result = {};
-      const missing = [];
-      
-      ids.forEach(id => {
-        const element = this.Elements[id];
-        if (element) {
-          result[id] = element;
-        } else {
-          missing.push(id);
-          result[id] = null;
-        }
-      });
-      
-      if (missing.length > 0 && this.options.enableLogging) {
-        this._warn(`Missing elements during destructuring: ${missing.join(', ')}`);
-      }
-      
-      return result;
-    }
+ 
+   
     // Enhanced methods for destructuring support
     destructure(...ids) {
       const result = {};
@@ -1435,7 +1416,7 @@
 
     // Enhanced element manipulation
     setProperty(id, property, value) {
-      const element = this.Elements[id];
+      const element = this._getElement(id); 
       if (element && property in element) {
         element[property] = value;
         return true;
@@ -1444,7 +1425,7 @@
     }
 
     getProperty(id, property, fallback = undefined) {
-      const element = this.Elements[id];
+      const element = this._getElement(id);
       if (element && property in element) {
         return element[property];
       }
@@ -1452,7 +1433,7 @@
     }
 
     setAttribute(id, attribute, value) {
-      const element = this.Elements[id];
+      const element = this._getElement(id);
       if (element) {
         element.setAttribute(attribute, value);
         return true;
@@ -1461,7 +1442,7 @@
     }
 
     getAttribute(id, attribute, fallback = null) {
-      const element = this.Elements[id];
+      const element = this._getElement(id);
       if (element) {
         return element.getAttribute(attribute) || fallback;
       }
@@ -1485,53 +1466,13 @@
   Elements.stats = () => ElementsHelper.getStats();
   Elements.clear = () => ElementsHelper.clearCache();
   Elements.destroy = () => ElementsHelper.destroy();
-  // Direct implementations to avoid proxy recursion issues  
-  Elements.destructure = (...ids) => {
-    const obj = {};
-    ids.forEach(id => {
-      obj[id] = document.getElementById(id);
-    });
-    return obj;
-  };
-  
-  Elements.getRequired = (...ids) => {
-    const elements = Elements.destructure(...ids);
-    const missing = ids.filter(id => !elements[id]);
-    if (missing.length > 0) {
-      throw new Error(`Required elements not found: ${missing.join(', ')}`);
-    }
-    return elements;
-  };
-  
-  Elements.waitFor = async (...ids) => {
-    const maxWait = 5000;
-    const checkInterval = 100;
-    const startTime = Date.now();
-    
-    while (Date.now() - startTime < maxWait) {
-      const elements = Elements.destructure(...ids);
-      const allFound = ids.every(id => elements[id]);
-      
-      if (allFound) {
-        return elements;
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, checkInterval));
-    }
-    
-    throw new Error(`Timeout waiting for elements: ${ids.join(', ')}`);
-  };
-  Elements.isCached = (id) => ElementsHelper.cache.has(id);
-  // Direct implementations to avoid proxy recursion issues
-  Elements.get = (id, fallback = null) => document.getElementById(id) || fallback;
-  Elements.exists = (id) => !!document.getElementById(id);
-  Elements.getMultiple = (...ids) => {
-    const obj = {};
-    ids.forEach(id => {
-      obj[id] = document.getElementById(id);
-    });
-    return obj;
-  };
+  Elements.destructure = (...ids) => ElementsHelper.destructure(...ids);
+  Elements.getRequired = (...ids) => ElementsHelper.getRequired(...ids);
+  Elements.waitFor = (...ids) => ElementsHelper.waitFor(...ids);
+  Elements.isCached = (id) => ElementsHelper.isCached(id);
+  Elements.get = (id, fallback) => ElementsHelper.get(id, fallback);
+  Elements.exists = (id) => ElementsHelper.exists(id);
+  Elements.getMultiple = (...ids) => ElementsHelper.getMultiple(...ids);
   Elements.setProperty = (id, property, value) => ElementsHelper.setProperty(id, property, value);
   Elements.getProperty = (id, property, fallback) => ElementsHelper.getProperty(id, property, fallback);
   Elements.setAttribute = (id, attribute, value) => ElementsHelper.setAttribute(id, attribute, value);
