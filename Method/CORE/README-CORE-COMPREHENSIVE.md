@@ -2701,4 +2701,3 @@ For issues, questions, or contributions, visit the GitHub repository.
 
 **End of Documentation**
 
-This comprehensive guide covers all 150+ methods available in the DOM Helpers library. Each method includes parameters, return values, and practical examples to help you build better web applications efficiently.
