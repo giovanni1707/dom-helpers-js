@@ -2,13 +2,21 @@
 
 ## 🎯 **All Element Creation Methods**
 
-### **Method 1: Standard `document.createElement()` (With Auto-Enhancement)**
+### **Method 1a: Standard `document.createElement()` (With Auto-Enhancement)**
 
 ```javascript
 // Enable auto-enhancement first (if not already enabled)
 DOMHelpers.enableCreateElementEnhancement();
 
 // Now all createElement calls are enhanced
+const p = document.createElement('p');
+p.update({
+  textContent: 'Hello World',
+  classList: { add: ['dynamic'] }
+});
+
+ 
+// Or directly if enableCreateElementEnhancement is set to "true" in Config.
 const p = document.createElement('p');
 p.update({
   textContent: 'Hello World',
