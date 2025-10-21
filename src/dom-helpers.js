@@ -28,7 +28,7 @@
   const DEFAULTS = {
     enableLogging: false,
     enableWarnings: !isDevelopment, // Only in production
-    autoEnhanceCreateElement: false, // NEW: Opt-in only for safety!
+    autoEnhanceCreateElement: true, // NEW: Opt-in only for safety!
   };
 
   // ===== FINE-GRAINED UPDATE SYSTEM =====
