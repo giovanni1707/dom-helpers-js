@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plain JavaScript - Multiple Cards Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #app {
+            width: 320px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app"></div>
+
+    <script src="../../src/dom-helpers.js"></script>
+    <script>
+        // Data for cards
+        const cardsData = [
+            { title: 'Card 1', content: 'This is card 1.' },
+            { title: 'Card 2', content: 'This is card 2.' },
+            { title: 'Card 3', content: 'This is card 3.' }
+        ];
+
+        const container = document.getElementById('app');
+
+        cardsData.forEach(data => {
+            const card = createElement('div').update({
+                classList: { add: 'card' },
+                innerHTML: `<h2>${data.title}</h2><p>${data.content}</p>`
+            });
+
+            const button = createElement('button').update({
+                textContent: 'Click Me',
+                onclick: () => alert(`${data.title} button clicked!`)
+            });
+
+            card.append(button);
+            container.append(card);
+        });
+    </script>
+
+</body>
+
+</html>
+
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>append() Example</title>
+  <style>
+    #container {
+      border: 2px solid #333;
+      padding: 10px;
+      width: 250px;
+    }
+    .box {
+      background: lightblue;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="container">
+    <h3>Container</h3>
+  </div>
+
+  <script>
+    // Get the parent element
+    const container = document.getElementById('container');
+
+    // Create multiple elements
+    const box1 = document.createElement('div');
+    box1.className = 'box';
+    box1.textContent = 'Box 1';
+
+    const box2 = document.createElement('div');
+    box2.className = 'box';
+    box2.textContent = 'Box 2';
+
+    const box3 = document.createElement('div');
+    box3.className = 'box';
+    box3.textContent = 'Box 3';
+
+    // Append multiple elements at once
+    container.append(box1, box2, box3);
+
+    // You can even append text along with elements
+    container.append('All boxes added!');
+  </script>
+
+</body>
+</html>

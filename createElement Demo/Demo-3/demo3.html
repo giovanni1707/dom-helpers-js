@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DOM Helpers append() Example</title>
+  <style>
+    #container {
+      border: 2px solid #333;
+      padding: 10px;
+      width: 250px;
+    }
+    .box {
+      background: lightblue;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      text-align: center;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div id="container">
+    <h3>Container</h3>
+  </div>
+  <!-- Load your DOM Helpers library -->
+  <script src="../../src/dom-helpers.js"></script>
+  <script>
+    // Create multiple elements at once using your library
+    const box = createElement.bulk({
+        DIV_1: { className: 'box',textContent: 'Box 1' },
+        DIV_2 : { className: 'box',textContent: 'Box 2' },
+        DIV_3 : { className: 'box',textContent: 'Box 3' }
+    });
+
+    // Append all boxes and text to the container using .all() method
+  Elements.container.append(...box.all, "All box added!" )
+
+  </script>
+
+</body>
+</html>

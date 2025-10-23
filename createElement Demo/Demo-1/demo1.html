@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM Helpers - createElement + update Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #app {
+      width: 300px;
+    }
+
+    .card {
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app"></div>
+
+  <!-- Your DOM Helpers Library -->
+  <script src="../../src/dom-helpers.js"></script>
+  
+  <script>
+    // Create a card element using createElement() + .update()
+    const card = createElement('div').update({
+      classList: ['card'],
+      style: {
+        backgroundColor: '#ffffff',
+        borderRadius: '10px',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+        padding: '20px',
+        textAlign: 'center'
+      },
+      innerHTML: `<h2>DOM Helpers Demo</h2><p>This card was created dynamically!</p>`
+    });
+
+    // Create a button with .update()
+    const button = createElement('button').update({
+      textContent: 'Click Me',
+      style: {
+        backgroundColor: '#007BFF',
+        color: '#fff',
+        padding: '10px 15px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        marginTop: '10px'
+      },
+      onclick: () => alert('You clicked the button!')
+    });
+
+    // Append both elements into #app container
+    Elements.app.append(card, button);
+  </script>
+
+</body>
+</html>
