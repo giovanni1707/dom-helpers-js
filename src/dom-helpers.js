@@ -4524,6 +4524,36 @@
     return element;
   }
 
+
+// Enhanced createElement that supports configuration object
+function enhancedCreateElement(tagName, options) {
+  // Check if options is a configuration object (not native options)
+  const isConfigObject = options && typeof options === 'object' && 
+                         !options.is && // Native option check
+                         (options.textContent || options.className || options.style || 
+                          options.id || options.classList || options.setAttribute);
+  
+  let element;
+  
+  if (isConfigObject) {
+    // Create element without options
+    element = originalCreateElement.call(document, tagName);
+    
+    // Enhance it
+    element = enhanceElementWithUpdate(element);
+    
+    // Apply configuration using .update()
+    element.update(options);
+  } else {
+    // Standard createElement behavior
+    element = originalCreateElement.call(document, tagName, options);
+    element = enhanceElementWithUpdate(element);
+  }
+  
+  return element;
+}
+
+
   // Optional: Provide a way to restore the original createElement
   document.createElement.restore = function() {
     document.createElement = originalCreateElement;
