@@ -582,11 +582,13 @@
   /**
    * Create reactive state
    */
+
   const ReactiveState = {
     create(initialState) {
       return createReactiveProxy(initialState);
     }
   };
+  
 
   // Add to Elements
   if (global.Elements) {
@@ -635,6 +637,7 @@
       }
     });
   }
+
 
   console.log('[DOM Helpers Reactive] Reactive state system loaded successfully');
 
