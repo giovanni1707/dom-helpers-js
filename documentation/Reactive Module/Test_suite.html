@@ -1,0 +1,2759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reactive Module Test Suite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 1.1em;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 30px;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .stat-card .number {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .stat-card.passed .number { color: #28a745; }
+    .stat-card.failed .number { color: #dc3545; }
+    .stat-card.skipped .number { color: #ffc107; }
+    .stat-card.total .number { color: #667eea; }
+
+    .stat-card .label {
+      color: #6c757d;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .controls {
+      padding: 20px 30px;
+      background: white;
+      border-bottom: 2px solid #e9ecef;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-warning {
+      background: #ffc107;
+      color: #000;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .filter-group {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .tests-container {
+      padding: 30px;
+    }
+
+    .test-suite {
+      margin-bottom: 30px;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .suite-header {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      font-weight: 600;
+      font-size: 1.1em;
+      color: #495057;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .suite-header:hover {
+      background: #e9ecef;
+    }
+
+    .suite-header .toggle {
+      font-size: 0.8em;
+      color: #6c757d;
+    }
+
+    .suite-stats {
+      margin-left: auto;
+      display: flex;
+      gap: 15px;
+      font-size: 0.9em;
+    }
+
+    .suite-stats span {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .suite-stats .passed { background: #d4edda; color: #155724; }
+    .suite-stats .failed { background: #f8d7da; color: #721c24; }
+    .suite-stats .skipped { background: #fff3cd; color: #856404; }
+
+    .test-list {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .test-list.expanded {
+      max-height: 5000px;
+    }
+
+    .test-case {
+      padding: 15px 20px;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      transition: background 0.2s ease;
+    }
+
+    .test-case:hover {
+      background: #f8f9fa;
+    }
+
+    .test-case:last-child {
+      border-bottom: none;
+    }
+
+    .test-icon {
+      font-size: 1.5em;
+      flex-shrink: 0;
+      width: 30px;
+      text-align: center;
+    }
+
+    .test-icon.passed { color: #28a745; }
+    .test-icon.failed { color: #dc3545; }
+    .test-icon.skipped { color: #ffc107; }
+    .test-icon.running { 
+      color: #667eea;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .test-content {
+      flex: 1;
+    }
+
+    .test-name {
+      font-weight: 600;
+      color: #212529;
+      margin-bottom: 5px;
+    }
+
+    .test-duration {
+      font-size: 0.85em;
+      color: #6c757d;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .test-error {
+      margin-top: 10px;
+      padding: 12px;
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #721c24;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .test-details {
+      margin-top: 10px;
+      padding: 12px;
+      background: #e7f3ff;
+      border-left: 4px solid #667eea;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #004085;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: #e9ecef;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .search-box {
+      padding: 12px 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 6px;
+      font-size: 1em;
+      width: 300px;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6c757d;
+    }
+
+    .no-results .icon {
+      font-size: 4em;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8em;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-group {
+        margin-left: 0;
+        flex-direction: column;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+    }
+
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      max-width: 400px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success { border-left: 4px solid #28a745; }
+    .toast.error { border-left: 4px solid #dc3545; }
+    .toast.info { border-left: 4px solid #667eea; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🧪 Reactive Module Test Suite</h1>
+      <p>Comprehensive testing for DOM Helpers Reactive v2.0.0</p>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card total">
+        <div class="number" id="totalTests">0</div>
+        <div class="label">Total Tests</div>
+      </div>
+      <div class="stat-card passed">
+        <div class="number" id="passedTests">0</div>
+        <div class="label">Passed</div>
+      </div>
+      <div class="stat-card failed">
+        <div class="number" id="failedTests">0</div>
+        <div class="label">Failed</div>
+      </div>
+      <div class="stat-card skipped">
+        <div class="number" id="skippedTests">0</div>
+        <div class="label">Skipped</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="runAllBtn">
+        ▶ Run All Tests
+      </button>
+      <button class="btn btn-success" id="runPassedBtn">
+        ✓ Run Passed Only
+      </button>
+      <button class="btn btn-danger" id="runFailedBtn">
+        ✗ Run Failed Only
+      </button>
+      <button class="btn btn-secondary" id="clearBtn">
+        🗑 Clear Results
+      </button>
+
+      <div class="filter-group">
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search tests...">
+        <select class="btn btn-secondary" id="filterSelect">
+          <option value="all">All Tests</option>
+          <option value="passed">Passed</option>
+          <option value="failed">Failed</option>
+          <option value="skipped">Skipped</option>
+          <option value="not-run">Not Run</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tests-container" id="testsContainer">
+      <!-- Test suites will be inserted here -->
+    </div>
+  </div>
+
+  <!-- Mock DOM Helpers Core (for testing purposes) -->
+  <script>
+    // Simple mock of DOM Helpers core
+    window.Elements = {};
+    window.Collections = {};
+    window.Selector = {
+      query: function() {},
+      queryAll: function() {}
+    };
+  </script>
+
+  <!-- Include the Reactive Module -->
+  <script src="dom-helpers-reactive.js"></script>
+
+  <!-- Test Framework -->
+  <script>
+    class TestFramework {
+      constructor() {
+        this.suites = [];
+        this.currentSuite = null;
+        this.stats = {
+          total: 0,
+          passed: 0,
+          failed: 0,
+          skipped: 0
+        };
+        this.isRunning = false;
+      }
+
+      suite(name, fn) {
+        const suite = {
+          name,
+          tests: [],
+          beforeEach: null,
+          afterEach: null,
+          beforeAll: null,
+          afterAll: null
+        };
+
+        this.suites.push(suite);
+        this.currentSuite = suite;
+        fn();
+        this.currentSuite = null;
+
+        return this;
+      }
+
+      beforeEach(fn) {
+        if (this.currentSuite) {
+          this.currentSuite.beforeEach = fn;
+        }
+      }
+
+      afterEach(fn) {
+        if (this.currentSuite) {
+          this.currentSuite.afterEach = fn;
+        }
+      }
+
+      beforeAll(fn) {
+        if (this.currentSuite) {
+          this.currentSuite.beforeAll = fn;
+        }
+      }
+
+      afterAll(fn) {
+        if (this.currentSuite) {
+          this.currentSuite.afterAll = fn;
+        }
+      }
+
+      test(name, fn) {
+        if (!this.currentSuite) {
+          throw new Error('test() must be called inside a suite()');
+        }
+
+        this.currentSuite.tests.push({
+          name,
+          fn,
+          status: 'pending',
+          duration: 0,
+          error: null
+        });
+
+        this.stats.total++;
+      }
+
+      skip(name, fn) {
+        if (!this.currentSuite) {
+          throw new Error('skip() must be called inside a suite()');
+        }
+
+        this.currentSuite.tests.push({
+          name,
+          fn,
+          status: 'skipped',
+          duration: 0,
+          error: null
+        });
+
+        this.stats.total++;
+        this.stats.skipped++;
+      }
+
+      async run(filter = null) {
+        if (this.isRunning) return;
+        this.isRunning = true;
+
+        // Reset stats
+        this.stats = { total: 0, passed: 0, failed: 0, skipped: 0 };
+
+        let testsToRun = [];
+        this.suites.forEach(suite => {
+          suite.tests.forEach(test => {
+            if (test.status !== 'skipped') {
+              test.status = 'pending';
+              test.error = null;
+            }
+            
+            if (filter) {
+              if (filter === test.status || (filter === 'not-run' && test.status === 'pending')) {
+                testsToRun.push({ suite, test });
+              }
+            } else {
+              testsToRun.push({ suite, test });
+            }
+          });
+        });
+
+        this.stats.total = testsToRun.length + this.stats.skipped;
+
+        for (const { suite, test } of testsToRun) {
+          if (test.status === 'skipped') {
+            continue;
+          }
+
+          test.status = 'running';
+          this.updateUI();
+
+          const start = performance.now();
+
+          try {
+            // Run beforeAll if first test in suite
+            if (suite.beforeAll && suite.tests.indexOf(test) === 0) {
+              await suite.beforeAll();
+            }
+
+            // Run beforeEach
+            if (suite.beforeEach) {
+              await suite.beforeEach();
+            }
+
+            // Run test
+            await test.fn();
+
+            // Run afterEach
+            if (suite.afterEach) {
+              await suite.afterEach();
+            }
+
+            test.status = 'passed';
+            this.stats.passed++;
+
+          } catch (error) {
+            test.status = 'failed';
+            test.error = error;
+            this.stats.failed++;
+          }
+
+          test.duration = performance.now() - start;
+
+          // Run afterAll if last test in suite
+          const lastTest = suite.tests.filter(t => t.status !== 'skipped').pop();
+          if (suite.afterAll && test === lastTest) {
+            try {
+              await suite.afterAll();
+            } catch (error) {
+              console.error('afterAll error:', error);
+            }
+          }
+
+          this.updateUI();
+          await this.sleep(10); // Small delay for UI updates
+        }
+
+        this.isRunning = false;
+        this.showToast('Tests completed!', 'success');
+      }
+
+      updateUI() {
+        this.renderStats();
+        this.renderTests();
+        this.updateProgress();
+      }
+
+      renderStats() {
+        document.getElementById('totalTests').textContent = this.stats.total;
+        document.getElementById('passedTests').textContent = this.stats.passed;
+        document.getElementById('failedTests').textContent = this.stats.failed;
+        document.getElementById('skippedTests').textContent = this.stats.skipped;
+      }
+
+      updateProgress() {
+        const completed = this.stats.passed + this.stats.failed + this.stats.skipped;
+        const percentage = this.stats.total > 0 ? (completed / this.stats.total) * 100 : 0;
+        document.getElementById('progressBar').style.width = percentage + '%';
+      }
+
+      renderTests(searchTerm = '', filterStatus = 'all') {
+        const container = document.getElementById('testsContainer');
+        container.innerHTML = '';
+
+        const filteredSuites = this.suites.filter(suite => {
+          const hasMatchingTests = suite.tests.some(test => {
+            const matchesSearch = !searchTerm || 
+              test.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              suite.name.toLowerCase().includes(searchTerm.toLowerCase());
+            
+            const matchesFilter = filterStatus === 'all' || 
+              test.status === filterStatus ||
+              (filterStatus === 'not-run' && test.status === 'pending');
+
+            return matchesSearch && matchesFilter;
+          });
+          return hasMatchingTests;
+        });
+
+        if (filteredSuites.length === 0) {
+          container.innerHTML = `
+            <div class="no-results">
+              <div class="icon">🔍</div>
+              <h3>No tests found</h3>
+              <p>Try adjusting your search or filter</p>
+            </div>
+          `;
+          return;
+        }
+
+        filteredSuites.forEach(suite => {
+          const suiteStats = {
+            passed: suite.tests.filter(t => t.status === 'passed').length,
+            failed: suite.tests.filter(t => t.status === 'failed').length,
+            skipped: suite.tests.filter(t => t.status === 'skipped').length
+          };
+
+          const suiteEl = document.createElement('div');
+          suiteEl.className = 'test-suite';
+          suiteEl.innerHTML = `
+            <div class="suite-header">
+              <span class="toggle">▼</span>
+              <span>${suite.name}</span>
+              <div class="suite-stats">
+                ${suiteStats.passed > 0 ? `<span class="passed">${suiteStats.passed} passed</span>` : ''}
+                ${suiteStats.failed > 0 ? `<span class="failed">${suiteStats.failed} failed</span>` : ''}
+                ${suiteStats.skipped > 0 ? `<span class="skipped">${suiteStats.skipped} skipped</span>` : ''}
+              </div>
+            </div>
+            <div class="test-list expanded">
+              ${suite.tests.map(test => {
+                const matchesSearch = !searchTerm || 
+                  test.name.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesFilter = filterStatus === 'all' || 
+                  test.status === filterStatus ||
+                  (filterStatus === 'not-run' && test.status === 'pending');
+
+                if (!matchesSearch || !matchesFilter) return '';
+
+                let icon = '○';
+                let iconClass = '';
+                
+                switch (test.status) {
+                  case 'passed': icon = '✓'; iconClass = 'passed'; break;
+                  case 'failed': icon = '✗'; iconClass = 'failed'; break;
+                  case 'skipped': icon = '⊘'; iconClass = 'skipped'; break;
+                  case 'running': icon = '⟳'; iconClass = 'running'; break;
+                }
+
+                return `
+                  <div class="test-case">
+                    <div class="test-icon ${iconClass}">${icon}</div>
+                    <div class="test-content">
+                      <div class="test-name">${test.name}</div>
+                      ${test.error ? `
+                        <div class="test-error">${test.error.message || test.error}</div>
+                      ` : ''}
+                    </div>
+                    ${test.duration > 0 ? `
+                      <div class="test-duration">${test.duration.toFixed(2)}ms</div>
+                    ` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+
+          // Toggle suite expansion
+          const header = suiteEl.querySelector('.suite-header');
+          const testList = suiteEl.querySelector('.test-list');
+          const toggle = suiteEl.querySelector('.toggle');
+
+          header.addEventListener('click', () => {
+            testList.classList.toggle('expanded');
+            toggle.textContent = testList.classList.contains('expanded') ? '▼' : '▶';
+          });
+
+          container.appendChild(suiteEl);
+        });
+      }
+
+      showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+          <div>${message}</div>
+        `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    }
+
+    // Create test framework instance
+    const test = new TestFramework();
+  </script>
+
+  <!-- Test Assertions -->
+  <script>
+    function expect(actual) {
+      return {
+        toBe(expected) {
+          if (actual !== expected) {
+            throw new Error(`Expected ${JSON.stringify(expected)} but got ${JSON.stringify(actual)}`);
+          }
+        },
+        
+        toEqual(expected) {
+          if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+            throw new Error(`Expected ${JSON.stringify(expected)} but got ${JSON.stringify(actual)}`);
+          }
+        },
+        
+        toBeTruthy() {
+          if (!actual) {
+            throw new Error(`Expected truthy value but got ${JSON.stringify(actual)}`);
+          }
+        },
+        
+        toBeFalsy() {
+          if (actual) {
+            throw new Error(`Expected falsy value but got ${JSON.stringify(actual)}`);
+          }
+        },
+        
+        toBeNull() {
+          if (actual !== null) {
+            throw new Error(`Expected null but got ${JSON.stringify(actual)}`);
+          }
+        },
+        
+        toBeUndefined() {
+          if (actual !== undefined) {
+            throw new Error(`Expected undefined but got ${JSON.stringify(actual)}`);
+          }
+        },
+        
+        toBeGreaterThan(expected) {
+          if (actual <= expected) {
+            throw new Error(`Expected ${actual} to be greater than ${expected}`);
+          }
+        },
+        
+        toBeLessThan(expected) {
+          if (actual >= expected) {
+            throw new Error(`Expected ${actual} to be less than ${expected}`);
+          }
+        },
+        
+        toContain(expected) {
+          if (Array.isArray(actual)) {
+            if (!actual.includes(expected)) {
+              throw new Error(`Expected array to contain ${JSON.stringify(expected)}`);
+            }
+          } else if (typeof actual === 'string') {
+            if (!actual.includes(expected)) {
+              throw new Error(`Expected string to contain "${expected}"`);
+            }
+          } else {
+            throw new Error(`toContain() requires array or string`);
+          }
+        },
+        
+        toHaveLength(expected) {
+          if (!actual || typeof actual.length !== 'number') {
+            throw new Error(`Expected value to have length property`);
+          }
+          if (actual.length !== expected) {
+            throw new Error(`Expected length ${expected} but got ${actual.length}`);
+          }
+        },
+        
+        toThrow() {
+          if (typeof actual !== 'function') {
+            throw new Error(`Expected a function`);
+          }
+          try {
+            actual();
+            throw new Error(`Expected function to throw an error`);
+          } catch (e) {
+            // Expected
+          }
+        },
+        
+        not: {
+          toBe(expected) {
+            if (actual === expected) {
+              throw new Error(`Expected not to be ${JSON.stringify(expected)}`);
+            }
+          },
+          
+          toEqual(expected) {
+            if (JSON.stringify(actual) === JSON.stringify(expected)) {
+              throw new Error(`Expected not to equal ${JSON.stringify(expected)}`);
+            }
+          },
+          
+          toContain(expected) {
+            if (Array.isArray(actual)) {
+              if (actual.includes(expected)) {
+                throw new Error(`Expected array not to contain ${JSON.stringify(expected)}`);
+              }
+            } else if (typeof actual === 'string') {
+              if (actual.includes(expected)) {
+                throw new Error(`Expected string not to contain "${expected}"`);
+              }
+            }
+          }
+        }
+      };
+    }
+  </script>
+
+  <!-- Test Suites -->
+  <script>
+    // ===== BASIC REACTIVITY TESTS =====
+    test.suite('Basic Reactivity', () => {
+      test.test('should create reactive state', () => {
+        const state = ReactiveState.create({ count: 0 });
+        expect(state.count).toBe(0);
+        expect(ReactiveState.isReactive(state)).toBeTruthy();
+      });
+
+      test.test('should trigger updates on property change', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updates = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'test-div';
+        
+        Elements.bind({
+          'test-div': () => {
+            updates++;
+            return state.count;
+          }
+        });
+        
+        state.count = 5;
+        
+        expect(updates).toBeGreaterThan(1);
+        expect(div.textContent).toBe('5');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle nested objects', () => {
+        const state = ReactiveState.create({
+          user: {
+            name: 'John',
+            age: 30
+          }
+        });
+        
+        expect(state.user.name).toBe('John');
+        expect(ReactiveState.isReactive(state.user)).toBeTruthy();
+        
+        state.user.name = 'Jane';
+        expect(state.user.name).toBe('Jane');
+      });
+
+      test.test('should handle arrays', () => {
+        const state = ReactiveState.create({
+          items: [1, 2, 3]
+        });
+        
+        expect(state.items).toHaveLength(3);
+        
+        state.items.push(4);
+        expect(state.items).toHaveLength(4);
+        expect(state.items[3]).toBe(4);
+      });
+
+      test.test('should get raw value with $raw', () => {
+        const state = ReactiveState.create({ count: 0 });
+        const raw = state.$raw;
+        
+        expect(ReactiveState.isReactive(raw)).toBeFalsy();
+        expect(raw.count).toBe(0);
+      });
+
+      test.test('should delete properties reactively', () => {
+        const state = ReactiveState.create({ count: 0, name: 'Test' });
+        
+        delete state.name;
+        expect(state.name).toBeUndefined();
+      });
+    });
+
+    // ===== COMPUTED PROPERTIES TESTS =====
+    test.suite('Computed Properties', () => {
+      test.test('should create computed property', () => {
+        const state = ReactiveState.create({
+          firstName: 'John',
+          lastName: 'Doe'
+        });
+        
+        state.$computed('fullName', function() {
+          return `${this.firstName} ${this.lastName}`;
+        });
+        
+        expect(state.fullName).toBe('John Doe');
+      });
+
+      test.test('should update computed when dependencies change', () => {
+        const state = ReactiveState.create({
+          firstName: 'John',
+          lastName: 'Doe'
+        });
+        
+        state.$computed('fullName', function() {
+          return `${this.firstName} ${this.lastName}`;
+        });
+        
+        state.firstName = 'Jane';
+        expect(state.fullName).toBe('Jane Doe');
+      });
+
+      test.test('should cache computed values', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let computeCount = 0;
+        
+        state.$computed('doubled', function() {
+          computeCount++;
+         return this.count * 2;
+        });
+        
+        // Access multiple times
+        const val1 = state.doubled;
+        const val2 = state.doubled;
+        const val3 = state.doubled;
+        
+        expect(computeCount).toBe(1); // Should only compute once
+        expect(val1).toBe(0);
+      });
+
+      test.test('should invalidate cache on dependency change', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let computeCount = 0;
+        
+        state.$computed('doubled', function() {
+          computeCount++;
+          return this.count * 2;
+        });
+        
+        const val1 = state.doubled; // Compute: 1
+        state.count = 5;
+        const val2 = state.doubled; // Compute: 2
+        const val3 = state.doubled; // Use cache
+        
+        expect(computeCount).toBe(2);
+        expect(val2).toBe(10);
+      });
+
+      test.test('should handle nested computed properties', () => {
+        const state = ReactiveState.create({
+          count: 5
+        });
+        
+        state.$computed('doubled', function() {
+          return this.count * 2;
+        });
+        
+        state.$computed('quadrupled', function() {
+          return this.doubled * 2;
+        });
+        
+        expect(state.quadrupled).toBe(20);
+        
+        state.count = 10;
+        expect(state.quadrupled).toBe(40);
+      });
+    });
+
+    // ===== BATCHING TESTS =====
+    test.suite('Batching Updates', () => {
+      test.test('should batch multiple updates', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'batch-test';
+        
+        Elements.bind({
+          'batch-test': () => {
+            updateCount++;
+            return state.count;
+          }
+        });
+        
+        const initialUpdates = updateCount;
+        
+        ReactiveState.batch(() => {
+          state.count = 1;
+          state.count = 2;
+          state.count = 3;
+        });
+        
+        expect(updateCount - initialUpdates).toBe(1);
+        expect(div.textContent).toBe('3');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should support nested batching', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'nested-batch';
+        
+        Elements.bind({
+          'nested-batch': () => {
+            updateCount++;
+            return state.count;
+          }
+        });
+        
+        const initialUpdates = updateCount;
+        
+        ReactiveState.batch(() => {
+          state.count = 1;
+          ReactiveState.batch(() => {
+            state.count = 2;
+            state.count = 3;
+          });
+          state.count = 4;
+        });
+        
+        expect(updateCount - initialUpdates).toBe(1);
+        expect(div.textContent).toBe('4');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should use $batch method on state', () => {
+        const state = ReactiveState.create({ a: 0, b: 0 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'state-batch';
+        
+        Elements.bind({
+          'state-batch': () => {
+            updateCount++;
+            return state.a + state.b;
+          }
+        });
+        
+        const initialUpdates = updateCount;
+        
+        state.$batch(() => {
+          state.a = 5;
+          state.b = 10;
+        });
+        
+        expect(updateCount - initialUpdates).toBe(1);
+        expect(div.textContent).toBe('15');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should return value from batch', () => {
+        const state = ReactiveState.create({ count: 0 });
+        
+        const result = ReactiveState.batch(() => {
+          state.count = 5;
+          return state.count * 2;
+        });
+        
+        expect(result).toBe(10);
+      });
+    });
+
+    // ===== WATCH API TESTS =====
+    test.suite('Watch API', () => {
+      test.test('should watch property changes', async () => {
+        const state = ReactiveState.create({ count: 0 });
+        let watchCalled = false;
+        let newVal, oldVal;
+        
+        state.$watch('count', (n, o) => {
+          watchCalled = true;
+          newVal = n;
+          oldVal = o;
+        });
+        
+        state.count = 5;
+        
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        expect(watchCalled).toBeTruthy();
+        expect(newVal).toBe(5);
+        expect(oldVal).toBe(0);
+      });
+
+      test.test('should watch computed values', async () => {
+        const state = ReactiveState.create({ count: 0 });
+        let watchCalled = false;
+        
+        state.$watch(() => state.count > 5, (isGreater) => {
+          watchCalled = true;
+        });
+        
+        state.count = 10;
+        
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        expect(watchCalled).toBeTruthy();
+      });
+
+      test.test('should return unwatch function', async () => {
+        const state = ReactiveState.create({ count: 0 });
+        let watchCount = 0;
+        
+        const unwatch = state.$watch('count', () => {
+          watchCount++;
+        });
+        
+        state.count = 1;
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        unwatch(); // Stop watching
+        
+        const countBefore = watchCount;
+        state.count = 2;
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        expect(watchCount).toBe(countBefore); // Should not increase
+      });
+    });
+
+    // ===== COLLECTION HELPER TESTS =====
+    test.suite('Collection Helper', () => {
+      test.test('should create collection', () => {
+        const collection = ReactiveState.collection([1, 2, 3]);
+        
+        expect(collection.items).toHaveLength(3);
+        expect(collection.items[0]).toBe(1);
+      });
+
+      test.test('should add items with $add', () => {
+        const collection = ReactiveState.collection([1, 2]);
+        
+        collection.$add(3);
+        
+        expect(collection.items).toHaveLength(3);
+        expect(collection.items[2]).toBe(3);
+      });
+
+      test.test('should remove items with $remove', () => {
+        const collection = ReactiveState.collection([
+          { id: 1, name: 'A' },
+          { id: 2, name: 'B' },
+          { id: 3, name: 'C' }
+        ]);
+        
+        collection.$remove(item => item.id === 2);
+        
+        expect(collection.items).toHaveLength(2);
+        expect(collection.items[0].name).toBe('A');
+        expect(collection.items[1].name).toBe('C');
+      });
+
+      test.test('should update items with $update', () => {
+        const collection = ReactiveState.collection([
+          { id: 1, name: 'A', done: false },
+          { id: 2, name: 'B', done: false }
+        ]);
+        
+        collection.$update(item => item.id === 1, { done: true });
+        
+        expect(collection.items[0].done).toBeTruthy();
+      });
+
+      test.test('should clear items with $clear', () => {
+        const collection = ReactiveState.collection([1, 2, 3, 4, 5]);
+        
+        collection.$clear();
+        
+        expect(collection.items).toHaveLength(0);
+      });
+    });
+
+    // ===== FORM HELPER TESTS =====
+    test.suite('Form Helper', () => {
+      test.test('should create form state', () => {
+        const form = ReactiveState.form({
+          email: '',
+          password: ''
+        });
+        
+        expect(form.values.email).toBe('');
+        expect(form.errors).toEqual({});
+        expect(form.touched).toEqual({});
+        expect(form.isSubmitting).toBeFalsy();
+      });
+
+      test.test('should set values with $setValue', () => {
+        const form = ReactiveState.form({ email: '' });
+        
+        form.$setValue('email', 'test@example.com');
+        
+        expect(form.values.email).toBe('test@example.com');
+        expect(form.touched.email).toBeTruthy();
+      });
+
+      test.test('should set errors with $setError', () => {
+        const form = ReactiveState.form({ email: '' });
+        
+        form.$setError('email', 'Invalid email');
+        
+        expect(form.errors.email).toBe('Invalid email');
+      });
+
+      test.test('should clear errors with $setError(null)', () => {
+        const form = ReactiveState.form({ email: '' });
+        
+        form.$setError('email', 'Invalid email');
+        expect(form.errors.email).toBe('Invalid email');
+        
+        form.$setError('email', null);
+        expect(form.errors.email).toBeUndefined();
+      });
+
+      test.test('should compute isValid correctly', () => {
+        const form = ReactiveState.form({ email: '' });
+        
+        expect(form.isValid).toBeTruthy();
+        
+        form.$setError('email', 'Invalid');
+        expect(form.isValid).toBeFalsy();
+        
+        form.$setError('email', null);
+        expect(form.isValid).toBeTruthy();
+      });
+
+      test.test('should compute isDirty correctly', () => {
+        const form = ReactiveState.form({ email: '' });
+        
+        expect(form.isDirty).toBeFalsy();
+        
+        form.$setValue('email', 'test@example.com');
+        expect(form.isDirty).toBeTruthy();
+      });
+
+      test.test('should reset form with $reset', () => {
+        const form = ReactiveState.form({ email: '', password: '' });
+        
+        form.$setValue('email', 'test@example.com');
+        form.$setError('email', 'Invalid');
+        form.isSubmitting = true;
+        
+        form.$reset();
+        
+        expect(form.values.email).toBe('');
+        expect(form.errors).toEqual({});
+        expect(form.touched).toEqual({});
+        expect(form.isSubmitting).toBeFalsy();
+      });
+    });
+
+    // ===== ASYNC HELPER TESTS =====
+    test.suite('Async Helper', () => {
+      test.test('should create async state', () => {
+        const asyncState = ReactiveState.async(null);
+        
+        expect(asyncState.data).toBeNull();
+        expect(asyncState.loading).toBeFalsy();
+        expect(asyncState.error).toBeNull();
+      });
+
+      test.test('should handle async execution', async () => {
+        const asyncState = ReactiveState.async(null);
+        
+        const promise = asyncState.$execute(async () => {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          return { name: 'Test Data' };
+        });
+        
+        expect(asyncState.loading).toBeTruthy();
+        
+        await promise;
+        
+        expect(asyncState.loading).toBeFalsy();
+        expect(asyncState.data.name).toBe('Test Data');
+        expect(asyncState.error).toBeNull();
+      });
+
+      test.test('should handle async errors', async () => {
+        const asyncState = ReactiveState.async(null);
+        
+        try {
+          await asyncState.$execute(async () => {
+            throw new Error('Test error');
+          });
+        } catch (e) {
+          // Expected
+        }
+        
+        expect(asyncState.loading).toBeFalsy();
+        expect(asyncState.error).not.toBeNull();
+        expect(asyncState.error.message).toBe('Test error');
+      });
+
+      test.test('should compute isSuccess correctly', async () => {
+        const asyncState = ReactiveState.async(null);
+        
+        expect(asyncState.isSuccess).toBeFalsy();
+        
+        await asyncState.$execute(async () => {
+          return { data: 'test' };
+        });
+        
+        expect(asyncState.isSuccess).toBeTruthy();
+      });
+
+      test.test('should compute isError correctly', async () => {
+        const asyncState = ReactiveState.async(null);
+        
+        expect(asyncState.isError).toBeFalsy();
+        
+        try {
+          await asyncState.$execute(async () => {
+            throw new Error('Test error');
+          });
+        } catch (e) {
+          // Expected
+        }
+        
+        expect(asyncState.isError).toBeTruthy();
+      });
+
+      test.test('should reset async state', async () => {
+        const asyncState = ReactiveState.async(null);
+        
+        await asyncState.$execute(async () => ({ data: 'test' }));
+        
+        asyncState.$reset();
+        
+        expect(asyncState.data).toBeNull();
+        expect(asyncState.loading).toBeFalsy();
+        expect(asyncState.error).toBeNull();
+      });
+    });
+
+    // ===== UNTRACK TESTS =====
+    test.suite('Untracked Reads', () => {
+      test.test('should read without tracking dependencies', () => {
+        const state = ReactiveState.create({ a: 1, b: 2 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'untrack-test';
+        
+        Elements.bind({
+          'untrack-test': () => {
+            updateCount++;
+            const a = state.a; // Track this
+            const b = ReactiveState.untrack(() => state.b); // Don't track this
+            return a + b;
+          }
+        });
+        
+        const initialUpdates = updateCount;
+        
+        state.b = 10; // Should NOT trigger update
+        expect(updateCount).toBe(initialUpdates);
+        
+        state.a = 5; // Should trigger update
+        expect(updateCount).toBeGreaterThan(initialUpdates);
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should work in computed properties', () => {
+        const state = ReactiveState.create({ count: 0, multiplier: 2 });
+        let computeCount = 0;
+        
+        state.$computed('result', function() {
+          computeCount++;
+          const count = this.count; // Track
+          const multiplier = ReactiveState.untrack(() => this.multiplier); // Don't track
+          return count * multiplier;
+        });
+        
+        const val1 = state.result; // Compute: 1
+        
+        state.multiplier = 10; // Should NOT recompute
+        const val2 = state.result; // Use cache
+        
+        expect(computeCount).toBe(1);
+        
+        state.count = 5; // Should recompute
+        const val3 = state.result; // Compute: 2
+        
+        expect(computeCount).toBe(2);
+      });
+    });
+
+    // ===== PAUSE/RESUME TESTS =====
+    test.suite('Pause/Resume Tracking', () => {
+      test.test('should pause reactivity', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'pause-test';
+        
+        Elements.bind({
+          'pause-test': () => {
+            updateCount++;
+            return state.count;
+          }
+        });
+        
+        const initialUpdates = updateCount;
+        
+        ReactiveState.pauseTracking();
+        
+        state.count = 1;
+        state.count = 2;
+        state.count = 3;
+        
+        expect(updateCount).toBe(initialUpdates); // No updates yet
+        
+        ReactiveState.resumeTracking(true);
+        
+        expect(updateCount).toBeGreaterThan(initialUpdates); // Now updated
+        expect(div.textContent).toBe('3');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should resume without flushing', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'resume-noflush';
+        
+        Elements.bind({
+          'resume-noflush': () => {
+            updateCount++;
+            return state.count;
+          }
+        });
+        
+        const initialUpdates = updateCount;
+        
+        ReactiveState.pauseTracking();
+        
+        state.count = 5;
+        
+        ReactiveState.resumeTracking(false); // Don't flush
+        
+        expect(updateCount).toBe(initialUpdates); // Still no updates
+        
+        state.count = 10; // This will trigger update
+        
+        expect(updateCount).toBeGreaterThan(initialUpdates);
+        
+        document.body.removeChild(div);
+      });
+    });
+
+    // ===== NOTIFY TESTS =====
+    test.suite('Manual Notification', () => {
+      test.test('should manually trigger updates with $notify', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'notify-test';
+        
+        Elements.bind({
+          'notify-test': () => {
+            updateCount++;
+            return state.count;
+          }
+        });
+        
+        const initialUpdates = updateCount;
+        
+        // Modify without triggering (bypass proxy)
+        state.$raw.count = 100;
+        
+        expect(updateCount).toBe(initialUpdates); // No update yet
+        
+        state.$notify('count');
+        
+        expect(updateCount).toBeGreaterThan(initialUpdates);
+        expect(div.textContent).toBe('100');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should notify all properties', () => {
+        const state = ReactiveState.create({ a: 1, b: 2 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        div.id = 'notify-all';
+        
+        Elements.bind({
+          'notify-all': () => {
+            updateCount++;
+            return state.a + state.b;
+          }
+        });
+        
+        const initialUpdates = updateCount;
+        
+        state.$raw.a = 10;
+        state.$raw.b = 20;
+        
+        state.$notify(); // Notify all
+        
+        expect(updateCount).toBeGreaterThan(initialUpdates);
+        expect(div.textContent).toBe('30');
+        
+        document.body.removeChild(div);
+      });
+    });
+
+    // ===== BINDING TESTS =====
+    test.suite('Element Binding', () => {
+      test.test('should bind by ID', () => {
+        const state = ReactiveState.create({ text: 'Hello' });
+        
+        const div = document.createElement('div');
+        div.id = 'bind-id-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'bind-id-test': () => state.text
+        });
+        
+        expect(div.textContent).toBe('Hello');
+        
+        state.text = 'World';
+        expect(div.textContent).toBe('World');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should bind to specific properties', () => {
+        const state = ReactiveState.create({ 
+          text: 'Hello',
+          color: 'red'
+        });
+        
+        const div = document.createElement('div');
+        div.id = 'bind-props-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'bind-props-test': {
+            textContent: () => state.text,
+            style: () => `color: ${state.color}`
+          }
+        });
+        
+        expect(div.textContent).toBe('Hello');
+        expect(div.style.color).toBe('red');
+        
+        state.text = 'Hi';
+        state.color = 'blue';
+        
+        expect(div.textContent).toBe('Hi');
+        expect(div.style.color).toBe('blue');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should bind style object', () => {
+        const state = ReactiveState.create({
+          color: 'red',
+          size: '20px'
+        });
+        
+        const div = document.createElement('div');
+        div.id = 'bind-style-obj';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'bind-style-obj': {
+            style: () => ({
+              color: state.color,
+              fontSize: state.size
+            })
+          }
+        });
+        
+        expect(div.style.color).toBe('red');
+        expect(div.style.fontSize).toBe('20px');
+        
+        state.color = 'blue';
+        expect(div.style.color).toBe('blue');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should bind classList object', () => {
+        const state = ReactiveState.create({
+          active: true,
+          disabled: false
+        });
+        
+        const div = document.createElement('div');
+        div.id = 'bind-class-obj';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'bind-class-obj': {
+            classList: () => ({
+              active: state.active,
+              disabled: state.disabled
+            })
+          }
+        });
+        
+        expect(div.classList.contains('active')).toBeTruthy();
+        expect(div.classList.contains('disabled')).toBeFalsy();
+        
+        state.active = false;
+        state.disabled = true;
+        
+        expect(div.classList.contains('active')).toBeFalsy();
+        expect(div.classList.contains('disabled')).toBeTruthy();
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should bind dataset object', () => {
+        const state = ReactiveState.create({
+          userId: '123',
+          role: 'admin'
+        });
+        
+        const div = document.createElement('div');
+        div.id = 'bind-dataset';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'bind-dataset': {
+            dataset: () => ({
+              userId: state.userId,
+              role: state.role
+            })
+          }
+        });
+        
+        expect(div.dataset.userId).toBe('123');
+        expect(div.dataset.role).toBe('admin');
+        
+        state.userId = '456';
+        expect(div.dataset.userId).toBe('456');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should unbind elements', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updateCount = 0;
+        
+        const div = document.createElement('div');
+        div.id = 'unbind-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'unbind-test': () => {
+            updateCount++;
+            return state.count;
+          }
+        });
+        
+        const updatesBeforeUnbind = updateCount;
+        
+        Elements.unbind('unbind-test');
+        
+        state.count = 100; // Should not trigger update
+        
+        expect(updateCount).toBe(updatesBeforeUnbind);
+        
+        document.body.removeChild(div);
+      });
+    });
+
+    // ===== COLLECTION BINDING TESTS =====
+    test.suite('Collection Binding', () => {
+      test.test('should bind by class name', () => {
+        const state = ReactiveState.create({ text: 'Hello' });
+        
+        const div1 = document.createElement('div');
+        const div2 = document.createElement('div');
+        div1.className = 'bind-class-test';
+        div2.className = 'bind-class-test';
+        document.body.appendChild(div1);
+        document.body.appendChild(div2);
+        
+        Collections.bind({
+          'bind-class-test': () => state.text
+        });
+        
+        expect(div1.textContent).toBe('Hello');
+        expect(div2.textContent).toBe('Hello');
+        
+        state.text = 'World';
+        
+        expect(div1.textContent).toBe('World');
+        expect(div2.textContent).toBe('World');
+        
+        document.body.removeChild(div1);
+        document.body.removeChild(div2);
+      });
+
+      test.test('should unbind collections', () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updateCount = 0;
+        
+        const div1 = document.createElement('div');
+        const div2 = document.createElement('div');
+        div1.className = 'unbind-collection';
+        div2.className = 'unbind-collection';
+        document.body.appendChild(div1);
+        document.body.appendChild(div2);
+        
+        Collections.bind({
+          'unbind-collection': () => {
+            updateCount++;
+            return state.count;
+          }
+        });
+        
+        const updatesBeforeUnbind = updateCount;
+        
+        Collections.unbind('unbind-collection');
+        
+        state.count = 100;
+        
+        expect(updateCount).toBe(updatesBeforeUnbind);
+        
+        document.body.removeChild(div1);
+        document.body.removeChild(div2);
+      });
+    });
+
+    // ===== SELECTOR BINDING TESTS =====
+    test.suite('Selector Binding', () => {
+      test.test('should bind with querySelector', () => {
+        const state = ReactiveState.create({ text: 'Test' });
+        
+        const div = document.createElement('div');
+        div.className = 'query-test';
+        document.body.appendChild(div);
+        
+        Selector.query.bind({
+          '.query-test': () => state.text
+        });
+        
+        expect(div.textContent).toBe('Test');
+        
+        state.text = 'Updated';
+        expect(div.textContent).toBe('Updated');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should bind with querySelectorAll', () => {
+        const state = ReactiveState.create({ text: 'Test' });
+        
+        const div1 = document.createElement('div');
+        const div2 = document.createElement('div');
+        div1.className = 'query-all-test';
+        div2.className = 'query-all-test';
+        document.body.appendChild(div1);
+        document.body.appendChild(div2);
+        
+        Selector.queryAll.bind({
+          '.query-all-test': () => state.text
+        });
+        
+        expect(div1.textContent).toBe('Test');
+        expect(div2.textContent).toBe('Test');
+        
+        state.text = 'Updated';
+        
+        expect(div1.textContent).toBe('Updated');
+        expect(div2.textContent).toBe('Updated');
+        
+        document.body.removeChild(div1);
+        document.body.removeChild(div2);
+      });
+    });
+
+    // ===== ARRAY REACTIVITY TESTS =====
+    test.suite('Array Reactivity', () => {
+      test.test('should track push', () => {
+        const state = ReactiveState.create({ items: [1, 2, 3] });
+        let updates = 0;
+        
+        const div = document.createElement('div');
+        div.id = 'array-push';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'array-push': () => {
+            updates++;
+            return state.items.length;
+          }
+        });
+        
+        const initialUpdates = updates;
+        
+        state.items.push(4);
+        
+        expect(updates).toBeGreaterThan(initialUpdates);
+        expect(div.textContent).toBe('4');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should track pop', () => {
+        const state = ReactiveState.create({ items: [1, 2, 3] });
+        
+        const div = document.createElement('div');
+        div.id = 'array-pop';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'array-pop': () => state.items.length
+        });
+        
+        state.items.pop();
+        
+        expect(div.textContent).toBe('2');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should track shift', () => {
+        const state = ReactiveState.create({ items: [1, 2, 3] });
+        
+        const div = document.createElement('div');
+        div.id = 'array-shift';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'array-shift': () => state.items[0]
+        });
+        
+        state.items.shift();
+        
+        expect(div.textContent).toBe('2');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should track unshift', () => {
+        const state = ReactiveState.create({ items: [2, 3] });
+        
+        const div = document.createElement('div');
+        div.id = 'array-unshift';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'array-unshift': () => state.items[0]
+        });
+        
+        state.items.unshift(1);
+        
+        expect(div.textContent).toBe('1');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should track splice', () => {
+        const state = ReactiveState.create({ items: [1, 2, 3, 4, 5] });
+        
+        const div = document.createElement('div');
+        div.id = 'array-splice';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'array-splice': () => state.items.length
+        });
+        
+        state.items.splice(1, 2); // Remove 2 elements at index 1
+        
+        expect(div.textContent).toBe('3');
+        expect(state.items).toEqual([1, 4, 5]);
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should track sort', () => {
+        const state = ReactiveState.create({ items: [3, 1, 2] });
+        
+        const div = document.createElement('div');
+        div.id = 'array-sort';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'array-sort': () => state.items.join(',')
+        });
+        
+        state.items.sort();
+        
+        expect(div.textContent).toBe('1,2,3');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should track reverse', () => {
+        const state = ReactiveState.create({ items: [1, 2, 3] });
+        
+        const div = document.createElement('div');
+        div.id = 'array-reverse';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'array-reverse': () => state.items.join(',')
+        });
+        
+        state.items.reverse();
+        
+        expect(div.textContent).toBe('3,2,1');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should track index assignment', () => {
+        const state = ReactiveState.create({ items: [1, 2, 3] });
+        
+        const div = document.createElement('div');
+        div.id = 'array-index';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'array-index': () => state.items[1]
+        });
+        
+        state.items[1] = 99;
+        
+        expect(div.textContent).toBe('99');
+        
+        document.body.removeChild(div);
+      });
+    });
+
+    // ===== DEBUG UTILITIES TESTS =====
+    test.suite('Debug Utilities', () => {
+      test.test('should get state dependencies', () => {
+        const state = ReactiveState.create({ count: 0 });
+        
+        const div = document.createElement('div');
+        div.id = 'debug-deps';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'debug-deps': () => state.count
+        });
+        
+        const deps = ReactiveState.debug.getStateDependencies(state);
+        
+        expect(deps).not.toBeNull();
+        expect(deps.count).not.toBeUndefined();
+        expect(deps.count.count).toBeGreaterThan(0);
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should get element binding info', () => {
+        const state = ReactiveState.create({ count: 0 });
+        
+        const div = document.createElement('div');
+        div.id = 'debug-element';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'debug-element': () => state.count
+        });
+        
+        const info = ReactiveState.debug.getElementBindingInfo(div);
+        
+        expect(info.count).toBeGreaterThan(0);
+        expect(info.bindings).toHaveLength(1);
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should get reactive stats', () => {
+        const stats = ReactiveState.debug.getReactiveStats();
+        
+        expect(stats).not.toBeNull();
+        expect(typeof stats.pendingUpdates).toBe('number');
+        expect(typeof stats.batchDepth).toBe('number');
+        expect(typeof stats.isFlushing).toBe('boolean');
+      });
+
+      test.test('should enable/disable debug mode', () => {
+        ReactiveState.debug.setDebugMode(true);
+        // Debug mode enabled, no error should occur
+        
+        ReactiveState.debug.setDebugMode(false);
+        // Debug mode disabled
+      });
+
+      test.test('should use $debug method on state', () => {
+        const state = ReactiveState.create({ count: 0 });
+        
+        // Should not throw
+        state.$debug('Test State');
+      });
+    });
+
+    // ===== MEMORY LEAK TESTS =====
+    test.suite('Memory Management', () => {
+      test.test('should auto-cleanup when element removed', async () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updates = 0;
+        
+        const div = document.createElement('div');
+        div.id = 'memory-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'memory-test': () => {
+            updates++;
+            return state.count;
+          }
+        });
+        
+        const updatesBefore = updates;
+        
+        // Remove element
+        document.body.removeChild(div);
+        
+        // Wait for MutationObserver
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Update state
+        state.count = 100;
+        
+        // Should not have triggered update
+        expect(updates).toBe(updatesBefore);
+      });
+
+      test.test('should cleanup nested elements', async () => {
+        const state = ReactiveState.create({ count: 0 });
+        let updates = 0;
+        
+        const parent = document.createElement('div');
+        const child = document.createElement('div');
+        child.id = 'nested-cleanup';
+        parent.appendChild(child);
+        document.body.appendChild(parent);
+        
+        Elements.bind({
+          'nested-cleanup': () => {
+            updates++;
+            return state.count;
+          }
+        });
+        
+        const updatesBefore = updates;
+        
+        // Remove parent (should cleanup child too)
+        document.body.removeChild(parent);
+        
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        state.count = 100;
+        
+        expect(updates).toBe(updatesBefore);
+      });
+
+      test.test('should cleanup proxy cache on reassignment', () => {
+        const state = ReactiveState.create({
+          nested: { value: 1 }
+        });
+        
+        const oldNested = state.nested;
+        
+        state.nested = { value: 2 };
+        
+        expect(state.nested.value).toBe(2);
+        expect(ReactiveState.isReactive(state.nested)).toBeTruthy();
+      });
+    });
+
+    // ===== EDGE CASES TESTS =====
+    test.suite('Edge Cases', () => {
+      test.test('should handle null values', () => {
+        const state = ReactiveState.create({ value: null });
+        
+        const div = document.createElement('div');
+        div.id = 'null-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'null-test': () => state.value
+        });
+        
+        expect(div.textContent).toBe('');
+        
+        state.value = 'test';
+        expect(div.textContent).toBe('test');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle undefined values', () => {
+        const state = ReactiveState.create({ value: undefined });
+        
+        const div = document.createElement('div');
+        div.id = 'undefined-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'undefined-test': () => state.value
+        });
+        
+        expect(div.textContent).toBe('');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle boolean values', () => {
+        const state = ReactiveState.create({ flag: true });
+        
+        const div = document.createElement('div');
+        div.id = 'bool-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'bool-test': () => state.flag
+        });
+        
+        expect(div.textContent).toBe('true');
+        
+        state.flag = false;
+        expect(div.textContent).toBe('false');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle number values', () => {
+        const state = ReactiveState.create({ num: 0 });
+        
+        const div = document.createElement('div');
+        div.id = 'number-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'number-test': () => state.num
+        });
+        
+        expect(div.textContent).toBe('0');
+        
+        state.num = 42;
+        expect(div.textContent).toBe('42');
+        
+        state.num = -10;
+        expect(div.textContent).toBe('-10');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle deeply nested objects', () => {
+        const state = ReactiveState.create({
+          level1: {
+            level2: {
+              level3: {
+                value: 'deep'
+              }
+            }
+          }
+        });
+        
+        expect(state.level1.level2.level3.value).toBe('deep');
+        
+        state.level1.level2.level3.value = 'updated';
+        expect(state.level1.level2.level3.value).toBe('updated');
+      });
+
+      test.test('should handle array of objects', () => {
+        const state = ReactiveState.create({
+          items: [
+            { id: 1, name: 'A' },
+            { id: 2, name: 'B' }
+          ]
+        });
+        
+        expect(state.items[0].name).toBe('A');
+        
+        state.items[0].name = 'Updated';
+        expect(state.items[0].name).toBe('Updated');
+        
+        state.items.push({ id: 3, name: 'C' });
+        expect(state.items).toHaveLength(3);
+      });
+
+      test.test('should handle same value assignment', () => {
+        const state = ReactiveState.create({ count: 5 });
+        let updates = 0;
+        
+        const div = document.createElement('div');
+        div.id = 'same-value';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'same-value': () => {
+            updates++;
+            return state.count;
+          }
+        });
+        
+        const updatesBefore = updates;
+        
+        state.count = 5; // Same value
+        
+        // Should not trigger update (value hasn't changed)
+        expect(updates).toBe(updatesBefore);
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle Date objects', () => {
+        const now = new Date();
+        const state = ReactiveState.create({ date: now });
+        
+        expect(state.date).toBe(now);
+        
+        const tomorrow = new Date(now.getTime() + 86400000);
+        state.date = tomorrow;
+        
+        expect(state.date).toBe(tomorrow);
+      });
+
+      test.test('should handle empty objects', () => {
+        const state = ReactiveState.create({});
+        
+        expect(ReactiveState.isReactive(state)).toBeTruthy();
+        
+        state.newProp = 'test';
+        expect(state.newProp).toBe('test');
+      });
+
+      test.test('should handle empty arrays', () => {
+        const state = ReactiveState.create({ items: [] });
+        
+        expect(state.items).toHaveLength(0);
+        
+        state.items.push(1);
+        expect(state.items).toHaveLength(1);
+      });
+    });
+
+    // ===== PERFORMANCE TESTS =====
+    test.suite('Performance', () => {
+      test.test('should handle many properties efficiently', () => {
+        const obj = {};
+        for (let i = 0; i < 1000; i++) {
+          obj[`prop${i}`] = i;
+        }
+        
+        const start = performance.now();
+        const state = ReactiveState.create(obj);
+        const duration = performance.now() - start;
+        
+        expect(duration).toBeLessThan(100); // Should be fast
+        expect(state.prop500).toBe(500);
+      });
+
+      test.test('should handle many updates efficiently', () => {
+        const state = ReactiveState.create({ count: 0 });
+        
+        const div = document.createElement('div');
+        div.id = 'perf-updates';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'perf-updates': () => state.count
+        });
+        
+        const start = performance.now();
+        
+        ReactiveState.batch(() => {
+          for (let i = 0; i < 1000; i++) {
+            state.count = i;
+          }
+        });
+        
+        const duration = performance.now() - start;
+        
+        expect(duration).toBeLessThan(100);
+        expect(div.textContent).toBe('999');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle deep nesting efficiently', () => {
+        let obj = { value: 0 };
+        for (let i = 0; i < 10; i++) {
+          obj = { nested: obj };
+        }
+        
+        const start = performance.now();
+        const state = ReactiveState.create(obj);
+        const duration = performance.now() - start;
+        
+        expect(duration).toBeLessThan(50);
+        
+        // Access deep value
+        let deep = state;
+        for (let i = 0; i < 10; i++) {
+          deep = deep.nested;
+        }
+        expect(deep.value).toBe(0);
+      });
+    });
+
+    // ===== INTEGRATION TESTS =====
+    test.suite('Integration Scenarios', () => {
+      test.test('should handle todo list scenario', () => {
+        const todos = ReactiveState.collection([
+          { id: 1, text: 'Learn Reactive', done: false },
+          { id: 2, text: 'Build App', done: false }
+        ]);
+        
+        const div = document.createElement('div');
+        div.id = 'todo-scenario';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'todo-scenario': () => {
+            return todos.items
+              .filter(t => !t.done)
+              .map(t => t.text)
+              .join(', ');
+          }
+        });
+        
+        expect(div.textContent).toBe('Learn Reactive, Build App');
+        
+        todos.$update(t => t.id === 1, { done: true });
+        expect(div.textContent).toBe('Build App');
+        
+        todos.$add({ id: 3, text: 'Deploy', done: false });
+        expect(div.textContent).toBe('Build App, Deploy');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle counter with computed scenario', () => {
+        const state = ReactiveState.create({
+          count: 0,
+          multiplier: 2
+        });
+        
+        state.$computed('result', function() {
+          return this.count * this.multiplier;
+        });
+        
+        const div = document.createElement('div');
+        div.id = 'counter-computed';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'counter-computed': () => `${state.count} × ${state.multiplier} = ${state.result}`
+        });
+        
+        expect(div.textContent).toBe('0 × 2 = 0');
+        
+        state.count = 5;
+        expect(div.textContent).toBe('5 × 2 = 10');
+        
+        state.multiplier = 3;
+        expect(div.textContent).toBe('5 × 3 = 15');
+        
+        document.body.removeChild(div);
+      });
+
+      test.test('should handle form validation scenario', () => {
+        const form = ReactiveState.form({
+          email: '',
+          password: ''
+        });
+        
+        // Watch for validation
+        form.$watch('values', (values) => {
+          if (values.email && !values.email.includes('@')) {
+            form.$setError('email', 'Invalid email');
+          } else {
+            form.$setError('email', null);
+          }
+          
+          if (values.password && values.password.length < 6) {
+            form.$setError('password', 'Password too short');
+          } else {
+            form.$setError('password', null);
+          }
+        });
+        
+        form.$setValue('email', 'invalid');
+        expect(form.isValid).toBeFalsy();
+        expect(form.errors.email).toBe('Invalid email');
+        
+        form.$setValue('email', 'valid@example.com');
+        expect(form.errors.email).toBeUndefined();
+        
+        form.$setValue('password', '123');
+        expect(form.isValid).toBeFalsy();
+        
+        form.$setValue('password', '123456');
+        expect(form.isValid).toBeTruthy();
+      });
+
+      test.test('should handle shopping cart scenario', () => {
+        const cart = ReactiveState.create({
+          items: [
+            { id: 1, name: 'Item A', price: 10, quantity: 2 },
+            { id: 2, name: 'Item B', price: 20, quantity: 1 }
+          ]
+        });
+        
+        cart.$computed('total', function() {
+          return this.items.reduce((sum, item) => {
+            return sum + (item.price * item.quantity);
+          }, 0);
+        });
+        
+        cart.$computed('itemCount', function() {
+          return this.items.reduce((sum, item) => sum + item.quantity, 0);
+        });
+        
+        expect(cart.total).toBe(40); // (10*2) + (20*1)
+        expect(cart.itemCount).toBe(3); // 2 + 1
+        
+        cart.items[0].quantity = 3;
+        expect(cart.total).toBe(50); // (10*3) + (20*1)
+        expect(cart.itemCount).toBe(4); // 3 + 1
+        
+        cart.items.push({ id: 3, name: 'Item C', price: 15, quantity: 1 });
+        expect(cart.total).toBe(65); // (10*3) + (20*1) + (15*1)
+        expect(cart.itemCount).toBe(5); // 3 + 1 + 1
+      });
+
+      test.test('should handle user profile scenario', async () => {
+        const profile = ReactiveState.async({ name: '', email: '' });
+        
+        const div = document.createElement('div');
+        div.id = 'profile-scenario';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'profile-scenario': () => {
+            if (profile.loading) return 'Loading...';
+            if (profile.error) return `Error: ${profile.error.message}`;
+            if (profile.data) return profile.data.name;
+            return 'No data';
+          }
+        });
+        
+        expect(div.textContent).toBe('No data');
+        
+        await profile.$execute(async () => {
+          await new Promise(resolve => setTimeout(resolve, 50));
+          return { name: 'John Doe', email: 'john@example.com' };
+        });
+        
+        expect(div.textContent).toBe('John Doe');
+        
+        document.body.removeChild(div);
+      });
+    });
+
+    // ===== CONFIGURATION TESTS =====
+    test.suite('Configuration', () => {
+      test.test('should configure max dependency depth', () => {
+        ReactiveState.configure({
+          maxDependencyDepth: 5
+        });
+        
+        // Configuration applied (no error)
+      });
+
+      test.test('should configure error handler', () => {
+        let errorCaught = false;
+        let errorContext = null;
+        
+        ReactiveState.configure({
+          errorHandler: (error, context, data) => {
+            errorCaught = true;
+            errorContext = context;
+          }
+        });
+        
+        const state = ReactiveState.create({ count: 0 });
+        
+        const div = document.createElement('div');
+        div.id = 'error-handler-test';
+        document.body.appendChild(div);
+        
+        Elements.bind({
+          'error-handler-test': () => {
+            if (state.count > 5) {
+              throw new Error('Count too high');
+            }
+            return state.count;
+          }
+        });
+        
+        state.count = 10; // Should trigger error
+        
+        expect(errorCaught).toBeTruthy();
+        
+        // Reset error handler
+        ReactiveState.configure({ errorHandler: null });
+        
+        document.body.removeChild(div);
+      });
+    });
+
+    // ===== TORAW TESTS =====
+    test.suite('toRaw Utility', () => {
+      test.test('should extract raw value from reactive state', () => {
+        const state = ReactiveState.create({ count: 0 });
+        const raw = ReactiveState.toRaw(state);
+        
+        expect(ReactiveState.isReactive(raw)).toBeFalsy();
+        expect(raw.count).toBe(0);
+      });
+
+      test.test('should return non-reactive values as-is', () => {
+        const obj = { count: 0 };
+        const raw = ReactiveState.toRaw(obj);
+        
+        expect(raw).toBe(obj);
+      });
+
+      test.test('should extract raw from nested objects', () => {
+        const state = ReactiveState.create({
+          nested: { value: 5 }
+        });
+        
+        const rawNested = ReactiveState.toRaw(state.nested);
+        
+        expect(ReactiveState.isReactive(rawNested)).toBeFalsy();
+        expect(rawNested.value).toBe(5);
+      });
+    });
+
+    // ===== ISREACTIVE TESTS =====
+    test.suite('isReactive Utility', () => {
+      test.test('should identify reactive state', () => {
+        const state = ReactiveState.create({ count: 0 });
+        
+        expect(ReactiveState.isReactive(state)).toBeTruthy();
+      });
+
+      test.test('should identify non-reactive objects', () => {
+        const obj = { count: 0 };
+        
+        expect(ReactiveState.isReactive(obj)).toBeFalsy();
+      });
+
+      test.test('should identify reactive nested objects', () => {
+        const state = ReactiveState.create({
+          nested: { value: 5 }
+        });
+        
+        expect(ReactiveState.isReactive(state.nested)).toBeTruthy();
+      });
+
+      test.test('should return false for primitives', () => {
+        expect(ReactiveState.isReactive(5)).toBeFalsy();
+        expect(ReactiveState.isReactive('string')).toBeFalsy();
+        expect(ReactiveState.isReactive(true)).toBeFalsy();
+        expect(ReactiveState.isReactive(null)).toBeFalsy();
+        expect(ReactiveState.isReactive(undefined)).toBeFalsy();
+      });
+    });
+  </script>
+
+  <!-- UI Controls Script -->
+  <script>
+    // Initialize UI
+    test.renderTests();
+
+    // Run All Tests button
+    document.getElementById('runAllBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('runAllBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Running...';
+      
+      await test.run();
+      
+      btn.disabled = false;
+      btn.innerHTML = '▶ Run All Tests';
+    });
+
+    // Run Passed Only button
+    document.getElementById('runPassedBtn').addEventListener('click', async () => {
+      await test.run('passed');
+    });
+
+    // Run Failed Only button
+    document.getElementById('runFailedBtn').addEventListener('click', async () => {
+      await test.run('failed');
+    });
+
+    // Clear Results button
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      test.suites.forEach(suite => {
+        suite.tests.forEach(t => {
+          if (t.status !== 'skipped') {
+            t.status = 'pending';
+            t.error = null;
+            t.duration = 0;
+          }
+        });
+      });
+      
+      test.stats = {
+        total: test.suites.reduce((sum, s) => sum + s.tests.length, 0),
+        passed: 0,
+        failed: 0,
+        skipped: test.suites.reduce((sum, s) => {
+          return sum + s.tests.filter(t => t.status === 'skipped').length;
+        }, 0)
+      };
+      
+      test.updateUI();
+      test.showToast('Results cleared', 'info');
+    });
+
+    // Search functionality
+    document.getElementById('searchBox').addEventListener('input', (e) => {
+      const searchTerm = e.target.value;
+      const filterStatus = document.getElementById('filterSelect').value;
+      test.renderTests(searchTerm, filterStatus);
+    });
+
+    // Filter functionality
+    document.getElementById('filterSelect').addEventListener('change', (e) => {
+      const filterStatus = e.target.value;
+      const searchTerm = document.getElementById('searchBox').value;
+      test.renderTests(searchTerm, filterStatus);
+    });
+
+    // Auto-run tests on load
+    setTimeout(async () => {
+      const btn = document.getElementById('runAllBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Running...';
+      
+      await test.run();
+      
+      btn.disabled = false;
+      btn.innerHTML = '▶ Run All Tests';
+    }, 500);
+  </script>
+</body>
+</html>
