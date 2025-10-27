@@ -154,38 +154,45 @@
 
     reactiveMap.set(proxy, { deps, computedMap });
     
-    // Add instance methods
-    Object.defineProperties(proxy, {
-      $computed: {
-        value: function(key, fn) {
-          addComputed(this, key, fn);
-          return this;
+    // Add instance methods (check if they don't already exist)
+    if (!proxy.$computed) {
+      Object.defineProperties(proxy, {
+        $computed: {
+          value: function(key, fn) {
+            addComputed(this, key, fn);
+            return this;
+          },
+          enumerable: false,
+          configurable: true
         },
-        enumerable: false
-      },
-      $watch: {
-        value: function(keyOrFn, callback) {
-          return addWatch(this, keyOrFn, callback);
+        $watch: {
+          value: function(keyOrFn, callback) {
+            return addWatch(this, keyOrFn, callback);
+          },
+          enumerable: false,
+          configurable: true
         },
-        enumerable: false
-      },
-      $batch: {
-        value: function(fn) {
-          return batch(() => fn.call(this));
+        $batch: {
+          value: function(fn) {
+            return batch(() => fn.call(this));
+          },
+          enumerable: false,
+          configurable: true
         },
-        enumerable: false
-      },
-      $notify: {
-        value: function(key) {
-          notify(this, key);
+        $notify: {
+          value: function(key) {
+            notify(this, key);
+          },
+          enumerable: false,
+          configurable: true
         },
-        enumerable: false
-      },
-      $raw: {
-        get() { return toRaw(this); },
-        enumerable: false
-      }
-    });
+        $raw: {
+          get() { return toRaw(this); },
+          enumerable: false,
+          configurable: true
+        }
+      });
+    }
 
     return proxy;
   }
@@ -416,7 +423,8 @@
     });
 
     addComputed(state, 'isValid', function() {
-      return Object.keys(this.errors).length === 0;
+      const errorKeys = Object.keys(this.errors);
+      return errorKeys.length === 0 || errorKeys.every(k => !this.errors[k]);
     });
 
     addComputed(state, 'isDirty', function() {
@@ -653,9 +661,97 @@
   };
 
   // Integration
-  if (hasElements) Object.assign(global.Elements, api);
-  if (hasCollections) Object.assign(global.Collections, api);
-  if (hasSelector) Object.assign(global.Selector, api);
+  if (hasElements) {
+    Object.assign(global.Elements, api);
+    
+    // Elements.bind for ID-based bindings
+    global.Elements.bind = function(bindingDefs) {
+      Object.entries(bindingDefs).forEach(([id, bindingDef]) => {
+        const element = document.getElementById(id);
+        if (element) {
+          if (typeof bindingDef === 'function') {
+            effect(() => applyValue(element, null, bindingDef()));
+          } else if (typeof bindingDef === 'object') {
+            Object.entries(bindingDef).forEach(([prop, fn]) => {
+              if (typeof fn === 'function') {
+                effect(() => applyValue(element, prop, fn()));
+              }
+            });
+          }
+        }
+      });
+    };
+  }
+  
+  if (hasCollections) {
+    Object.assign(global.Collections, api);
+    
+    // Collections.bind for class-based bindings
+    global.Collections.bind = function(bindingDefs) {
+      Object.entries(bindingDefs).forEach(([className, bindingDef]) => {
+        const elements = document.getElementsByClassName(className);
+        Array.from(elements).forEach(element => {
+          if (typeof bindingDef === 'function') {
+            effect(() => applyValue(element, null, bindingDef()));
+          } else if (typeof bindingDef === 'object') {
+            Object.entries(bindingDef).forEach(([prop, fn]) => {
+              if (typeof fn === 'function') {
+                effect(() => applyValue(element, prop, fn()));
+              }
+            });
+          }
+        });
+      });
+    };
+  }
+  
+  if (hasSelector) {
+    Object.assign(global.Selector, api);
+    
+    // Selector.query for single element queries
+    if (global.Selector.query) {
+      Object.assign(global.Selector.query, api);
+      
+      global.Selector.query.bind = function(bindingDefs) {
+        Object.entries(bindingDefs).forEach(([selector, bindingDef]) => {
+          const element = document.querySelector(selector);
+          if (element) {
+            if (typeof bindingDef === 'function') {
+              effect(() => applyValue(element, null, bindingDef()));
+            } else if (typeof bindingDef === 'object') {
+              Object.entries(bindingDef).forEach(([prop, fn]) => {
+                if (typeof fn === 'function') {
+                  effect(() => applyValue(element, prop, fn()));
+                }
+              });
+            }
+          }
+        });
+      };
+    }
+    
+    // Selector.queryAll for multiple element queries
+    if (global.Selector.queryAll) {
+      Object.assign(global.Selector.queryAll, api);
+      
+      global.Selector.queryAll.bind = function(bindingDefs) {
+        Object.entries(bindingDefs).forEach(([selector, bindingDef]) => {
+          const elements = document.querySelectorAll(selector);
+          elements.forEach(element => {
+            if (typeof bindingDef === 'function') {
+              effect(() => applyValue(element, null, bindingDef()));
+            } else if (typeof bindingDef === 'object') {
+              Object.entries(bindingDef).forEach(([prop, fn]) => {
+                if (typeof fn === 'function') {
+                  effect(() => applyValue(element, prop, fn()));
+                }
+              });
+            }
+          });
+        });
+      };
+    }
+  }
 
   global.ReactiveState = ReactiveState;
   global.ReactiveUtils = api;
