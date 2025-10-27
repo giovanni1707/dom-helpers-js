@@ -1,6 +1,6 @@
 /**
- * DOM Helpers - Reactive State Extension v2.0.2
- * Production-ready with all README features
+ * DOM Helpers - Reactive State Extension v2.0.1
+ * Fixed version - no infinite loops
  * @license MIT
  */
 
@@ -11,8 +11,11 @@
   const hasCollections = !!global.Collections;
   const hasSelector = !!global.Selector;
 
-  // State management
+  // Core state
   const reactiveMap = new WeakMap();
+  const computedCache = new WeakMap();
+  const bindingMap = new WeakMap();
+  
   let currentEffect = null;
   let batchDepth = 0;
   let pendingUpdates = new Set();
@@ -45,8 +48,11 @@
     const updates = Array.from(pendingUpdates);
     pendingUpdates.clear();
     updates.forEach(fn => {
-      try { fn(); } 
-      catch (e) { console.error('[Reactive] Error:', e); }
+      try {
+        fn();
+      } catch (e) {
+        console.error('[Reactive] Update error:', e);
+      }
     });
   }
 
@@ -75,21 +81,17 @@
         if (currentEffect && typeof key !== 'symbol') {
           if (!deps.has(key)) deps.set(key, new Set());
           deps.get(key).add(currentEffect);
-          if (currentEffect.onDep) currentEffect.onDep(key);
         }
 
         let value = obj[key];
 
         // Handle computed
-        if (computedMap.has(key)) {
-          const comp = computedMap.get(key);
+        if (computed.has(key)) {
+          const comp = computed.get(key);
           if (comp.dirty) {
-            comp.deps.clear();
             const prevEffect = currentEffect;
-            currentEffect = { 
-              isComputed: true,
-              onDep: (k) => comp.deps.add(k)
-            };
+            currentEffect = comp.effect;
+            comp.deps.clear();
             try {
               value = comp.fn.call(proxy);
               comp.value = value;
@@ -98,15 +100,7 @@
               currentEffect = prevEffect;
             }
           }
-          value = comp.value;
-          
-          // Track computed as dependency
-          if (currentEffect && !currentEffect.isComputed) {
-            if (!deps.has(key)) deps.set(key, new Set());
-            deps.get(key).add(currentEffect);
-          }
-          
-          return value;
+          return comp.value;
         }
 
         // Deep reactivity
@@ -126,9 +120,10 @@
         const effects = deps.get(key);
         if (effects) {
           // Mark computed as dirty and notify their dependents
-          computedMap.forEach((comp, compKey) => {
+          computed.forEach((comp, compKey) => {
             if (comp.deps.has(key)) {
               comp.dirty = true;
+              // Trigger effects that depend on this computed
               const compDeps = deps.get(compKey);
               if (compDeps) {
                 compDeps.forEach(effect => {
@@ -152,41 +147,7 @@
       }
     });
 
-    reactiveMap.set(proxy, { deps, computedMap });
-    
-    // Add instance methods
-    Object.defineProperties(proxy, {
-      $computed: {
-        value: function(key, fn) {
-          addComputed(this, key, fn);
-          return this;
-        },
-        enumerable: false
-      },
-      $watch: {
-        value: function(keyOrFn, callback) {
-          return addWatch(this, keyOrFn, callback);
-        },
-        enumerable: false
-      },
-      $batch: {
-        value: function(fn) {
-          return batch(() => fn.call(this));
-        },
-        enumerable: false
-      },
-      $notify: {
-        value: function(key) {
-          notify(this, key);
-        },
-        enumerable: false
-      },
-      $raw: {
-        get() { return toRaw(this); },
-        enumerable: false
-      }
-    });
-
+    reactiveMap.set(proxy, { deps, computed });
     return proxy;
   }
 
@@ -202,11 +163,13 @@
       }
     };
     execute();
-    return () => { currentEffect = null; };
+    return () => {
+      currentEffect = null;
+    };
   }
 
   // Computed
-  function addComputed(state, key, fn) {
+  function computed(state, key, fn) {
     const meta = reactiveMap.get(state);
     if (!meta) {
       console.error('[Reactive] Cannot add computed to non-reactive state');
@@ -217,20 +180,26 @@
       fn,
       value: undefined,
       dirty: true,
-      deps: new Set()
+      deps: new Set(),
+      effect: {
+        isComputed: true
+      }
     };
 
-    meta.computedMap.set(key, comp);
+    meta.computed.set(key, comp);
 
     Object.defineProperty(state, key, {
       get() {
         if (comp.dirty) {
+          // Clear old dependencies
           comp.deps.clear();
+          
           const prevEffect = currentEffect;
           currentEffect = {
             isComputed: true,
-            onDep: (k) => comp.deps.add(k)
+            onDep: (depKey) => comp.deps.add(depKey)
           };
+          
           try {
             comp.value = fn.call(state);
             comp.dirty = false;
@@ -251,47 +220,6 @@
     });
   }
 
-  // Watch
-  function addWatch(state, keyOrFn, callback) {
-    let oldValue;
-    if (typeof keyOrFn === 'function') {
-      oldValue = keyOrFn.call(state);
-      return effect(() => {
-        const newValue = keyOrFn.call(state);
-        if (newValue !== oldValue) {
-          callback(newValue, oldValue);
-          oldValue = newValue;
-        }
-      });
-    } else {
-      oldValue = state[keyOrFn];
-      return effect(() => {
-        const newValue = state[keyOrFn];
-        if (newValue !== oldValue) {
-          callback(newValue, oldValue);
-          oldValue = newValue;
-        }
-      });
-    }
-  }
-
-  // Notify
-  function notify(state, key) {
-    const meta = reactiveMap.get(state);
-    if (!meta) return;
-    
-    if (key) {
-      const effects = meta.deps.get(key);
-      if (effects) {
-        effects.forEach(e => e && !e.isComputed && queueUpdate(e));
-      }
-    } else {
-      meta.deps.forEach(effects => {
-        effects.forEach(e => e && !e.isComputed && queueUpdate(e));
-      });
-    }
-  }
-
   // Bindings
   function bindings(defs) {
     const cleanups = [];
@@ -310,17 +238,19 @@
 
       elements.forEach(el => {
         if (typeof bindingDef === 'function') {
-          cleanups.push(effect(() => {
+          const cleanup = effect(() => {
             const value = bindingDef();
             applyValue(el, null, value);
-          }));
+          });
+          cleanups.push(cleanup);
         } else if (typeof bindingDef === 'object') {
           Object.entries(bindingDef).forEach(([prop, fn]) => {
             if (typeof fn === 'function') {
-              cleanups.push(effect(() => {
+              const cleanup = effect(() => {
                 const value = fn();
                 applyValue(el, prop, value);
-              }));
+              });
+              cleanups.push(cleanup);
             }
           });
         }
@@ -369,6 +299,18 @@
     }
   }
 
+  // Watch
+  function watch(state, key, callback) {
+    let oldValue = state[key];
+    return effect(() => {
+      const newValue = state[key];
+      if (newValue !== oldValue) {
+        callback(newValue, oldValue);
+        oldValue = newValue;
+      }
+    });
+  }
+
   // Ref
   function ref(value) {
     const state = createReactive({ value });
@@ -392,13 +334,6 @@
       if (idx !== -1) this.items.splice(idx, 1);
     };
     
-    state.$update = function(predicate, updates) {
-      const idx = typeof predicate === 'function'
-        ? this.items.findIndex(predicate)
-        : this.items.indexOf(predicate);
-      if (idx !== -1) Object.assign(this.items[idx], updates);
-    };
-    
     state.$clear = function() {
       this.items.length = 0;
     };
@@ -415,11 +350,11 @@
       isSubmitting: false
     });
 
-    addComputed(state, 'isValid', function() {
+    computed(state, 'isValid', function() {
       return Object.keys(this.errors).length === 0;
     });
 
-    addComputed(state, 'isDirty', function() {
+    computed(state, 'isDirty', function() {
       return Object.keys(this.touched).length > 0;
     });
 
@@ -450,11 +385,11 @@
       error: null
     });
 
-    addComputed(state, 'isSuccess', function() {
-      return !this.loading && !this.error && this.data !== null;
+    computed(state, 'isSuccess', function() {
+      return !this.loading && !this.error;
     });
 
-    addComputed(state, 'isError', function() {
+    computed(state, 'isError', function() {
       return !this.loading && this.error !== null;
     });
 
@@ -486,12 +421,14 @@
   function store(initialState, options = {}) {
     const state = createReactive(initialState);
 
+    // Getters
     if (options.getters) {
       Object.entries(options.getters).forEach(([key, fn]) => {
-        addComputed(state, key, fn);
+        computed(state, key, fn);
       });
     }
 
+    // Actions
     if (options.actions) {
       Object.entries(options.actions).forEach(([name, fn]) => {
         state[name] = function(...args) {
@@ -507,30 +444,34 @@
   function component(config) {
     const state = createReactive(config.state || {});
 
+    // Computed
     if (config.computed) {
       Object.entries(config.computed).forEach(([key, fn]) => {
-        addComputed(state, key, fn);
+        computed(state, key, fn);
       });
     }
 
+    // Watch
     const cleanups = [];
-    
     if (config.watch) {
       Object.entries(config.watch).forEach(([key, callback]) => {
-        cleanups.push(addWatch(state, key, callback));
+        cleanups.push(watch(state, key, callback));
       });
     }
 
+    // Effects
     if (config.effects) {
       Object.values(config.effects).forEach(fn => {
         cleanups.push(effect(fn));
       });
     }
 
+    // Bindings
     if (config.bindings) {
       cleanups.push(bindings(config.bindings));
     }
 
+    // Actions
     if (config.actions) {
       Object.entries(config.actions).forEach(([name, fn]) => {
         state[name] = function(...args) {
@@ -539,6 +480,7 @@
       });
     }
 
+    // Lifecycle
     if (config.mounted) {
       config.mounted.call(state);
     }
@@ -553,51 +495,6 @@
     return state;
   }
 
-  // Reactive builder
-  function reactive(initialState) {
-    const state = createReactive(initialState);
-    const cleanups = [];
-
-    const builder = {
-      state,
-      computed(defs) {
-        Object.entries(defs).forEach(([k, fn]) => addComputed(state, k, fn));
-        return this;
-      },
-      watch(defs) {
-        Object.entries(defs).forEach(([k, cb]) => {
-          cleanups.push(addWatch(state, k, cb));
-        });
-        return this;
-      },
-      effect(fn) {
-        cleanups.push(effect(fn));
-        return this;
-      },
-      bind(defs) {
-        cleanups.push(bindings(defs));
-        return this;
-      },
-      action(name, fn) {
-        state[name] = function(...args) { return fn(this, ...args); };
-        return this;
-      },
-      actions(defs) {
-        Object.entries(defs).forEach(([name, fn]) => this.action(name, fn));
-        return this;
-      },
-      build() {
-        state.destroy = () => cleanups.forEach(c => c());
-        return state;
-      },
-      destroy() {
-        cleanups.forEach(c => c());
-      }
-    };
-
-    return builder;
-  }
-
   // API
   const ReactiveState = {
     create: createReactive,
@@ -609,11 +506,11 @@
   const api = {
     state: createReactive,
     computed: (state, defs) => {
-      Object.entries(defs).forEach(([k, fn]) => addComputed(state, k, fn));
+      Object.entries(defs).forEach(([key, fn]) => computed(state, key, fn));
       return state;
     },
     watch: (state, defs) => {
-      const cleanups = Object.entries(defs).map(([k, cb]) => addWatch(state, k, cb));
+      const cleanups = Object.entries(defs).map(([key, cb]) => watch(state, key, cb));
       return () => cleanups.forEach(c => c());
     },
     effect,
@@ -629,17 +526,25 @@
     },
     store,
     component,
-    reactive,
     bindings,
     list: collection,
     batch,
     isReactive,
     toRaw,
-    notify,
     pause: () => batchDepth++,
-    resume: (fl) => {
+    resume: (flush) => {
       batchDepth = Math.max(0, batchDepth - 1);
-      if (fl && batchDepth === 0) flush();
+      if (flush && batchDepth === 0) flush();
+    },
+    notify: (state, key) => {
+      const meta = reactiveMap.get(state);
+      if (meta) {
+        const effects = key ? meta.deps.get(key) : 
+          Array.from(meta.deps.values()).flat();
+        if (effects) {
+          effects.forEach(e => e && !e.isComputed && queueUpdate(e));
+        }
+      }
     },
     untrack: (fn) => {
       const prev = currentEffect;
@@ -660,6 +565,6 @@
   global.ReactiveState = ReactiveState;
   global.ReactiveUtils = api;
 
-  console.log('[DOM Helpers Reactive] v2.0.2 loaded successfully');
+  console.log('[DOM Helpers Reactive] v2.0.1 loaded (fixed)');
 
 })(typeof window !== 'undefined' ? window : global);

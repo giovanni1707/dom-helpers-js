@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM Helpers Reactive - Comprehensive Test Suite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .test-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .test-section h2 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    .test-case {
+      margin-bottom: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-left: 4px solid #3498db;
+      border-radius: 4px;
+    }
+
+    .test-case h3 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .result {
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    button:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: bold;
+      color: #3498db;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .demo-output {
+      padding: 15px;
+      background: #ecf0f1;
+      border-radius: 4px;
+      margin-top: 10px;
+      min-height: 40px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .badge.passed {
+      background: #27ae60;
+      color: white;
+    }
+
+    .badge.failed {
+      background: #e74c3c;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DOM Helpers Reactive - Comprehensive Test Suite</h1>
+    <p class="subtitle">Testing all features from Reactive-README.md v2.0.0</p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number" id="total-tests">0</div>
+        <div class="stat-label">Total Tests</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="passed-tests" style="color: #27ae60;">0</div>
+        <div class="stat-label">Passed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="failed-tests" style="color: #e74c3c;">0</div>
+        <div class="stat-label">Failed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="test-duration">0ms</div>
+        <div class="stat-label">Duration</div>
+      </div>
+    </div>
+
+    <!-- Test sections will be dynamically added here -->
+    <div id="test-container"></div>
+  </div>
+
+  <!-- Load DOM Helpers Core (mock for testing) -->
+  <script>
+    // Mock DOM Helpers if not loaded
+    if (typeof Elements === 'undefined') {
+      window.Elements = {};
+      window.Collections = {};
+      window.Selector = { query: {}, queryAll: {} };
+    }
+  </script>
+
+  <!-- Load Reactive Extension -->
+   <script src="../src/dom-helpers.js"></script>
+  <script src="../src/dom-helpers-reactive.js"></script>
+
+  <!-- Test Suite -->
+  <script>
+    const testContainer = document.getElementById('test-container');
+    let totalTests = 0;
+    let passedTests = 0;
+    let failedTests = 0;
+    const startTime = performance.now();
+
+    function createTestSection(title) {
+      const section = document.createElement('div');
+      section.className = 'test-section';
+      section.innerHTML = `<h2>${title}</h2>`;
+      testContainer.appendChild(section);
+      return section;
+    }
+
+    function createTestCase(section, title) {
+      const testCase = document.createElement('div');
+      testCase.className = 'test-case';
+      testCase.innerHTML = `<h3>${title}</h3>`;
+      section.appendChild(testCase);
+      return testCase;
+    }
+
+    function addResult(testCase, message, type = 'success') {
+      const result = document.createElement('div');
+      result.className = `result ${type}`;
+      result.textContent = message;
+      testCase.appendChild(result);
+    }
+
+    function test(testCase, description, fn) {
+      totalTests++;
+      try {
+        fn();
+        passedTests++;
+        addResult(testCase, `✓ ${description}`, 'success');
+        return true;
+      } catch (error) {
+        failedTests++;
+        addResult(testCase, `✗ ${description}: ${error.message}`, 'error');
+        console.error(error);
+        return false;
+      }
+    }
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message || 'Assertion failed');
+      }
+    }
+
+    function assertEqual(actual, expected, message) {
+      if (actual !== expected) {
+        throw new Error(message || `Expected ${expected}, got ${actual}`);
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('total-tests').textContent = totalTests;
+      document.getElementById('passed-tests').textContent = passedTests;
+      document.getElementById('failed-tests').textContent = failedTests;
+      const duration = Math.round(performance.now() - startTime);
+      document.getElementById('test-duration').textContent = duration + 'ms';
+    }
+
+    // ===== TEST 1: Basic Reactive State =====
+    (function() {
+      const section = createTestSection('1. Basic Reactive State');
+      const testCase = createTestCase(section, 'Elements.state() - Basic reactivity');
+
+      const state = Elements.state({ count: 0, message: 'Hello' });
+
+      test(testCase, 'Creates reactive state', () => {
+        assert(state !== null, 'State should exist');
+        assert(Elements.isReactive(state), 'State should be reactive');
+      });
+
+      test(testCase, 'Can read state properties', () => {
+        assertEqual(state.count, 0, 'Count should be 0');
+        assertEqual(state.message, 'Hello', 'Message should be Hello');
+      });
+
+      test(testCase, 'Can modify state properties', () => {
+        state.count = 10;
+        assertEqual(state.count, 10, 'Count should be updated');
+      });
+
+      test(testCase, 'Nested objects are reactive', () => {
+        const state2 = Elements.state({ user: { name: 'John' } });
+        state2.user.name = 'Jane';
+        assertEqual(state2.user.name, 'Jane', 'Nested property should update');
+      });
+
+      test(testCase, 'Arrays are reactive', () => {
+        const state3 = Elements.state({ items: [1, 2, 3] });
+        state3.items.push(4);
+        assertEqual(state3.items.length, 4, 'Array should have 4 items');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 2: Computed Properties =====
+    (function() {
+      const section = createTestSection('2. Computed Properties');
+      const testCase = createTestCase(section, 'Computed properties with caching');
+
+      const state = Elements.state({
+        firstName: 'John',
+        lastName: 'Doe',
+        price: 100,
+        quantity: 2
+      });
+
+      test(testCase, 'Instance method: $computed', () => {
+        state.$computed('fullName', function() {
+          return `${this.firstName} ${this.lastName}`;
+        });
+        assertEqual(state.fullName, 'John Doe', 'Computed should work');
+      });
+
+      test(testCase, 'Computed updates when dependency changes', () => {
+        state.firstName = 'Jane';
+        assertEqual(state.fullName, 'Jane Doe', 'Computed should auto-update');
+      });
+
+      test(testCase, 'Standalone computed()', () => {
+        Elements.computed(state, {
+          total: () => state.price * state.quantity
+        });
+        assertEqual(state.total, 200, 'Standalone computed should work');
+      });
+
+      test(testCase, 'Nested computed dependencies', () => {
+        Elements.computed(state, {
+          summary: () => `${state.fullName} - Total: $${state.total}`
+        });
+        assert(state.summary.includes('Jane Doe'), 'Nested computed should work');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 3: Watchers =====
+    (function() {
+      const section = createTestSection('3. Watchers');
+      const testCase = createTestCase(section, 'Watch for state changes');
+
+      const state = Elements.state({ count: 0, theme: 'light' });
+      let watchCallCount = 0;
+      let lastValue = null;
+
+      test(testCase, 'Instance method: $watch', () => {
+        const unwatch = state.$watch('count', (newVal, oldVal) => {
+          watchCallCount++;
+          lastValue = newVal;
+        });
+        state.count = 5;
+        assert(watchCallCount > 0, 'Watch callback should fire');
+        assertEqual(lastValue, 5, 'Should receive new value');
+        unwatch();
+      });
+
+      test(testCase, 'Standalone watch()', () => {
+        let themeChanged = false;
+        const unwatch = Elements.watch(state, {
+          theme: (newVal) => {
+            themeChanged = true;
+          }
+        });
+        state.theme = 'dark';
+        assert(themeChanged, 'Watch should fire');
+        unwatch();
+      });
+
+      test(testCase, 'Watch computed values', () => {
+        let changed = false;
+        state.$computed('doubled', function() {
+          return this.count * 2;
+        });
+        state.$watch(() => state.doubled, () => {
+          changed = true;
+        });
+        state.count = 10;
+        assert(changed, 'Should watch computed values');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 4: Effects =====
+    (function() {
+      const section = createTestSection('4. Effects');
+      const testCase = createTestCase(section, 'Automatic dependency tracking');
+
+      const state = Elements.state({ count: 0 });
+      let effectRan = 0;
+
+      test(testCase, 'Elements.effect()', () => {
+        const cleanup = Elements.effect(() => {
+          const value = state.count;
+          effectRan++;
+        });
+        state.count = 5;
+        assert(effectRan > 1, 'Effect should re-run on dependency change');
+        cleanup();
+      });
+
+      test(testCase, 'Elements.effects() - multiple', () => {
+        let effect1Ran = false;
+        let effect2Ran = false;
+        const cleanup = Elements.effects({
+          effect1: () => {
+            const val = state.count;
+            effect1Ran = true;
+          },
+          effect2: () => {
+            const val = state.count;
+            effect2Ran = true;
+          }
+        });
+        assert(effect1Ran && effect2Ran, 'Both effects should run');
+        cleanup();
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 5: Refs =====
+    (function() {
+      const section = createTestSection('5. Refs');
+      const testCase = createTestCase(section, 'Simple reactive values');
+
+      test(testCase, 'Elements.ref()', () => {
+        const count = Elements.ref(0);
+        assertEqual(count.value, 0, 'Ref should have value');
+        count.value = 10;
+        assertEqual(count.value, 10, 'Ref value should update');
+      });
+
+      test(testCase, 'Elements.refs() - multiple', () => {
+        const { x, y, z } = Elements.refs({ x: 1, y: 2, z: 3 });
+        assertEqual(x.value, 1, 'X ref should work');
+        assertEqual(y.value, 2, 'Y ref should work');
+        assertEqual(z.value, 3, 'Z ref should work');
+      });
+
+      test(testCase, 'Ref auto-unwraps in operations', () => {
+        const num = Elements.ref(5);
+        const result = num + 10;
+        assertEqual(result, 15, 'Ref should auto-unwrap');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 6: Bindings =====
+    (function() {
+      const section = createTestSection('6. DOM Bindings');
+      const testCase = createTestCase(section, 'Declarative bindings');
+
+      // Create test elements
+      const testDiv = document.createElement('div');
+      testDiv.id = 'test-binding';
+      document.body.appendChild(testDiv);
+
+      const testSpan = document.createElement('span');
+      testSpan.className = 'test-class';
+      document.body.appendChild(testSpan);
+
+      const state = Elements.state({ message: 'Hello World', count: 42 });
+
+      test(testCase, 'Elements.bindings() declarative API', () => {
+        const cleanup = Elements.bindings({
+          '#test-binding': () => state.message
+        });
+        assertEqual(testDiv.textContent, 'Hello World', 'Binding should update element');
+        cleanup();
+      });
+
+      test(testCase, 'Bindings update on state change', () => {
+        Elements.bindings({
+          '#test-binding': () => state.message
+        });
+        state.message = 'Updated';
+        assertEqual(testDiv.textContent, 'Updated', 'Element should auto-update');
+      });
+
+      test(testCase, 'Bind object properties', () => {
+        Elements.bindings({
+          '#test-binding': {
+            textContent: () => state.count,
+            className: () => state.count > 40 ? 'high' : 'low'
+          }
+        });
+        assert(testDiv.classList.contains('high'), 'Should apply class based on state');
+      });
+
+      // Cleanup
+      testDiv.remove();
+      testSpan.remove();
+      updateStats();
+    })();
+
+    // ===== TEST 7: Collections =====
+    (function() {
+      const section = createTestSection('7. Collections Helper');
+      const testCase = createTestCase(section, 'Array management');
+
+      const list = Elements.list([
+        { id: 1, text: 'Item 1' },
+        { id: 2, text: 'Item 2' }
+      ]);
+
+      test(testCase, 'Creates collection', () => {
+        assertEqual(list.items.length, 2, 'Should have 2 items');
+      });
+
+      test(testCase, '$add() method', () => {
+        list.$add({ id: 3, text: 'Item 3' });
+        assertEqual(list.items.length, 3, 'Should add item');
+      });
+
+      test(testCase, '$remove() by predicate', () => {
+        list.$remove(item => item.id === 2);
+        assertEqual(list.items.length, 2, 'Should remove item');
+      });
+
+      test(testCase, '$update() method', () => {
+        list.$update(item => item.id === 1, { text: 'Updated Item 1' });
+        assertEqual(list.items[0].text, 'Updated Item 1', 'Should update item');
+      });
+
+      test(testCase, '$clear() method', () => {
+        list.$clear();
+        assertEqual(list.items.length, 0, 'Should clear all items');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 8: Forms =====
+    (function() {
+      const section = createTestSection('8. Forms Helper');
+      const testCase = createTestCase(section, 'Form state management');
+
+      const form = ReactiveState.form({
+        username: '',
+        email: ''
+      });
+
+      test(testCase, 'Creates form state', () => {
+        assert(form.values, 'Should have values');
+        assert(form.errors, 'Should have errors');
+        assert(form.touched, 'Should have touched');
+      });
+
+      test(testCase, '$setValue() method', () => {
+        form.$setValue('username', 'john');
+        assertEqual(form.values.username, 'john', 'Should set value');
+        assert(form.touched.username, 'Should mark as touched');
+      });
+
+      test(testCase, '$setError() method', () => {
+        form.$setError('email', 'Invalid email');
+        assertEqual(form.errors.email, 'Invalid email', 'Should set error');
+      });
+
+      test(testCase, 'isValid computed property', () => {
+        assertEqual(form.isValid, false, 'Should be invalid with errors');
+        form.$setError('email', null);
+        assertEqual(form.isValid, true, 'Should be valid without errors');
+      });
+
+      test(testCase, 'isDirty computed property', () => {
+        assert(form.isDirty, 'Should be dirty after touching fields');
+      });
+
+      test(testCase, '$reset() method', () => {
+        form.$reset();
+        assertEqual(form.values.username, '', 'Should reset values');
+        assertEqual(Object.keys(form.touched).length, 0, 'Should reset touched');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 9: Async State =====
+    (function() {
+      const section = createTestSection('9. Async State Helper');
+      const testCase = createTestCase(section, 'Async operations');
+
+      const userData = ReactiveState.async(null);
+
+      test(testCase, 'Creates async state', () => {
+        assert(userData.data === null, 'Should have data');
+        assert(userData.loading === false, 'Should have loading');
+        assert(userData.error === null, 'Should have error');
+      });
+
+      test(testCase, '$execute() tracks loading state', async () => {
+        const promise = userData.$execute(async () => {
+          await new Promise(resolve => setTimeout(resolve, 10));
+          return { name: 'John' };
+        });
+
+        assertEqual(userData.loading, true, 'Should be loading');
+        await promise;
+        assertEqual(userData.loading, false, 'Should stop loading');
+        assertEqual(userData.data.name, 'John', 'Should set data');
+      });
+
+      test(testCase, 'isSuccess computed property', () => {
+        assert(userData.isSuccess, 'Should be success');
+      });
+
+      test(testCase, '$reset() method', () => {
+        userData.$reset();
+        assertEqual(userData.data, null, 'Should reset data');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 10: Store =====
+    (function() {
+      const section = createTestSection('10. Store (Vuex-like)');
+      const testCase = createTestCase(section, 'Store with actions and getters');
+
+      const counterStore = Elements.store(
+        { count: 0 },
+        {
+          getters: {
+            doubled: function() {
+              return this.count * 2;
+            }
+          },
+          actions: {
+            increment(store, amount = 1) {
+              store.count += amount;
+            },
+            decrement(store) {
+              store.count--;
+            }
+          }
+        }
+      );
+
+      test(testCase, 'Creates store', () => {
+        assertEqual(counterStore.count, 0, 'Should have state');
+      });
+
+      test(testCase, 'Getters work', () => {
+        assertEqual(counterStore.doubled, 0, 'Getter should work');
+      });
+
+      test(testCase, 'Actions modify state', () => {
+        counterStore.increment(5);
+        assertEqual(counterStore.count, 5, 'Action should modify state');
+        assertEqual(counterStore.doubled, 10, 'Getter should update');
+      });
+
+      test(testCase, 'Multiple actions', () => {
+        counterStore.decrement();
+        assertEqual(counterStore.count, 4, 'Should decrement');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 11: Component =====
+    (function() {
+      const section = createTestSection('11. Component System');
+      const testCase = createTestCase(section, 'Complete component lifecycle');
+
+      let mountedCalled = false;
+      let unmountedCalled = false;
+
+      const counter = Elements.component({
+        state: { count: 0 },
+        computed: {
+          doubled: () => counter.count * 2
+        },
+        actions: {
+          increment(state) {
+            state.count++;
+          }
+        },
+        mounted() {
+          mountedCalled = true;
+        },
+        unmounted() {
+          unmountedCalled = true;
+        }
+      });
+
+      test(testCase, 'Creates component', () => {
+        assert(counter !== null, 'Component should exist');
+      });
+
+      test(testCase, 'Mounted lifecycle hook', () => {
+        assert(mountedCalled, 'Mounted should be called');
+      });
+
+      test(testCase, 'State and computed work', () => {
+        assertEqual(counter.count, 0, 'State should work');
+        assertEqual(counter.doubled, 0, 'Computed should work');
+      });
+
+      test(testCase, 'Actions work', () => {
+        counter.increment();
+        assertEqual(counter.count, 1, 'Action should work');
+      });
+
+      test(testCase, '$destroy() and unmounted hook', () => {
+        counter.$destroy();
+        assert(unmountedCalled, 'Unmounted should be called');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 12: Fluent Builder API =====
+    (function() {
+      const section = createTestSection('12. Fluent Builder API');
+      const testCase = createTestCase(section, 'Chaining methods');
+
+      const app = Elements.reactive({ count: 0 })
+        .computed({
+          doubled: () => app.state.count * 2
+        })
+        .action('increment', (state) => {
+          state.count++;
+        })
+        .build();
+
+      test(testCase, 'Creates reactive builder', () => {
+        assert(app !== null, 'Builder should create state');
+      });
+
+      test(testCase, 'Computed added via builder', () => {
+        assertEqual(app.doubled, 0, 'Computed should work');
+      });
+
+      test(testCase, 'Action added via builder', () => {
+        app.increment();
+        assertEqual(app.count, 1, 'Action should work');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 13: Batch Updates =====
+    (function() {
+      const section = createTestSection('13. Batch Updates');
+      const testCase = createTestCase(section, 'Performance optimization');
+
+      const state = Elements.state({ a: 0, b: 0, c: 0 });
+      let updateCount = 0;
+
+      Elements.effect(() => {
+        const sum = state.a + state.b + state.c;
+        updateCount++;
+      });
+
+      test(testCase, 'Without batching - multiple updates', () => {
+        updateCount = 0;
+        state.a = 1;
+        state.b = 2;
+        state.c = 3;
+        assert(updateCount > 1, 'Should trigger multiple updates');
+      });
+
+      test(testCase, 'With batching - single update', () => {
+        updateCount = 0;
+        Elements.batch(() => {
+          state.a = 10;
+          state.b = 20;
+          state.c = 30;
+        });
+        assertEqual(updateCount, 1, 'Should trigger only one update');
+      });
+
+      test(testCase, 'Instance method $batch()', () => {
+        updateCount = 0;
+        state.$batch(() => {
+          state.a = 100;
+          state.b = 200;
+        });
+        assertEqual(updateCount, 1, 'Instance batch should work');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 14: Pause/Resume =====
+    (function() {
+      const section = createTestSection('14. Pause/Resume Reactivity');
+      const testCase = createTestCase(section, 'Control reactivity');
+
+      const state = Elements.state({ count: 0 });
+      let updateCount = 0;
+
+      Elements.effect(() => {
+        const val = state.count;
+        updateCount++;
+      });
+
+      test(testCase, 'Pause prevents updates', () => {
+        updateCount = 0;
+        Elements.pause();
+        state.count = 10;
+        state.count = 20;
+        assertEqual(updateCount, 0, 'Should not update while paused');
+      });
+
+      test(testCase, 'Resume with flush applies updates', () => {
+        Elements.resume(true);
+        assert(updateCount > 0, 'Should update after resume with flush');
+      });
+
+      test(testCase, 'Resume without flush discards updates', () => {
+        Elements.pause();
+        state.count = 100;
+        updateCount = 0;
+        Elements.resume(false);
+        assertEqual(updateCount, 0, 'Should not update without flush');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 15: Untracked Reads =====
+    (function() {
+      const section = createTestSection('15. Untracked Reads');
+      const testCase = createTestCase(section, 'Read without tracking dependencies');
+
+      const state = Elements.state({ tracked: 0, untracked: 0 });
+      let effectRuns = 0;
+
+      test(testCase, 'Untrack prevents dependency tracking', () => {
+        Elements.effect(() => {
+          const val1 = state.tracked;
+          const val2 = Elements.untrack(() => state.untracked);
+          effectRuns++;
+        });
+
+        effectRuns = 0;
+        state.tracked = 10;
+        assert(effectRuns > 0, 'Should react to tracked property');
+
+        effectRuns = 0;
+        state.untracked = 10;
+        assertEqual(effectRuns, 0, 'Should not react to untracked property');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 16: Manual Notifications =====
+    (function() {
+      const section = createTestSection('16. Manual Notifications');
+      const testCase = createTestCase(section, 'Manually trigger updates');
+
+      const state = Elements.state({ data: { count: 0 } });
+      let updateCount = 0;
+
+      Elements.effect(() => {
+        const val = state.data;
+        updateCount++;
+      });
+
+      test(testCase, 'Notify specific property', () => {
+        updateCount = 0;
+        const raw = Elements.toRaw(state.data);
+        raw.count = 100;
+        updateCount = 0;
+        Elements.notify(state, 'data');
+        assert(updateCount > 0, 'Should trigger update');
+      });
+
+      test(testCase, 'Notify all properties', () => {
+        updateCount = 0;
+        state.$notify();
+        assert(updateCount > 0, 'Should notify all');
+      });
+
+      updateStats();
+    })();
+
+    // ===== TEST 17: Utilities =====
+    (function() {
+      const section = createTestSection('17. Utility Functions');
+      const testCase = createTestCase(section, 'Helper utilities');
+
+      const state = Elements.state({ count: 0 });
+
+      test(testCase, 'isReactive()', () => {
+        assert(Elements.isReactive(state), 'Should detect reactive');
+        assert(!Elements.isReactive({ count: 0 }), 'Should detect non-reactive');
+      });
+
+      test(testCase, 'toRaw()', () => {
+        const raw = Elements.toRaw(state);
+        assert(!Elements.isReactive(raw), 'Raw should not be reactive');
+      });
+
+      test(testCase, '$raw instance property', () => {
+        const raw = state.$raw;
+        assert(!Elements.isReactive(raw), '$raw should return non-reactive value');
+      });
+
+      updateStats();
+    })();
+
+    // ===== FINAL SUMMARY =====
+    (function() {
+      const section = createTestSection('✓ Test Summary');
+      const testCase = createTestCase(section, 'All tests completed');
+      
+      const endTime = performance.now();
+      const duration = Math.round(endTime - startTime);
+      
+      addResult(testCase, `Total: ${totalTests} | Passed: ${passedTests} | Failed: ${failedTests} | Duration: ${duration}ms`, 'info');
+      
+      if (failedTests === 0) {
+        addResult(testCase, '🎉 All tests passed! The reactive system is production-ready.', 'success');
+      } else {
+        addResult(testCase, `⚠️ ${failedTests} test(s) failed. Please review the errors above.`, 'error');
+      }
+      
+      updateStats();
+    })();
+
+    // Final stats update
+    setTimeout(updateStats, 100);
+  </script>
+</body>
+</html>

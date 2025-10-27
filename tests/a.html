@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 id ="message"></h1>
+    <p id="counter"></p>
+    <p id="doubled"></p>
+</body>
+
+<script src="../src/dom-helpers.js"></script>
+  <script src="../src/dom-helpers-reactive.js"></script>
+
+<script>
+
+ // This should no longer freeze the browser!
+const state = Elements.state({
+  count: 0,
+  message: 'Hello World'
+});
+
+Elements.computed(state, {
+  doubled: () => state.count * 5
+});
+
+Elements.bindings({
+  '#counter': () => state.count,
+  '#doubled': () => state.doubled,  // ← This was causing the freeze
+  '#message': () => state.message
+});
+
+state.count = 100; // Should update smoothly now
+state.message = 'Updated!';
+console.log(state.doubled);
+</script>
+</html>
