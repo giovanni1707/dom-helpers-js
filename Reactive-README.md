@@ -1,7 +1,7 @@
 <document>
 # DOM Helpers - Reactive State Extension
 
-**Version 2.0.0** | **License: MIT**
+**Version 2.0.2** | **License: MIT**
 
 A powerful, lightweight reactive state management library that seamlessly integrates with DOM Helpers. Built with a smart reactivity system using JavaScript Proxies for fine-grained dependency tracking and automatic DOM updates.
 
@@ -2205,4 +2205,3 @@ Contributions are welcome! Please follow these guidelines:
 **Happy Coding! 🚀**
 
 </document>
-
