@@ -190,27 +190,6 @@
           get() { return toRaw(this); },
           enumerable: false,
           configurable: true
-        },
-        $update: {
-          value: function(updates) {
-            return updateMixed(this, updates);
-          },
-          enumerable: false,
-          configurable: true
-        },
-        $set: {
-          value: function(updates) {
-            return setWithFunctions(this, updates);
-          },
-          enumerable: false,
-          configurable: true
-        },
-        $bind: {
-          value: function(bindingDefs) {
-            return createBindings(this, bindingDefs);
-          },
-          enumerable: false,
-          configurable: true
         }
       });
     }
@@ -395,160 +374,6 @@
         });
       }
     }
-  }
-
-  // Helper function to set nested properties
-  function setNestedProperty(obj, path, value) {
-    const keys = path.split('.');
-    let current = obj;
-    
-    for (let i = 0; i < keys.length - 1; i++) {
-      const key = keys[i];
-      if (!(key in current) || typeof current[key] !== 'object') {
-        current[key] = {};
-      }
-      current = current[key];
-    }
-    
-    current[keys[keys.length - 1]] = value;
-  }
-
-  // state.$update() - Mixed state + DOM updates
-  function updateMixed(state, updates) {
-    return batch(() => {
-      Object.entries(updates).forEach(([key, value]) => {
-        // Check if it's a DOM selector
-        if (key.startsWith('#') || key.startsWith('.') || key.includes('[') || key.includes('>')) {
-          updateDOMElements(key, value);
-        } else {
-          // It's a state update
-          if (key.includes('.')) {
-            setNestedProperty(state, key, value);
-          } else {
-            state[key] = value;
-          }
-        }
-      });
-      return state;
-    });
-  }
-
-  // state.$set() - Functional updates
-  function setWithFunctions(state, updates) {
-    return batch(() => {
-      Object.entries(updates).forEach(([key, value]) => {
-        const finalValue = typeof value === 'function' 
-          ? value(key.includes('.') ? getNestedProperty(state, key) : state[key])
-          : value;
-        
-        if (key.includes('.')) {
-          setNestedProperty(state, key, finalValue);
-        } else {
-          state[key] = finalValue;
-        }
-      });
-      return state;
-    });
-  }
-
-  // Helper to get nested property
-  function getNestedProperty(obj, path) {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
-  }
-
-  // Update DOM elements by selector
-  function updateDOMElements(selector, updates) {
-    let elements = [];
-    
-    if (selector.startsWith('#')) {
-      const el = document.getElementById(selector.slice(1));
-      if (el) elements = [el];
-    } else if (selector.startsWith('.')) {
-      elements = Array.from(document.getElementsByClassName(selector.slice(1)));
-    } else {
-      elements = Array.from(document.querySelectorAll(selector));
-    }
-
-    elements.forEach(el => {
-      if (typeof updates === 'object' && updates !== null) {
-        Object.entries(updates).forEach(([prop, value]) => {
-          applyValue(el, prop, value);
-        });
-      } else {
-        applyValue(el, null, updates);
-      }
-    });
-  }
-
-  // Create bindings that auto-update on state changes
-  function createBindings(state, bindingDefs) {
-    const cleanups = [];
-    
-    Object.entries(bindingDefs).forEach(([selector, binding]) => {
-      let elements = [];
-      
-      if (selector.startsWith('#')) {
-        const el = document.getElementById(selector.slice(1));
-        if (el) elements = [el];
-      } else if (selector.startsWith('.')) {
-        elements = Array.from(document.getElementsByClassName(selector.slice(1)));
-      } else {
-        elements = Array.from(document.querySelectorAll(selector));
-      }
-
-      elements.forEach(el => {
-        if (typeof binding === 'string') {
-          // Simple property binding: '#counter': 'count'
-          cleanups.push(effect(() => {
-            const value = binding.includes('.') 
-              ? getNestedProperty(state, binding)
-              : state[binding];
-            applyValue(el, null, value);
-          }));
-        } else if (typeof binding === 'function') {
-          // Computed binding: '#userName': () => state.user.name
-          cleanups.push(effect(() => {
-            const value = binding.call(state);
-            applyValue(el, null, value);
-          }));
-        } else if (typeof binding === 'object') {
-          // Multiple property bindings
-          Object.entries(binding).forEach(([prop, value]) => {
-            if (typeof value === 'function') {
-              cleanups.push(effect(() => {
-                const result = value.call(state);
-                applyValue(el, prop, result);
-              }));
-            } else if (typeof value === 'string') {
-              cleanups.push(effect(() => {
-                const result = value.includes('.')
-                  ? getNestedProperty(state, value)
-                  : state[value];
-                applyValue(el, prop, result);
-              }));
-            }
-          });
-        }
-      });
-    });
-
-    return () => cleanups.forEach(c => c());
-  }
-
-  // createState with auto-bindings
-  function createStateWithBindings(initialState, bindingDefs) {
-    const state = createReactive(initialState);
-    
-    if (bindingDefs) {
-      createBindings(state, bindingDefs);
-    }
-    
-    return state;
-  }
-
-  // Unified updateAll
-  function updateAll(state, updates) {
-    return updateMixed(state, updates);
   }
 
   // Ref
@@ -791,8 +616,6 @@
 
   const api = {
     state: createReactive,
-    createState: createStateWithBindings,
-    updateAll: updateAll,
     computed: (state, defs) => {
       Object.entries(defs).forEach(([k, fn]) => addComputed(state, k, fn));
       return state;
@@ -932,17 +755,7 @@
 
   global.ReactiveState = ReactiveState;
   global.ReactiveUtils = api;
-  
-  // Global updateAll method
-  global.updateAll = updateAll;
 
   console.log('[DOM Helpers Reactive] v2.0.2 loaded successfully');
-  console.log('[DOM Helpers Reactive] New features available:');
-  console.log('  - state.$update() - Mixed state + DOM updates');
-  console.log('  - state.$set() - Functional updates');
-  console.log('  - state.$bind() - Create reactive bindings');
-  console.log('  - Elements/Collections/Selector.createState() - State with auto-bindings');
-  console.log('  - Elements/Collections/Selector.updateAll() - Unified updates');
-  console.log('  - Global updateAll() method');
 
 })(typeof window !== 'undefined' ? window : global);

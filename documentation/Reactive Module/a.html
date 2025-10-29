@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bulk Update Demo</title>
+  <style>
+    body { font-family: system-ui; max-width: 600px; margin: 50px auto; padding: 20px; background: #f5f5f5; }
+    .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h1 { color: #667eea; margin-top: 0; }
+    button { background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; margin: 5px; }
+    button:hover { background: #5568d3; }
+    .result { background: #f0f4ff; padding: 15px; margin: 15px 0; border-radius: 6px; border-left: 4px solid #667eea; }
+    .result strong { color: #667eea; }
+    pre { background: #263238; color: #aed581; padding: 15px; border-radius: 6px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🚀 Bulk State Update Demo</h1>
+    
+    <button id="singleUpdate">Single Updates (3 renders)</button>
+    <button id="bulkUpdate">Bulk Update (1 render) ✨</button>
+    <button id="functionalUpdate">Functional Update</button>
+    
+    <div class="result">
+      <strong>Count:</strong> <span id="count">0</span><br>
+      <strong>User:</strong> <span id="userName">John</span> (<span id="userAge">30</span> years)<br>
+      <strong>Todos:</strong> <span id="todoCount">0</span>
+    </div>
+    
+    <div class="result">
+      <strong>Render Count:</strong> <span id="renderCount">0</span>
+    </div>
+    
+    <pre id="log"></pre>
+  </div>
+
+<script src="dom-helpers-reactive.js"></script>
+  <script src="../../src/dom-helpers.js"></script>
+  
+  <script>
+    let renderCount = 0;
+    
+    // Create state
+    const state = Elements.state({
+      count: 0,
+      user: {
+        name: 'John',
+        age: 30
+      },
+      todos: []
+    });
+
+    // Effect: Updates on any state change
+    Elements.effect(() => {
+      renderCount++;
+      Elements.count.textContent = state.count;
+      Elements.userName.textContent = state.user.name;
+      Elements.userAge.textContent = state.user.age;
+      Elements.todoCount.textContent = state.todos.length;
+      Elements.renderCount.textContent = renderCount;
+      
+      addLog(`Render #${renderCount}: count=${state.count}, name=${state.user.name}, age=${state.user.age}, todos=${state.todos.length}`);
+    });
+
+    function addLog(msg) {
+      const log = Elements.log;
+      log.textContent = `${new Date().toLocaleTimeString()} - ${msg}\n${log.textContent}`;
+      const lines = log.textContent.split('\n');
+      if (lines.length > 10) {
+        log.textContent = lines.slice(0, 10).join('\n');
+      }
+    }
+
+    // ❌ OLD WAY: Multiple renders
+    Elements.singleUpdate.addEventListener('click', () => {
+      addLog('⚠️ Starting 3 separate updates...');
+      state.count++;                    // Render 1
+      state.user.name = 'Bob';          // Render 2
+      state.user.age = 35;              // Render 3
+      addLog('⚠️ Done: Triggered 3 renders!');
+    });
+
+    // ✅ NEW WAY: Single render with bulk update
+    Elements.bulkUpdate.addEventListener('click', () => {
+      addLog('✨ Starting bulk update...');
+      state.$update({
+        count: state.count + 1,
+        'user.name': 'Alice',
+        'user.age': 25
+      });
+      addLog('✅ Done: Only 1 render!');
+    });
+
+    // ✅ FUNCTIONAL UPDATE
+    Elements.functionalUpdate.addEventListener('click', () => {
+      addLog('🔧 Functional update...');
+      state.$set({
+        count: (prev) => prev + 10,
+        'user.age': (prev) => prev + 1,
+        todos: (prev) => [...prev, `Task ${prev.length + 1}`]
+      });
+      addLog('✅ Functional update complete!');
+    });
+
+    console.log('✅ Bulk Update Demo loaded!');
+    console.log('💡 Compare single vs bulk updates to see the difference!');
+  </script>
+</body>
+</html>
