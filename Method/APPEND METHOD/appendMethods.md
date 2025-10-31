@@ -1,4 +1,7 @@
-Here's a comprehensive list of **ALL append methods** available in your library:
+[![Sponsor](https://img.shields.io/badge/Sponsor-💖-pink)](https://github.com/sponsors/giovanni1707)
+
+[![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal)](https://paypal.me/GiovanniSylvain)
+
 
 ## 📋 **Complete List of Append Methods**
 

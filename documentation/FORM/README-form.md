@@ -1,5 +1,7 @@
 [![Sponsor](https://img.shields.io/badge/Sponsor-💖-pink)](https://github.com/sponsors/giovanni1707)
 
+[![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal)](https://paypal.me/GiovanniSylvain)
+
 # DOM Helpers Form Module
 
 A powerful, intelligent form handling library that transforms HTML forms into feature-rich, interactive components with automatic validation, data binding, serialization, and seamless integration with modern web applications.

@@ -1,31 +1,7 @@
-Looking at your library code, I can see the issue. The automatic enhancement of `createElement` is **opt-in only** and disabled by default. Here's what's happening:
+[![Sponsor](https://img.shields.io/badge/Sponsor-💖-pink)](https://github.com/sponsors/giovanni1707)
 
-## The Problem
+[![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal)](https://paypal.me/GiovanniSylvain)
 
-In your code, there's this configuration:
-
-```javascript
-const DEFAULTS = {
-  enableLogging: false,
-  enableWarnings: !isDevelopment,
-  autoEnhanceCreateElement: false, // ← This is set to FALSE by default!
-};
-```
-
-And then later:
-
-```javascript
-// ✅ NEW: Only override if explicitly enabled (OPT-IN)
-if (DEFAULTS.autoEnhanceCreateElement) {
-  document.createElement = enhancedCreateElement;
-}
-```
-
-Since `autoEnhanceCreateElement` is `false`, the enhanced `createElement` is never activated, so elements created with `document.createElement()` don't get the `.update()` method.
-
-## Solutions
-
-You have **3 options** to fix this:
 
 ### **Option 1: Enable Auto-Enhancement (Easiest)**
 

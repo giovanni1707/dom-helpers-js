@@ -1,3 +1,8 @@
+[![Sponsor](https://img.shields.io/badge/Sponsor-💖-pink)](https://github.com/sponsors/giovanni1707)
+
+[![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal)](https://paypal.me/GiovanniSylvain)
+
+
 # DOM Helpers - Form Module - Comprehensive Documentation
 
 Specialized form handling utilities that integrate seamlessly with the main DOM Helpers library, providing powerful declarative form management, validation, and submission handling.

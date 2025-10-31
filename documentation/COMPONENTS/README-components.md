@@ -1,5 +1,7 @@
 [![Sponsor](https://img.shields.io/badge/Sponsor-💖-pink)](https://github.com/sponsors/giovanni1707)
 
+[![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal)](https://paypal.me/GiovanniSylvain)
+
 # DOM Helpers Components
 
 A lightweight component system that extends DOM Helpers with traditional HTML5 and vanilla JavaScript. Build component-based applications following the DOM Helpers philosophy without framework dependencies.
