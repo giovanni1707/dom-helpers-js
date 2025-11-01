@@ -3068,7 +3068,7 @@ Components.register('UserCard', `
 
 ## Examples Repository
 
-Find more examples at: [github.com/your-repo/dom-helpers-components](https://github.com/your-repo/dom-helpers-components)
+Find more examples at: [github.com/dom-helpers-js/dom-helpers-components](https://github.com/dom-helpers-js/dom-helpers-components)
 
 - **Basic Components**: Simple examples to get started
 - **Advanced Patterns**: Complex real-world scenarios
@@ -3093,8 +3093,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Support
 
 - **Documentation**: [docs.domhelpers.com](https://docs.domhelpers.com)
-- **Issues**: [github.com/your-repo/issues](https://github.com/your-repo/issues)
-- **Discussions**: [github.com/your-repo/discussions](https://github.com/your-repo/discussions)
+- **Issues**: [github.com/dom-helpers-js/issues](https://github.com/dom-helpers-js/issues)
+- **Discussions**: [github.com/dom-helpers-js/discussions](https://github.com/dom-helpers-js/discussions)
 - **Email**: support@domhelpers.com
 
 ---

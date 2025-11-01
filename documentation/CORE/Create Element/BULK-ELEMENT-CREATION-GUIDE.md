@@ -1847,8 +1847,8 @@ renderNextBatch();
 ### Support
 
 For issues, questions, or contributions:
-- GitHub Issues: [Report a Bug](https://github.com/yourusername/dom-helpers-js/issues)
-- Discussions: [Ask Questions](https://github.com/yourusername/dom-helpers-js/discussions)
+- GitHub Issues: [Report a Bug](https://github.com/giovanni1707/dom-helpers-js/issues)
+- Discussions: [Ask Questions](https://github.com/giovanni1707/dom-helpers-js/discussions)
 
 ---
 
@@ -1868,6 +1868,3 @@ For issues, questions, or contributions:
 MIT License - See LICENSE file for details
 
 ---
-
-**Last Updated:** January 10, 2025  
-**Version:** 2.2.1

@@ -7,7 +7,7 @@
 
 **Version:** 2.3.1  
 **License:** MIT  
-**Bundle Size:** ~80KB (unminified) / ~28KB (minified)
+
 
 ---
 
@@ -5051,94 +5051,13 @@ if (process.env.NODE_ENV === 'production') {
 }
 ```
 
-### 10. **Document Your Element IDs**
-
-```javascript
-/**
- * App Element IDs Reference
- * 
- * Navigation:
- * - header: Main header container
- * - mainNav: Primary navigation menu
- * - mobileMenuBtn: Mobile menu toggle button
- * 
- * Content:
- * - mainContent: Primary content area
- * - sidebar: Left sidebar
- * - footer: Page footer
- * 
- * Forms:
- * - loginForm: Login form container
- * - emailInput: Email input field
- * - passwordInput: Password input field
- * - submitBtn: Form submit button
- */
-
-// Now other developers know what IDs are available
-const { header, mainNav, mobileMenuBtn } = Elements.destructure(
-  'header',
-  'mainNav',
-  'mobileMenuBtn'
-);
-```
-
----
-
 ## Contributing
 
 We welcome contributions! Here's how to get involved:
 
-### Reporting Issues
+[![Sponsor](https://img.shields.io/badge/Sponsor-💖-pink)](https://github.com/sponsors/giovanni1707)
 
-```markdown
-**Bug Report Template:**
-
-**Description:**
-A clear description of the bug
-
-**Steps to Reproduce:**
-1. Step one
-2. Step two
-3. Expected vs actual behavior
-
-**Environment:**
-- Browser: Chrome 120
-- DOM Helpers Version: 2.3.1
-- Framework (if any): React 18
-
-**Code Example:**
-```javascript
-// Minimal reproducible example
-Elements.myButton.update({ ... });
-```
-
-**Expected Behavior:**
-What should happen
-
-**Actual Behavior:**
-What actually happens
-
-**Screenshots/Logs:**
-If applicable
-```
-
-### Feature Requests
-
-Submit feature requests with:
-- Use case description
-- Proposed API design
-- Example code showing how it would work
-- Benefits over current approach
-
-### Pull Requests
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Make your changes with tests
-4. Ensure all tests pass
-5. Update documentation
-6. Submit PR with description
-
+[![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal)](https://paypal.me/GiovanniSylvain)
 ---
 
 ## License
@@ -5149,10 +5068,10 @@ MIT License - feel free to use in personal and commercial projects.
 
 ## Support
 
-- **Documentation:** https://github.com/yourrepo/dom-helpers/docs
-- **Issues:** https://github.com/yourrepo/dom-helpers/issues
-- **Discussions:** https://github.com/yourrepo/dom-helpers/discussions
-- **Email:** support@domhelpers.dev
+- **Documentation:** https://github.com/giovanni1707/dom-helpers/docs
+- **Issues:** https://github.com/giovanni1707/dom-helpers/issues
+- **Discussions:** https://github.com/giovanni1707/dom-helpers/discussions
+- **Email:** giovannimarianne1@gmail.com
 
 ---
 
@@ -5182,7 +5101,7 @@ MIT License - feel free to use in personal and commercial projects.
 
 ## Acknowledgments
 
-Built with ❤️ by developers, for developers.
+Built with ❤️ by developer, for developers.
 
 Special thanks to:
 - The JavaScript community
@@ -5195,5 +5114,5 @@ Special thanks to:
 
 ---
 
-*Documentation last updated: October 2024*
+*Documentation last updated: October 2025*
 *DOM Helpers v2.3.1*

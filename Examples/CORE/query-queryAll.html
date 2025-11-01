@@ -26,7 +26,7 @@
     Selector.query("#single").update({
       textContent: "Single Box Updated",
       style: { color: "white", backgroundColor: "blue" },
-      classList: { add: ["highlight"] },
+      classList: { add: "highlight" },
       onclick: function() {
         this.classList.toggle("active");
         Elements.status.update({ textContent: "Single box clicked!" });

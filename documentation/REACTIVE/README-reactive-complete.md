@@ -158,7 +158,7 @@ require('dom-helpers-js/reactive');
 
 ### Option 3: Download and Host Yourself
 
-1. Download from [GitHub releases](https://github.com/your-repo/releases)
+1. Download from [GitHub releases](https://github.com/dom-helpers-js/releases)
 2. Include in your HTML:
 
 ```html
@@ -996,17 +996,17 @@ Elements.batch(() => {
 
 - 📖 Read [Reactive-Methods.md](./Reactive-Methods.md) for detailed API documentation
 - 🎯 Try the [examples](../examples/) folder for more code samples
-- 💬 Join our [community discussions](https://github.com/your-repo/discussions)
-- 🐛 Report issues on [GitHub](https://github.com/your-repo/issues)
+- 💬 Join our [community discussions](https://github.com/dom-helpers-js/discussions)
+- 🐛 Report issues on [GitHub](https://github.com/dom-helpers-js/issues)
 
 ---
 
 ## Support
 
 - **Documentation:** [Full Docs](https://docs.example.com)
-- **GitHub:** [Repository](https://github.com/your-repo)
-- **Issues:** [Bug Reports](https://github.com/your-repo/issues)
-- **Discussions:** [Community](https://github.com/your-repo/discussions)
+- **GitHub:** [Repository](https://github.com/dom-helpers-js)
+- **Issues:** [Bug Reports](https://github.com/dom-helpers-js/issues)
+- **Discussions:** [Community](https://github.com/dom-helpers-js/discussions)
 
 ---
 

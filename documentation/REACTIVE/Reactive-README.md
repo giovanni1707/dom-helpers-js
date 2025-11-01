@@ -2201,8 +2201,8 @@ Contributions are welcome! Please follow these guidelines:
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
+- **Issues**: [GitHub Issues](https://github.com/dom-helpers-js/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/dom-helpers-js/discussions)
 - **Email**: support@example.com
 
 ---

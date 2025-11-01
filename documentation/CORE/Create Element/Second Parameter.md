@@ -56,74 +56,8 @@
 
   <div id="container"></div>
 
-  <!-- Include your DOM Helpers library -->
-  <script src="your-dom-helpers-library.js"></script>
-
-  <!-- Modified createElement to support config objects -->
-  <script>
-    // Store original createElement
-    const originalCreateElement = document.createElement;
-
-    // Enhanced createElement that supports configuration object
-    function enhancedCreateElement(tagName, options) {
-      // Check if options is a configuration object (not native options)
-      const isConfigObject = options && typeof options === 'object' && 
-                             !options.is && // Not native createElement options
-                             (options.textContent || options.className || options.style || 
-                              options.id || options.classList || options.setAttribute ||
-                              options.addEventListener || options.dataset);
-      
-      let element;
-      
-      if (isConfigObject) {
-        // Create element without options
-        element = originalCreateElement.call(document, tagName);
-        
-        // Enhance it with .update()
-        if (typeof EnhancedUpdateUtility !== 'undefined' && EnhancedUpdateUtility.enhanceElementWithUpdate) {
-          element = EnhancedUpdateUtility.enhanceElementWithUpdate(element);
-        }
-        
-        // Apply configuration using .update()
-        if (typeof element.update === 'function') {
-          element.update(options);
-        } else {
-          // Fallback: apply properties directly
-          Object.entries(options).forEach(([key, value]) => {
-            if (key === 'style' && typeof value === 'object') {
-              Object.assign(element.style, value);
-            } else if (key === 'classList' && typeof value === 'object') {
-              Object.entries(value).forEach(([method, classes]) => {
-                if (method === 'add' && Array.isArray(classes)) {
-                  element.classList.add(...classes);
-                } else if (method === 'add') {
-                  element.classList.add(classes);
-                }
-              });
-            } else if (key in element) {
-              element[key] = value;
-            }
-          });
-        }
-      } else {
-        // Standard createElement behavior
-        element = originalCreateElement.call(document, tagName, options);
-        
-        // Enhance with .update()
-        if (typeof EnhancedUpdateUtility !== 'undefined' && EnhancedUpdateUtility.enhanceElementWithUpdate) {
-          element = EnhancedUpdateUtility.enhanceElementWithUpdate(element);
-        }
-      }
-      
-      return element;
-    }
-
-    // Override document.createElement
-    document.createElement = enhancedCreateElement;
-
-    // Also expose it globally
-    window.createElement = enhancedCreateElement;
-  </script>
+  <!-- Include DOM Helpers library -->
+  <script src="../../src/dom-helpers.js"></script>
 
   <script>
     // Example 1: Simple Box
@@ -265,8 +199,9 @@
   </script>
 </body>
 </html>
-```
 
+
+```
 ## 🎯 **Key Features**
 
 ### **1. Direct Configuration:**

@@ -51,7 +51,7 @@ p.update({
 
 ### **Option 4: Use createElement.bulk() (Recommended)**
 
-Your library has a built-in bulk creation method that automatically enhances elements:
+The library has a built-in bulk creation method that automatically enhances elements:
 
 ```javascript
 const elements = createElement.bulk({
@@ -68,8 +68,7 @@ Elements.container.appendChild(elements.P);
 
 ## My Recommendation
 
-**Go with Option 1** (change the default to `true`) if you want all `createElement` calls to automatically get the `.update()` method. This matches your original working behavior.
+**Go with Option 1** (change the default to `true`) if you want all `createElement` calls to automatically get the `.update()` method. This matches the original working behavior.
 
 However, if you want to keep it opt-in for safety, use **Option 2** and call `DOMHelpers.enableCreateElementEnhancement()` once at the start of your application.
 
-Let me know which approach you'd like to use!

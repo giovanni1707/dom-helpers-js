@@ -56,6 +56,7 @@ const { Forms, ProductionFormsHelper } = require('./dom-helpers-form.js');
 </form>
 ```
 
+####  **With DOM Helpers Form** 
 ```javascript
 // Access form by ID - automatically enhanced with powerful methods
 const form = Forms.userForm;
@@ -268,7 +269,7 @@ Forms.userForm.values = {
 };
 ```
 
-**Result**: **98% less code**, automatic type handling, and bulletproof reliability!
+**Result**: **less code**, automatic type handling, and bulletproof reliability!
 
 ---
 
@@ -418,7 +419,7 @@ if (validation.isValid) {
 }
 ```
 
-**Result**: **90% less code**, automatic error display, and professional styling!
+**Result**: **less code**, automatic error display, and professional styling!
 
 ---
 

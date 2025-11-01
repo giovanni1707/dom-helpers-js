@@ -3,7 +3,7 @@
 [![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal)](https://paypal.me/GiovanniSylvain)
 
 
-Here's a complete demo showing how to use `createElement.bulk()` with your library:
+Here's a complete demo showing how to use `createElement.bulk()` with the library:
 
 ## Complete Demo Code
 
@@ -95,7 +95,7 @@ Here's a complete demo showing how to use `createElement.bulk()` with your libra
   <div id="container"></div>
 
   <!-- Include your DOM Helpers library -->
-  <script src="your-dom-helpers-library.js"></script>
+  <script src="../../src/dom-helpers.js"></script>
 
   <script>
     let counter = 0;
@@ -153,9 +153,9 @@ Here's a complete demo showing how to use `createElement.bulk()` with your libra
       
       // Append all in order using helper method
       elements.appendTo(Elements.container);
-      
-      // Or append in specific order
-      // elements.appendToOrdered(Elements.container, 'H2', 'P_1', 'P_2', 'HR');
+
+      // Or
+      elements.appendToOrdered(Elements.container, 'H2', 'P_1', 'P_2', 'HR');// append in specific order
       
       console.log('Created elements:', elements.keys); // ['H2', 'P_1', 'P_2', 'HR']
     });

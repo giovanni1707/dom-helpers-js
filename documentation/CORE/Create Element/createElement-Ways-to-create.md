@@ -5,11 +5,11 @@
 
 ## 🎯 **All Element Creation Methods**
 
-### **Method 1a: Standard `document.createElement()` (With Auto-Enhancement)**
+### **Method 1: Standard `document.createElement()` (With Auto-Enhancement)**
 
 ```javascript
-// Enable auto-enhancement first (if not already enabled)
-DOMHelpers.enableCreateElementEnhancement();
+// If enableCreateElementEnhancement is set to "false" in Config 
+DOMHelpers.enableCreateElementEnhancement(); //Add this line only once after the <script> tag
 
 // Now all createElement calls are enhanced
 const p = document.createElement('p');
@@ -43,6 +43,8 @@ const elements = createElement.bulk({
 
 // Access it
 elements.P.update({ style: { color: 'red' } });
+
+// Append it
 Elements.container.appendChild(elements.P);
 ```
 
@@ -380,7 +382,27 @@ Elements.container.appendChild(createMessage('error', 'Something went wrong!'));
 Elements.container.appendChild(createMessage('warning', 'Please be careful!'));
 ```
 
+### **Method 13: Using second parameter Element Creation**
+The `options` parameter here is the **native `createElement` options** (like `{ is: 'custom-element' }`)
+
+### **This Work also:**
+
+```javascript
+const div = createElement('div', {
+  className: 'box',
+  textContent: 'Enhanced Box',
+  style: {
+    padding: '20px',
+    background: '#007bff',
+    color: 'white'
+  }
+});
+```
+
+
 ---
+
+
 
 ## 📊 **Quick Comparison Table**
 
@@ -404,11 +426,29 @@ Elements.container.appendChild(createMessage('warning', 'Please be careful!'));
 ## 🎯 **Recommended Approaches**
 
 ### **For Simple Single Elements:**
+
 ```javascript
-DOMHelpers.enableCreateElementEnhancement();
+// If enableCreateElementEnhancement is set to "true" in Config 
 const p = document.createElement('p');
 p.update({ textContent: 'Hello' });
 ```
+
+```javascript
+// If enableCreateElementEnhancement is set to "false" in Config 
+DOMHelpers.enableCreateElementEnhancement();//Add this line only once after the <script> tag
+const p = document.createElement('p');
+p.update({ textContent: 'Hello' });
+```
+
+
+### **For single Elements:**
+```javascript
+// createElement.bulk() can be use to ceate single element also
+const elements = createElement.bulk({
+  H1: { textContent: 'Title' },
+});
+```
+
 
 ### **For Multiple Elements:**
 ```javascript
@@ -425,4 +465,4 @@ function createComponent(data) {
 }
 ```
 
-You have **12 different ways** to create elements, giving you maximum flexibility! 🚀
+You have **13 different ways** to create elements, giving you maximum flexibility! 🚀

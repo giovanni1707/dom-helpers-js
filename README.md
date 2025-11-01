@@ -4,7 +4,7 @@
 
 # DOM Helpers
 
-[![npm version](https://img.shields.io/npm/v/@giovanni1707/dom-helpers.svg)](https://www.npmjs.com/package/@yourusername/dom-helpers)
+[![npm version](https://img.shields.io/npm/v/@giovanni1707/dom-helpers.svg)](https://www.npmjs.com/package/@giovanni1707/dom-helpers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A powerful, high-performance vanilla JavaScript DOM manipulation library that transforms how you interact with the DOM. Built with intelligent caching, automatic enhancement, and a declarative API that makes complex DOM operations simple and intuitive.

@@ -2,7 +2,6 @@
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal)](https://paypal.me/GiovanniSylvain)
 
-
 # Bulk Update Feature Guide
 
 ## Overview
@@ -35,20 +34,36 @@ Elements.update({
 
 #### Example: Simple Updates
 
+```html
+<body>
+  <main id="card" role="main" aria-labelledby="title">
+    <h1 id="title">Original page title</h1>
+    <p id="description">
+      This is the original description text — it will be updated by
+      Elements.update().
+    </p>
+
+    <button id="submitBtn" disabled>Waiting…</button>
+
+    <div class="meta" aria-live="polite">Bulk update demo for DOM Helpers</div>
+  </main>
+</body>
+```
+
 ```javascript
 Elements.update({
-  title: { 
-    textContent: 'New Title',
-    style: { color: 'blue', fontSize: '24px' }
+  title: {
+    textContent: "New Title",
+    style: { color: "blue", fontSize: "24px" },
   },
-  description: { 
-    textContent: 'Updated description',
-    style: { color: '#333', fontSize: '16px' }
+  description: {
+    textContent: "Updated description",
+    style: { color: "#333", fontSize: "16px" },
   },
-  submitBtn: { 
-    textContent: 'Submit Now',
-    disabled: false
-  }
+  submitBtn: {
+    textContent: "Submit Now",
+    disabled: false,
+  },
 });
 ```
 
@@ -57,25 +72,31 @@ Elements.update({
 ```javascript
 Elements.update({
   saveBtn: {
-    textContent: 'Save Changes',
-    style: { backgroundColor: '#28a745', color: 'white' },
-    addEventListener: ['click', () => {
-      console.log('Saving...');
-      // Save logic here
-    }]
+    textContent: "Save Changes",
+    style: { backgroundColor: "#28a745", color: "white" },
+    addEventListener: [
+      "click",
+      () => {
+        console.log("Saving...");
+        // Save logic here
+      },
+    ],
   },
   cancelBtn: {
-    textContent: 'Cancel',
-    style: { backgroundColor: '#dc3545', color: 'white' },
-    addEventListener: ['click', () => {
-      console.log('Cancelled');
-      // Cancel logic here
-    }]
+    textContent: "Cancel",
+    style: { backgroundColor: "#dc3545", color: "white" },
+    addEventListener: [
+      "click",
+      () => {
+        console.log("Cancelled");
+        // Cancel logic here
+      },
+    ],
   },
   statusMessage: {
-    textContent: 'Ready to save',
-    style: { color: '#17a2b8' }
-  }
+    textContent: "Ready to save",
+    style: { color: "#17a2b8" },
+  },
 });
 ```
 
@@ -99,12 +120,13 @@ Update multiple collections of elements (by class, tag, or name) in a single cal
 
 ```javascript
 Collections.update({
-  'type:value': updateObject,
+  "type:value": updateObject,
   // ... more collections
 });
 ```
 
 **Supported Types:**
+
 - `class:className` or `classname:className` - Elements with class name
 - `tag:tagName` or `tagname:tagName` - Elements with tag name
 - `name:elementName` - Elements with name attribute
@@ -114,16 +136,16 @@ Collections.update({
 
 ```javascript
 Collections.update({
-  'class:btn': { 
-    style: { padding: '10px 20px', borderRadius: '4px' }
+  "class:btn": {
+    style: { padding: "10px 20px", borderRadius: "4px" },
   },
-  'tag:p': { 
-    style: { lineHeight: '1.6', marginBottom: '15px' }
+  "tag:p": {
+    style: { lineHeight: "1.6", marginBottom: "15px" },
   },
-  'name:username': { 
+  "name:username": {
     disabled: false,
-    placeholder: 'Enter your username'
-  }
+    placeholder: "Enter your username",
+  },
 });
 ```
 
@@ -134,11 +156,11 @@ Collections.update({
 Collections.update({
   card: {
     style: {
-      padding: '20px',
-      backgroundColor: '#f8f9fa',
-      border: '1px solid #dee2e6'
-    }
-  }
+      padding: "20px",
+      backgroundColor: "#f8f9fa",
+      border: "1px solid #dee2e6",
+    },
+  },
 });
 ```
 
@@ -148,15 +170,15 @@ Returns an object with results for each collection:
 
 ```javascript
 {
-  'class:btn': { 
-    success: true, 
-    collection: EnhancedCollection, 
-    elementsUpdated: 5 
+  'class:btn': {
+    success: true,
+    collection: EnhancedCollection,
+    elementsUpdated: 5
   },
-  'tag:p': { 
-    success: true, 
-    collection: EnhancedCollection, 
-    elementsUpdated: 12 
+  'tag:p': {
+    success: true,
+    collection: EnhancedCollection,
+    elementsUpdated: 12
   },
   // ...
 }
@@ -170,8 +192,8 @@ Update multiple elements/collections using CSS selectors in a single call.
 
 ```javascript
 Selector.update({
-  'cssSelector1': updateObject1,
-  'cssSelector2': updateObject2,
+  cssSelector1: updateObject1,
+  cssSelector2: updateObject2,
   // ... more selectors
 });
 ```
@@ -180,24 +202,24 @@ Selector.update({
 
 ```javascript
 Selector.update({
-  '#header': { 
-    textContent: 'Welcome!',
-    style: { fontSize: '32px', fontWeight: 'bold' }
+  "#header": {
+    textContent: "Welcome!",
+    style: { fontSize: "32px", fontWeight: "bold" },
   },
-  '.alert': { 
-    style: { 
-      backgroundColor: '#fff3cd',
-      padding: '15px',
-      borderRadius: '4px'
-    }
+  ".alert": {
+    style: {
+      backgroundColor: "#fff3cd",
+      padding: "15px",
+      borderRadius: "4px",
+    },
   },
-  'input[type="text"]': { 
-    placeholder: 'Enter text here...',
-    style: { borderColor: '#28a745' }
+  'input[type="text"]': {
+    placeholder: "Enter text here...",
+    style: { borderColor: "#28a745" },
   },
-  '.container > .row': {
-    style: { marginBottom: '20px' }
-  }
+  ".container > .row": {
+    style: { marginBottom: "20px" },
+  },
 });
 ```
 
@@ -206,29 +228,29 @@ Selector.update({
 ```javascript
 Selector.update({
   'input[type="email"]': {
-    placeholder: 'your.email@example.com',
+    placeholder: "your.email@example.com",
     style: {
-      borderColor: '#17a2b8',
-      padding: '10px',
-      borderRadius: '4px'
-    }
+      borderColor: "#17a2b8",
+      padding: "10px",
+      borderRadius: "4px",
+    },
   },
   'input[type="password"]': {
-    placeholder: 'Enter secure password',
+    placeholder: "Enter secure password",
     style: {
-      borderColor: '#6c757d',
-      padding: '10px',
-      borderRadius: '4px'
-    }
+      borderColor: "#6c757d",
+      padding: "10px",
+      borderRadius: "4px",
+    },
   },
   'button[type="submit"]': {
-    textContent: 'Sign In',
+    textContent: "Sign In",
     style: {
-      backgroundColor: '#007bff',
-      color: 'white',
-      padding: '12px 30px'
-    }
-  }
+      backgroundColor: "#007bff",
+      color: "white",
+      padding: "12px 30px",
+    },
+  },
 });
 ```
 
@@ -238,15 +260,15 @@ Returns an object with results for each selector:
 
 ```javascript
 {
-  '#header': { 
-    success: true, 
-    elements: EnhancedCollection, 
-    elementsUpdated: 1 
+  '#header': {
+    success: true,
+    elements: EnhancedCollection,
+    elementsUpdated: 1
   },
-  '.alert': { 
-    success: true, 
-    elements: EnhancedCollection, 
-    elementsUpdated: 3 
+  '.alert': {
+    success: true,
+    elements: EnhancedCollection,
+    elementsUpdated: 3
   },
   // ...
 }
@@ -312,9 +334,12 @@ All bulk update methods support the same update properties as the individual `.u
 
 ```javascript
 {
-  addEventListener: ['click', (e) => {
-    console.log('Clicked!', e);
-  }]
+  addEventListener: [
+    "click",
+    (e) => {
+      console.log("Clicked!", e);
+    },
+  ];
 }
 ```
 
@@ -347,8 +372,8 @@ All bulk update methods handle errors gracefully:
 
 ```javascript
 const results = Elements.update({
-  existingElement: { textContent: 'Updated!' },
-  nonExistentElement: { textContent: 'This will fail' }
+  existingElement: { textContent: "Updated!" },
+  nonExistentElement: { textContent: "This will fail" },
 });
 
 console.log(results);
@@ -361,10 +386,12 @@ console.log(results);
 ### Checking Results
 
 ```javascript
-const results = Elements.update({ /* ... */ });
+const results = Elements.update({
+  /* ... */
+});
 
 // Check if all updates succeeded
-const allSuccessful = Object.values(results).every(r => r.success);
+const allSuccessful = Object.values(results).every((r) => r.success);
 
 // Get failed updates
 const failed = Object.entries(results)
@@ -372,7 +399,7 @@ const failed = Object.entries(results)
   .map(([id, result]) => ({ id, error: result.error }));
 
 if (failed.length > 0) {
-  console.error('Failed updates:', failed);
+  console.error("Failed updates:", failed);
 }
 ```
 
@@ -383,25 +410,25 @@ if (failed.length > 0) {
 ```javascript
 function showValidationErrors(errors) {
   const updates = {};
-  
+
   Object.entries(errors).forEach(([fieldId, errorMsg]) => {
     updates[fieldId] = {
-      style: { borderColor: '#dc3545', backgroundColor: '#fff5f5' },
-      setAttribute: { 'aria-invalid': 'true' }
+      style: { borderColor: "#dc3545", backgroundColor: "#fff5f5" },
+      setAttribute: { "aria-invalid": "true" },
     };
     updates[`${fieldId}Error`] = {
       textContent: errorMsg,
-      style: { color: '#dc3545', display: 'block' }
+      style: { color: "#dc3545", display: "block" },
     };
   });
-  
+
   Elements.update(updates);
 }
 
 // Usage
 showValidationErrors({
-  email: 'Please enter a valid email',
-  password: 'Password must be at least 8 characters'
+  email: "Please enter a valid email",
+  password: "Password must be at least 8 characters",
 });
 ```
 
@@ -409,38 +436,38 @@ showValidationErrors({
 
 ```javascript
 function applyTheme(theme) {
-  if (theme === 'dark') {
+  if (theme === "dark") {
     Collections.update({
-      'class:card': {
+      "class:card": {
         style: {
-          backgroundColor: '#2d3748',
-          color: '#f7fafc',
-          borderColor: '#4a5568'
-        }
+          backgroundColor: "#2d3748",
+          color: "#f7fafc",
+          borderColor: "#4a5568",
+        },
       },
-      'class:btn-primary': {
+      "class:btn-primary": {
         style: {
-          backgroundColor: '#4299e1',
-          color: 'white'
-        }
-      }
+          backgroundColor: "#4299e1",
+          color: "white",
+        },
+      },
     });
   } else {
     // Light theme
     Collections.update({
-      'class:card': {
+      "class:card": {
         style: {
-          backgroundColor: 'white',
-          color: '#2d3748',
-          borderColor: '#e2e8f0'
-        }
+          backgroundColor: "white",
+          color: "#2d3748",
+          borderColor: "#e2e8f0",
+        },
       },
-      'class:btn-primary': {
+      "class:btn-primary": {
         style: {
-          backgroundColor: '#3182ce',
-          color: 'white'
-        }
-      }
+          backgroundColor: "#3182ce",
+          color: "white",
+        },
+      },
     });
   }
 }
@@ -453,20 +480,20 @@ function updateDashboard(data) {
   Elements.update({
     totalUsers: {
       textContent: data.users.toLocaleString(),
-      style: { fontSize: '32px', fontWeight: 'bold' }
+      style: { fontSize: "32px", fontWeight: "bold" },
     },
     totalRevenue: {
       textContent: `$${data.revenue.toLocaleString()}`,
-      style: { fontSize: '32px', color: '#28a745' }
+      style: { fontSize: "32px", color: "#28a745" },
     },
     activeProjects: {
       textContent: data.projects,
-      style: { fontSize: '32px' }
+      style: { fontSize: "32px" },
     },
     lastUpdate: {
       textContent: `Last updated: ${new Date().toLocaleTimeString()}`,
-      style: { fontSize: '12px', color: '#6c757d' }
-    }
+      style: { fontSize: "12px", color: "#6c757d" },
+    },
   });
 }
 ```
@@ -477,22 +504,22 @@ function updateDashboard(data) {
 function resetForm() {
   Selector.update({
     'input[type="text"]': {
-      value: '',
-      style: { borderColor: '#ced4da', backgroundColor: 'white' },
-      removeAttribute: ['aria-invalid']
+      value: "",
+      style: { borderColor: "#ced4da", backgroundColor: "white" },
+      removeAttribute: ["aria-invalid"],
     },
     'input[type="email"]': {
-      value: '',
-      style: { borderColor: '#ced4da', backgroundColor: 'white' }
+      value: "",
+      style: { borderColor: "#ced4da", backgroundColor: "white" },
     },
-    '.error-message': {
-      textContent: '',
-      style: { display: 'none' }
+    ".error-message": {
+      textContent: "",
+      style: { display: "none" },
     },
     'button[type="submit"]': {
       disabled: false,
-      textContent: 'Submit'
-    }
+      textContent: "Submit",
+    },
   });
 }
 ```
@@ -527,7 +554,9 @@ Collections.configure({ enableLogging: true });
 Selector.configure({ enableLogging: true });
 
 // Now bulk updates will log summary information
-Elements.update({ /* ... */ });
+Elements.update({
+  /* ... */
+});
 // Console: [Elements] Bulk update completed: 3 successful, 1 failed
 ```
 
@@ -536,18 +565,18 @@ Elements.update({ /* ... */ });
 ### Before (Individual Updates)
 
 ```javascript
-Elements.title.update({ textContent: 'New Title' });
-Elements.description.update({ textContent: 'New Description' });
-Elements.submitBtn.update({ textContent: 'Submit', disabled: false });
+Elements.title.update({ textContent: "New Title" });
+Elements.description.update({ textContent: "New Description" });
+Elements.submitBtn.update({ textContent: "Submit", disabled: false });
 ```
 
 ### After (Bulk Update)
 
 ```javascript
 Elements.update({
-  title: { textContent: 'New Title' },
-  description: { textContent: 'New Description' },
-  submitBtn: { textContent: 'Submit', disabled: false }
+  title: { textContent: "New Title" },
+  description: { textContent: "New Description" },
+  submitBtn: { textContent: "Submit", disabled: false },
 });
 ```
 
