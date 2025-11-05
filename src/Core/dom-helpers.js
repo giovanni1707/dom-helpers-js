@@ -31,6 +31,132 @@
     autoEnhanceCreateElement: true, // NEW: Opt-in only for safety!
   };
 
+
+// ===== BATCH PROPERTY UPDATE FACTORIES =====
+/**
+ * Creates a simple batch setter for primitive properties
+ * @param {string} propertyName - The property to set (e.g., 'textContent', 'value')
+ */
+function createBatchSetter(propertyName) {
+  return function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Invalid mapping object');
+      return this;
+    }
+
+    Object.entries(mapping).forEach(([key, value]) => {
+      // For Elements: key is element ID or numeric index
+      // For Collections: key is numeric index
+      // For Selector: key is CSS selector
+      
+      let element;
+      
+      if (typeof this.Elements !== 'undefined') {
+        // Elements helper context
+        element = typeof key === 'number' ? this.elements?.[key] : document.getElementById(key);
+      } else if (this._originalCollection) {
+        // Collections helper context
+        const index = parseInt(key, 10);
+        element = this._originalCollection[index];
+      } else if (this._originalNodeList) {
+        // Selector helper context
+        const index = parseInt(key, 10);
+        element = this._originalNodeList[index];
+      }
+      
+      if (element && element.nodeType === Node.ELEMENT_NODE) {
+        element[propertyName] = value;
+      }
+    });
+    
+    return this; // Enable chaining
+  };
+}
+
+/**
+ * Creates a batch setter for complex object properties
+ * @param {Function} setterFn - Function that receives (element, values) and applies them
+ */
+function createComplexBatchSetter(setterFn) {
+  return function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Invalid mapping object');
+      return this;
+    }
+
+    Object.entries(mapping).forEach(([key, values]) => {
+      let element;
+      
+      if (typeof this.Elements !== 'undefined') {
+        // Elements helper context
+        element = typeof key === 'number' ? this.elements?.[key] : document.getElementById(key);
+      } else if (this._originalCollection) {
+        // Collections helper context
+        const index = parseInt(key, 10);
+        element = this._originalCollection[index];
+      } else if (this._originalNodeList) {
+        // Selector helper context
+        const index = parseInt(key, 10);
+        element = this._originalNodeList[index];
+      }
+      
+      if (element && element.nodeType === Node.ELEMENT_NODE) {
+        setterFn(element, values);
+      }
+    });
+    
+    return this; // Enable chaining
+  };
+}
+
+// ===== SETTER FUNCTIONS FOR COMPLEX PROPERTIES =====
+
+const styleSetter = (el, styles) => {
+  Object.entries(styles).forEach(([prop, value]) => {
+    if (value !== null && value !== undefined) {
+      el.style[prop] = value;
+    }
+  });
+};
+
+const datasetSetter = (el, data) => {
+  Object.entries(data).forEach(([key, value]) => {
+    el.dataset[key] = value;
+  });
+};
+
+const attrsSetter = (el, attributes) => {
+  Object.entries(attributes).forEach(([attr, value]) => {
+    if (value === null || value === false) {
+      el.removeAttribute(attr);
+    } else {
+      el.setAttribute(attr, String(value));
+    }
+  });
+};
+
+const classesSetter = (el, operations) => {
+  if (typeof operations === 'string') {
+    el.className = operations;
+  } else if (typeof operations === 'object') {
+    if (operations.add) {
+      const addList = Array.isArray(operations.add) ? operations.add : [operations.add];
+      el.classList.add(...addList);
+    }
+    if (operations.remove) {
+      const removeList = Array.isArray(operations.remove) ? operations.remove : [operations.remove];
+      el.classList.remove(...removeList);
+    }
+    if (operations.toggle) {
+      const toggleList = Array.isArray(operations.toggle) ? operations.toggle : [operations.toggle];
+      toggleList.forEach(cls => el.classList.toggle(cls));
+    }
+    if (operations.replace && Array.isArray(operations.replace) && operations.replace.length === 2) {
+      el.classList.replace(operations.replace[0], operations.replace[1]);
+    }
+  }
+};
+
   // ===== FINE-GRAINED UPDATE SYSTEM =====
   /**
    * WeakMap to store previous props for each element
@@ -1558,6 +1684,281 @@
    *   }
    * });
    */
+
+// ===== BATCH PROPERTY UPDATE METHODS FOR ELEMENTS =====
+  
+  /**
+   * Batch update textContent for multiple elements by ID
+   * @example Elements.textContent({ title: 'Hello', subtitle: 'World' })
+   */
+  Elements.textContent = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.textContent() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.innerHTML = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.innerHTML() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.innerHTML = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.value = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.value() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.value = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.className = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.className() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.className = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.disabled = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.disabled() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.disabled = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.checked = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.checked() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.checked = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.placeholder = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.placeholder() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.placeholder = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.href = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.href() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.href = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.src = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.src() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.src = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.alt = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.alt() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.alt = value;
+    });
+    
+    return Elements;
+  };
+
+  Elements.title = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.title() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.title = value;
+    });
+    
+    return Elements;
+  };
+
+  // ===== COMPLEX PROPERTY METHODS =====
+
+  Elements.style = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.style() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, styles]) => {
+      const element = document.getElementById(id);
+      if (element && typeof styles === 'object') {
+        styleSetter(element, styles);
+      }
+    });
+    
+    return Elements;
+  };
+
+  Elements.dataset = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.dataset() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, data]) => {
+      const element = document.getElementById(id);
+      if (element && typeof data === 'object') {
+        datasetSetter(element, data);
+      }
+    });
+    
+    return Elements;
+  };
+
+  Elements.attrs = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.attrs() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, attributes]) => {
+      const element = document.getElementById(id);
+      if (element && typeof attributes === 'object') {
+        attrsSetter(element, attributes);
+      }
+    });
+    
+    return Elements;
+  };
+
+  Elements.classes = function(mapping) {
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.classes() requires an object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, operations]) => {
+      const element = document.getElementById(id);
+      if (element) {
+        classesSetter(element, operations);
+      }
+    });
+    
+    return Elements;
+  };
+
+  // ===== FALLBACK PROP METHOD =====
+
+  Elements.prop = function(propertyName, mapping) {
+    if (!propertyName || typeof propertyName !== 'string') {
+      console.warn('[DOM Helpers] Elements.prop() requires a property name');
+      return Elements;
+    }
+    
+    if (!mapping || typeof mapping !== 'object') {
+      console.warn('[DOM Helpers] Elements.prop() requires a mapping object');
+      return Elements;
+    }
+    
+    Object.entries(mapping).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (!element) return;
+      
+      const props = propertyName.split('.');
+      let target = element;
+      
+      // Navigate to parent
+      for (let i = 0; i < props.length - 1; i++) {
+        target = target[props[i]];
+        if (!target) return;
+      }
+      
+      const finalProp = props[props.length - 1];
+      const targetProp = target[finalProp];
+      
+      // Handle different value types intelligently
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        if (typeof targetProp === 'object' && targetProp !== null) {
+          // Merge object properties
+          Object.entries(value).forEach(([k, v]) => {
+            targetProp[k] = v;
+          });
+        } else {
+          target[finalProp] = value;
+        }
+      } else {
+        // Direct assignment for primitives, arrays, null
+        target[finalProp] = value;
+      }
+    });
+    
+    return Elements;
+  };
+
   Elements.update = (updates = {}) => {
     if (!updates || typeof updates !== 'object' || Array.isArray(updates)) {
       console.warn('[DOM Helpers] Elements.update() requires an object with element IDs as keys');
