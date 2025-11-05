@@ -106,21 +106,22 @@
 
     // Demo 3: Dataset and attributes
     function demo3() {
-      Elements.dataset({
-        'userCard': {
-          userId: '123',
-          userName: 'Jane Smith',
-          role: 'admin',
-          active: 'true'
-        }
-      });
+      Elements
+        .dataset({
+          'userCard': {
+            userId: '123',
+            userName: 'Jane Smith',
+            role: 'admin',
+            active: 'true'
+          }
+        })
 
-      Elements.attrs({
-        'userCard': {
-          'data-status': 'updated',
-          'aria-label': 'User information card'
-        }
-      });
+        .attrs({
+          'userCard': {
+            'data-status': 'updated',
+            'aria-label': 'User information card'
+          }
+        });
 
       // Show dataset in console
       console.log('User Card Dataset:', Elements.userCard.dataset);
@@ -129,25 +130,26 @@
 
     // Demo 4: Classes manipulation
     function demo4() {
-      Elements.classes({
-        'btn1': {
-          add: ['highlight', 'active']
-        },
-        'btn2': {
-          add: 'active',
-          remove: 'inactive'
-        },
-        'btn3': {
-          toggle: 'active'
-        }
-      });
+      Elements
+        .classes({
+          'btn1': {
+            add: ['highlight', 'active']
+          },
+          'btn2': {
+            add: 'active',
+            remove: 'inactive'
+          },
+          'btn3': {
+            toggle: 'active'
+          }
+        })
 
-      // Add some styles to make classes visible
-      Elements.style({
-        'btn1': { backgroundColor: '#4caf50', color: 'white' },
-        'btn2': { backgroundColor: '#2196f3', color: 'white' },
-        'btn3': { backgroundColor: '#ff9800', color: 'white' }
-      });
+        // Add some styles to make classes visible
+        .style({
+          'btn1': { backgroundColor: '#4caf50', color: 'white' },
+          'btn2': { backgroundColor: '#2196f3', color: 'white' },
+          'btn3': { backgroundColor: '#ff9800', color: 'white' }
+        })
     }
 
     // Demo 5: Chaining multiple operations
@@ -238,24 +240,25 @@
 
     // Reset everything
     function reset() {
-      Elements.textContent({
-        'pageTitle': 'Original Title',
-        'subtitle': 'Original subtitle',
-        'cardTitle': 'User Info',
-        'userName': 'John Doe',
-        'userEmail': 'john@example.com'
-      });
+      Elements
+        .textContent({
+          'pageTitle': 'Original Title',
+          'subtitle': 'Original subtitle',
+          'cardTitle': 'User Info',
+          'userName': 'John Doe',
+          'userEmail': 'john@example.com'
+        })
 
-      Elements.style({
+      .style({
         'pageTitle': { color: '', fontSize: '', textAlign: '', textTransform: '' },
         'subtitle': { color: '', fontSize: '', fontStyle: '' },
         'userCard': { backgroundColor: '', border: '' },
         'btn1': { backgroundColor: '', color: '' },
         'btn2': { backgroundColor: '', color: '' },
         'btn3': { backgroundColor: '', color: '' }
-      });
+      })
 
-      Elements.disabled({
+      .disabled({
         'btn1': false,
         'btn2': false
       });
