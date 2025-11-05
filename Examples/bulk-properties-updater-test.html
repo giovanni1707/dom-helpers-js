@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,17 +12,20 @@
       margin: 50px auto;
       padding: 20px;
     }
+
     .card {
       border: 1px solid #ddd;
       padding: 20px;
       margin: 10px 0;
       border-radius: 8px;
     }
+
     button {
       padding: 10px 20px;
       margin: 5px;
       cursor: pointer;
     }
+
     .item {
       padding: 10px;
       margin: 5px 0;
@@ -30,6 +34,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1 id="pageTitle">Original Title</h1>
@@ -64,7 +69,7 @@
   <button onclick="reset()">Reset</button>
 
   <!-- Load your DOM Helpers library -->
-<script src="../dist/dom-helpers.bundle.min.js"></script>
+  <script src="../dist/dom-helpers.bundle.min.js"></script>
 
 
   <script>
@@ -174,60 +179,61 @@
     }
 
     // Demo 6: Collections (index-based updates)
-     function demo6() {
+    function demo6() {
       const items = Collections.ClassName.item;
 
       // Update by index
-      items.textContent({
-        0: '✨ First item updated',
-        1: '🎨 Second item updated',
-        2: '🚀 Third item updated'
-      });
 
-      items.style({
-        0: { backgroundColor: '#ffeb3b', padding: '15px', fontWeight: 'bold' },
-        1: { backgroundColor: '#8bc34a', padding: '15px', color: 'white' },
-        2: { backgroundColor: '#f44336', padding: '15px', color: 'white' }
-      });
+      items
+        .textContent({
+          0: '✨ First item updated',
+          1: '🎨 Second item updated',
+          2: '🚀 Third item updated'
+        })
 
-      items.dataset({
-        0: { itemId: '1', position: 'first' },
-        1: { itemId: '2', position: 'second' },
-        2: { itemId: '3', position: 'third' }
-      });
-    }  
-   
-  // Demo 7: Selector.queryAll (using Selector with bulk property patch)
-function demo7() {
-  const items = Selector.queryAll('.item');
+        .style({
+          0: { backgroundColor: '#ffeb3b', padding: '15px', fontWeight: 'bold' },
+          1: { backgroundColor: '#8bc34a', padding: '15px', color: 'white' },
+          2: { backgroundColor: '#f44336', padding: '15px', color: 'white' }
+        })
 
-  // Update by index using the enhanced collection
-  items.textContent({
-    0: '✨ First item updated (Selector)',
-    1: '🎨 Second item updated (Selector)',
-    2: '🚀 Third item updated (Selector)'
-  });
+        .dataset({
+          0: { itemId: '1', position: 'first' },
+          1: { itemId: '2', position: 'second' },
+          2: { itemId: '3', position: 'third' }
+        })
+    }
 
-  items.style({
-    0: { backgroundColor: '#ffeb3b', padding: '15px', fontWeight: 'bold' },
-    1: { backgroundColor: '#8bc34a', padding: '15px', color: 'white' },
-    2: { backgroundColor: '#f44336', padding: '15px', color: 'white' }
-  });
+    // Demo 7: Selector.queryAll (using Selector with bulk property patch)
+    function demo7() {
+      const items = Selector.queryAll('.item');
 
-  items.dataset({
-    0: { itemId: '1', position: 'first' },
-    1: { itemId: '2', position: 'second' },
-    2: { itemId: '3', position: 'third' }
-  });
+      // Update by index using the enhanced collection
+      items
+        .textContent({
+          0: '✨ First item updated (Selector)',
+          1: '🎨 Second item updated (Selector)',
+          2: '🚀 Third item updated (Selector)'
+        })
 
-  items.classes({
-    0: { add: 'highlight' },
-    1: { remove: 'hidden' },
-    2: { toggle: 'active' }
-  });
-}
+        .style({
+          0: { backgroundColor: '#ffeb3b', padding: '15px', fontWeight: 'bold' },
+          1: { backgroundColor: '#8bc34a', padding: '15px', color: 'white' },
+          2: { backgroundColor: '#f44336', padding: '15px', color: 'white' }
+        })
 
+        .dataset({
+          0: { itemId: '1', position: 'first' },
+          1: { itemId: '2', position: 'second' },
+          2: { itemId: '3', position: 'third' }
+        })
 
+        .classes({
+          0: { add: 'highlight' },
+          1: { remove: 'hidden' },
+          2: { toggle: 'active' }
+        })
+    }
 
 
     // Reset everything
@@ -275,4 +281,5 @@ function demo7() {
   </script>
 
 </body>
+
 </html>
