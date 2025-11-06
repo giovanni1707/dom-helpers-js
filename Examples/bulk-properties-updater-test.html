@@ -68,8 +68,9 @@
   <button onclick="demo7()">Demo 7: Selector.queryAll</button>
   <button onclick="reset()">Reset</button>
 
-  <!-- Load your DOM Helpers library -->
-  <script src="../dist/dom-helpers.bundle.min.js"></script>
+  <!-- Load your DOM Helpers library 
+  <script src="../dist/dom-helpers.bundle.min.js"></script>-->
+  <script src="../combinedjs/dom-helpers.combined.js"></script>
 
 
   <script>
@@ -211,8 +212,7 @@
     // Demo 7: Selector.queryAll (using Selector with bulk property patch)
     function demo7() {
       const items = Selector.queryAll('.item');
-
-      // Update by index using the enhanced collection
+      // or "const items = querySelectorAll('.item');"
       items
         .textContent({
           0: '✨ First item updated (Selector)',
