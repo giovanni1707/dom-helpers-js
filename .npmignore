@@ -1,0 +1,45 @@
+# Development files
+.git
+.gitignore
+.vscode
+.idea
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+node_modules
+
+# Build files (source, not minified)
+build.js
+
+# Test and example files
+Examples_Test/
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Documentation source files (keep README.md)
+READ ME/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+azure-pipelines.yml
+
+# Editor files
+*.sublime-project
+*.sublime-workspace
