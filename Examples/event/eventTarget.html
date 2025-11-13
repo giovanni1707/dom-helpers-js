@@ -31,21 +31,19 @@
   <p id="status">No card clicked yet.</p>
 
   <!-- load your library -->
-  <script src="../src/Core/loader/dom-helpers-loader.js"></script>
+  <script src="../../src/Core/01_dh-core.js"></script>
   
   <script>
     // Apply one event listener to all .card elements
     Collections.ClassName.card.update({
-      onclick: (e) => {
-        // e.target already enhanced with .update()
-        e.target.update({
-          classList: { toggle: "active" }
-        });
+     onclick: (e) => {
+  e.target.classList.toggle("active");
 
-        Elements.status.update({
-          textContent: e.target.textContent + " was clicked!"
-        });
-      }
+  Elements.status.update({
+    textContent: `You clicked: ${e.target.textContent}`
+  });
+}
+
     });
   </script>
 </body>

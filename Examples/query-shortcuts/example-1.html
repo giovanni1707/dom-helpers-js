@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Global Query with Index Selection</title>
+</head>
+<body>
+  <div class="container">
+    <button class="btn">Button 1</button>
+    <button class="btn">Button 2</button>
+    <button class="btn">Button 3</button>
+    <button class="btn">Button 4</button>
+  </div>
+
+  <!-- LOAD ORDER IS CRITICAL! -->
+  
+  <!-- 1. Load main DOM helpers FIRST -->
+  <script src="../../src/Core/Modular/01_dh-core.js"></script>
+  <script src="../../src/Core/Modular/03_global-query-functions.js"></script>
+
+  <!-- 3. Now use them -->
+  <script>
+    // ✅ Now this works with index selection!
+    const buttons = querySelectorAll('.btn'); // or qsa('.btn')
+
+    // Index selection with .update()
+    buttons[0].update({
+      textContent: 'First Button',
+      style: {
+        backgroundColor: 'red',
+        color: 'white',
+        padding: '10px 20px',
+        border: 'none',
+        borderRadius: '5px'
+      }
+    });
+
+    buttons[1].update({
+      textContent: 'Second Button',
+      style: {
+        backgroundColor: 'blue',
+        color: 'white',
+        padding: '10px 20px'
+      }
+    });
+
+    buttons[2].update({
+      textContent: 'Third Button',
+      style: {
+        backgroundColor: 'green',
+        color: 'white',
+        padding: '10px 20px'
+      }
+    });
+
+    // Using .at() with negative index
+    buttons.at(-1).update({
+      textContent: 'Last Button',
+      style: {
+        backgroundColor: 'purple',
+        color: 'white',
+        padding: '10px 20px'
+      }
+    });
+
+    // Using .first() and .last()
+    buttons.first().update({
+      style: { fontWeight: 'bold' }
+    });
+
+    buttons.last().update({
+      style: { fontStyle: 'italic' }
+    });
+
+    // Verify it works
+    console.log('Button 0:', buttons[0]);
+    console.log('Has update:', typeof buttons[0].update === 'function');
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Index Selection Demo</title>
+  <script src="../../src/Core/Modular/01_dh-core.js"></script>
+  <script src="../../src/Core/Modular/06_dh-global-collection.js"></script>
+</head>
+<body>
+  <button class="btn">Button 1</button>
+  <button class="btn">Button 2</button>
+  <button class="btn">Button 3</button>
+  <button class="btn">Button 4</button>
+  <button class="btn">Button 5</button>
+
+  <script>
+// Example script demonstrating index selection
+
+    // Access by index
+    console.log('First button:', ClassName.btn[0]);
+    console.log('Second button:', ClassName.btn[1]);
+    console.log('Third button:', ClassName.btn[2]);
+    console.log('Last button:', ClassName.btn[-1]);  // Negative index!
+
+    // Update specific buttons by index
+    ClassName.btn[0].update({
+      textContent: 'First Button',
+      style: {
+        backgroundColor: 'red',
+        color: 'white',
+        padding: '10px 20px'
+      }
+    });
+
+    ClassName.btn[1].update({
+      textContent: 'Second Button',
+      style: {
+        backgroundColor: 'blue',
+        color: 'white',
+        padding: '10px 20px'
+      }
+    });
+
+    ClassName.btn[-1].update({
+      textContent: 'Last Button',
+      style: {
+        backgroundColor: 'green',
+        color: 'white',
+        padding: '10px 20px'
+      }
+    });
+  </script>
+</body>
+</html>

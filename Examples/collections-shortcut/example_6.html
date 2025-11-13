@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dot Notation with Index</title>
+  <script src="../../src/Core/Modular/01_dh-core.js"></script>
+  <script src="../../src/Core/Modular/06_dh-global-collection.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="item-box">Container 1 - Item 1</div>
+    <div class="item-box">Container 1 - Item 2</div>
+    <div class="item-box">Container 1 - Item 3</div>
+  </div>
+  
+  <div class="container">
+    <div class="item-box">Container 2 - Item 1</div>
+    <div class="item-box">Container 2 - Item 2</div>
+  </div>
+
+  <script>
+// Example script demonstrating dot notation with index selection
+
+    // Access items within containers using dot notation + index
+    // First item in any container
+    ClassName['item-box'][0].update({
+      style: {
+        backgroundColor: 'gold',
+        color: 'black',
+        padding: '15px',
+        fontWeight: 'bold',
+        border: '2px solid #FFD700'
+      }
+    });
+
+    // Second item in any container
+    ClassName['item-box'][1].update({
+      style: {
+        backgroundColor: 'silver',
+        color: 'black',
+        padding: '15px',
+        border: '2px solid #C0C0C0'
+      }
+    });
+
+    // Last item in any container
+    ClassName['item-box'][-1].update({
+      style: {
+        backgroundColor: '#CD7F32',
+        color: 'white',
+        padding: '15px',
+        border: '2px solid #8B4513'
+      }
+    });
+  </script>
+</body>
+</html>

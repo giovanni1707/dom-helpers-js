@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>querySelectorAll Index Selection Example</title>
+</head>
+<body>
+  <div class="container">
+    <button class="btn">Button 1</button>
+    <button class="btn">Button 2</button>
+    <button class="btn">Button 3</button>
+  </div>
+
+  <!-- Load the DOM helper script first -->
+ <script src="../../src/Core/Modular/01_dh-core.js"></script>
+ <script src="../../src/Core/Modular/03_global-query-functions.js"></script>
+  
+  <!-- Then use it -->
+  <script>
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // Verify the functions exist
+      console.log('querySelector available:', typeof querySelector);
+      console.log('querySelectorAll available:', typeof querySelectorAll);
+      
+      const buttons = querySelectorAll('.btn'); // or qsa('.btn')
+      
+      console.log('Buttons found:', buttons.length);
+      console.log('Has update method:', typeof buttons[0].update);
+
+      buttons[0].update({
+        textContent: 'First Button',
+        style: {
+          backgroundColor: 'red',
+          color: 'white',
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: '5px'
+        }
+      });
+
+      buttons[1].update({
+        textContent: 'Second Button',
+        style: {
+          backgroundColor: 'blue',
+          color: 'white',
+          padding: '10px 20px'
+        }
+      });
+
+      buttons[2].update({
+        textContent: 'Third Button',
+        style: {
+          backgroundColor: 'green',
+          color: 'white',
+          padding: '10px 20px'
+        }
+      });
+    });
+  </script>
+</body>
+</html>

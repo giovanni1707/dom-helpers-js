@@ -1,23 +1,40 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="utf-8" />
   <title>Collections.ClassName test</title>
   <style>
-    .card { padding: 10px; margin: 5px; border:1px solid #ccc; cursor:pointer; }
-    .fancy { border:2px solid #333; border-radius:6px; }
-    .highlight { background: #ffeb3b; }
-    .active { transform: scale(1.05); background: lightgreen; }
+    .card {
+      padding: 10px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .fancy {
+      border: 2px solid #333;
+      border-radius: 6px;
+    }
+
+    .highlight {
+      background: #ffeb3b;
+    }
+
+    .active {
+      transform: scale(1.05);
+      background: lightgreen;
+    }
   </style>
 </head>
+
 <body>
   <div class="card">Card 1</div>
   <div class="card">Card 2</div>
   <div class="card">Card 3</div>
   <p id="status">Click a card...</p>
 
-  <script src="../src/Core/Bundle/01_dom-helpers.js"></script>
-<script src="../src/Core/Bundle/02-05_dom-helpers.bundle.js"></script>
+  <script src="../../src/Core/01_dh-core.js"></script>
   <script>
     // Apply updates to all elements with class "card"
     Collections.ClassName("card").update({
@@ -26,10 +43,10 @@
       classList: { add: ["fancy", "highlight"] },
 
       // use regular function so `this` is the clicked element
-      onclick: function() {
+      onclick: function () {
         // Toggle "active" class on the clicked element
         this.classList.toggle("active");
-        
+
 
         // Update the status element
         Elements.status.update({
@@ -39,4 +56,5 @@
     });
   </script>
 </body>
+
 </html>
