@@ -9,7 +9,7 @@
  *   ClassName.button[-1]          // Last button
  *   ClassName['container.item'][2] // Third item in container
  * 
- * @version 2.0.0
+ * @version 2.0.1
  * @requires DOM Helpers Library (Collections helper)
  * @license MIT
  */
@@ -40,6 +40,32 @@
     // Create a proxy that intercepts numeric index access
     return new Proxy(collection, {
       get(target, prop) {
+        // CRITICAL: Handle symbols BEFORE isNaN check (for Array.from, spread operator, etc.)
+        if (typeof prop === 'symbol') {
+          return target[prop];
+        }
+
+        // Handle special properties that should pass through directly
+        if (prop === 'constructor' || 
+            prop === 'prototype' ||
+            prop === 'length' ||
+            prop === 'toString' ||
+            prop === 'valueOf' ||
+            prop === 'toLocaleString' ||
+            prop === '_isEnhancedWrapper' ||
+            prop === '_originalCollection' ||
+            prop === '_originalNodeList' ||
+            prop === '_hasIndexedUpdateSupport' ||
+            prop === 'update' ||
+            prop === 'item' ||
+            prop === 'entries' ||
+            prop === 'keys' ||
+            prop === 'values' ||
+            prop === 'forEach' ||
+            prop === 'namedItem') {
+          return target[prop];
+        }
+
         // Handle numeric indices (including negative indices)
         if (!isNaN(prop)) {
           const index = parseInt(prop);
@@ -68,6 +94,11 @@
       },
 
       set(target, prop, value) {
+        // Handle symbols
+        if (typeof prop === 'symbol') {
+          return false;
+        }
+
         // Allow setting numeric indices
         if (!isNaN(prop)) {
           const index = parseInt(prop);
@@ -220,7 +251,7 @@
     ClassName,
     TagName,
     Name,
-    version: '2.0.0'
+    version: '2.0.1'
   };
 
   // CommonJS
@@ -241,7 +272,7 @@
   // ===== LOGGING =====
 
   if (typeof console !== 'undefined' && console.log) {
-    console.log('[DOM Helpers] Global shortcuts v2.0.0 loaded with index support');
+    console.log('[DOM Helpers] Global shortcuts v2.0.1 loaded with index support');
     console.log('[DOM Helpers] Usage: ClassName.button[0], TagName.div[1], Name.username[-1]');
   }
 

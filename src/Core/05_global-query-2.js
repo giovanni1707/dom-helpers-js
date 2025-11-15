@@ -1,4 +1,3 @@
-
 /**
  * DOM Helpers - Indexed Collection Updates Enhancement
  * Standalone module that adds indexed update support to collections
@@ -11,27 +10,115 @@
  *   [1]: { textContent: 'Second', style: { color: 'blue' } }
  * })
  * 
- * @version 1.0.0
+ * @version 1.0.1
  * @license MIT
  */
 (function(global) {
     "use strict";
+
+    // ===== DEPENDENCY CHECKS =====
     const hasEnhancedUpdateUtility = typeof global.EnhancedUpdateUtility !== "undefined";
     const hasGlobalQuery = typeof global.querySelectorAll === "function" || typeof global.qsa === "function";
+
     if (!hasEnhancedUpdateUtility) {
         console.warn("[Indexed Updates] EnhancedUpdateUtility not found. Load main DOM helpers first!");
     }
     if (!hasGlobalQuery) {
         console.warn("[Indexed Updates] Global query functions not found. Load global-query.js first!");
     }
+
+    // ===== HELPER: APPLY UPDATES TO SINGLE ELEMENT =====
+    /**
+     * Applies updates to a single element
+     */
+    function applyUpdatesToElement(element, updates) {
+        if (typeof global.EnhancedUpdateUtility !== "undefined" && 
+            global.EnhancedUpdateUtility.applyEnhancedUpdate) {
+            Object.entries(updates).forEach(([key, value]) => {
+                global.EnhancedUpdateUtility.applyEnhancedUpdate(element, key, value);
+            });
+        } else if (typeof element.update === "function") {
+            element.update(updates);
+        } else {
+            applyBasicUpdate(element, updates);
+        }
+    }
+
+    // ===== BASIC UPDATE FALLBACK =====
+    /**
+     * Basic update implementation for elements without .update() method
+     */
+    function applyBasicUpdate(element, updates) {
+        Object.entries(updates).forEach(([key, value]) => {
+            try {
+                if (key === "style" && typeof value === "object" && value !== null) {
+                    Object.entries(value).forEach(([styleProperty, styleValue]) => {
+                        if (styleValue !== null && styleValue !== undefined) {
+                            element.style[styleProperty] = styleValue;
+                        }
+                    });
+                    return;
+                }
+
+                if (key === "classList" && typeof value === "object" && value !== null) {
+                    Object.entries(value).forEach(([method, classes]) => {
+                        const classList = Array.isArray(classes) ? classes : [classes];
+                        switch (method) {
+                            case "add":
+                                element.classList.add(...classList);
+                                break;
+                            case "remove":
+                                element.classList.remove(...classList);
+                                break;
+                            case "toggle":
+                                classList.forEach(c => element.classList.toggle(c));
+                                break;
+                        }
+                    });
+                    return;
+                }
+
+                if (key === "setAttribute") {
+                    if (Array.isArray(value) && value.length >= 2) {
+                        element.setAttribute(value[0], value[1]);
+                    } else if (typeof value === "object") {
+                        Object.entries(value).forEach(([attr, val]) => element.setAttribute(attr, val));
+                    }
+                    return;
+                }
+
+                if (key in element) {
+                    element[key] = value;
+                } else if (typeof value === "string" || typeof value === "number") {
+                    element.setAttribute(key, value);
+                }
+            } catch (error) {
+                console.warn(`[Indexed Updates] Failed to apply ${key}:`, error.message);
+            }
+        });
+    }
+
+    // ===== CORE: INDEXED UPDATE FUNCTION =====
+    /**
+     * Updates collection with support for indexed updates
+     */
     function updateCollectionWithIndices(collection, updates) {
         if (!collection) {
             console.warn("[Indexed Updates] .update() called on null collection");
             return collection;
         }
+
+        // Extract elements from collection
         let elements = [];
         if (collection.length !== undefined) {
-            elements = Array.from(collection);
+            try {
+                elements = Array.from(collection);
+            } catch (e) {
+                // Fallback for non-iterable collections
+                for (let i = 0; i < collection.length; i++) {
+                    elements.push(collection[i]);
+                }
+            }
         } else if (collection._originalCollection) {
             elements = Array.from(collection._originalCollection);
         } else if (collection._originalNodeList) {
@@ -40,47 +127,47 @@
             console.warn("[Indexed Updates] .update() called on unrecognized collection type");
             return collection;
         }
+
         if (elements.length === 0) {
             console.info("[Indexed Updates] .update() called on empty collection");
             return collection;
         }
+
         try {
             const updateKeys = Object.keys(updates);
-         const hasNumericIndices = updateKeys.some(key => {
-    // Skip Symbol keys
-    if (typeof key === 'symbol') return false;
-    
-    const num = parseInt(key);
-    return !isNaN(num);
-});
+            
+            // Check for numeric indices (properly filter out Symbol keys and non-numeric strings)
+            const hasNumericIndices = updateKeys.some(key => {
+                if (typeof key === 'symbol') return false;
+                const asNumber = Number(key);
+                // A key is numeric if it's a finite integer and converting back gives the same string
+                return Number.isFinite(asNumber) && 
+                       Number.isInteger(asNumber) && 
+                       String(asNumber) === key;
+            });
 
             if (hasNumericIndices) {
                 console.log("[Indexed Updates] Using index-based update mode");
                 updateKeys.forEach(key => {
-
-                     // Skip Symbol keys
-    if (typeof key === 'symbol') return;
-                    const num = parseInt(key);
-                    if (!isNaN(num)) {
-                        let index = num;
+                    // Skip Symbol keys
+                    if (typeof key === 'symbol') return;
+                    
+                    const asNumber = Number(key);
+                    // Only process actual numeric keys
+                    if (Number.isFinite(asNumber) && 
+                        Number.isInteger(asNumber) && 
+                        String(asNumber) === key) {
+                        
+                        let index = asNumber;
                         if (index < 0) {
                             index = elements.length + index;
                         }
+
                         const element = elements[index];
                         if (element && element.nodeType === Node.ELEMENT_NODE) {
                             const elementUpdates = updates[key];
                             if (elementUpdates && typeof elementUpdates === "object") {
-                                if (typeof global.EnhancedUpdateUtility !== "undefined" && global.EnhancedUpdateUtility.applyEnhancedUpdate) {
-                                    Object.entries(elementUpdates).forEach(([updateKey, value]) => {
-                                        global.EnhancedUpdateUtility.applyEnhancedUpdate(element, updateKey, value);
-                                    });
-                                } else {
-                                    if (typeof element.update === "function") {
-                                        element.update(elementUpdates);
-                                    } else {
-                                        applyBasicUpdate(element, elementUpdates);
-                                    }
-                                }
+                                applyUpdatesToElement(element, elementUpdates);
                             }
                         } else if (index >= 0 && index < elements.length) {
                             console.warn(`[Indexed Updates] Element at index ${key} is not a valid DOM element`);
@@ -93,87 +180,61 @@
                 console.log("[Indexed Updates] Using standard update mode (all elements)");
                 elements.forEach(element => {
                     if (element && element.nodeType === Node.ELEMENT_NODE) {
-                        if (typeof global.EnhancedUpdateUtility !== "undefined" && global.EnhancedUpdateUtility.applyEnhancedUpdate) {
-                            Object.entries(updates).forEach(([key, value]) => {
-                                global.EnhancedUpdateUtility.applyEnhancedUpdate(element, key, value);
-                            });
-                        } else {
-                            if (typeof element.update === "function") {
-                                element.update(updates);
-                            } else {
-                                applyBasicUpdate(element, updates);
-                            }
-                        }
+                        applyUpdatesToElement(element, updates);
                     }
                 });
             }
         } catch (error) {
             console.warn(`[Indexed Updates] Error in collection .update(): ${error.message}`);
+            console.error(error);
         }
+
         return collection;
     }
-    function applyBasicUpdate(element, updates) {
-        Object.entries(updates).forEach(([key, value]) => {
-            try {
-                if (key === "style" && typeof value === "object" && value !== null) {
-                    Object.entries(value).forEach(([styleProperty, styleValue]) => {
-                        if (styleValue !== null && styleValue !== undefined) {
-                            element.style[styleProperty] = styleValue;
-                        }
-                    });
-                    return;
-                }
-                if (key === "classList" && typeof value === "object" && value !== null) {
-                    Object.entries(value).forEach(([method, classes]) => {
-                        const classList = Array.isArray(classes) ? classes : [ classes ];
-                        switch (method) {
-                          case "add":
-                            element.classList.add(...classList);
-                            break;
 
-                          case "remove":
-                            element.classList.remove(...classList);
-                            break;
-
-                          case "toggle":
-                            classList.forEach(c => element.classList.toggle(c));
-                            break;
-                        }
-                    });
-                    return;
-                }
-                if (key === "setAttribute") {
-                    if (Array.isArray(value) && value.length >= 2) {
-                        element.setAttribute(value[0], value[1]);
-                    } else if (typeof value === "object") {
-                        Object.entries(value).forEach(([attr, val]) => element.setAttribute(attr, val));
-                    }
-                    return;
-                }
-                if (key in element) {
-                    element[key] = value;
-                } else if (typeof value === "string" || typeof value === "number") {
-                    element.setAttribute(key, value);
-                }
-            } catch (error) {
-                console.warn(`[Indexed Updates] Failed to apply ${key}:`, error.message);
-            }
-        });
-    }
+    // ===== PATCH COLLECTION UPDATE METHOD =====
+    /**
+     * Patches a collection's update method to support indexed updates
+     */
     function patchCollectionUpdate(collection) {
         if (!collection || collection._hasIndexedUpdateSupport) {
             return collection;
         }
+
+        // Store reference to original update method
         const originalUpdate = collection.update;
+
         try {
             Object.defineProperty(collection, "update", {
                 value: function(updates = {}) {
+                    // Check if this is an indexed update or standard update
+                    const updateKeys = Object.keys(updates);
+                    const hasNumericIndices = updateKeys.some(key => {
+                        if (typeof key === 'symbol') return false;
+                        const asNumber = Number(key);
+                        return Number.isFinite(asNumber) && 
+                               Number.isInteger(asNumber) && 
+                               String(asNumber) === key;
+                    });
+
+                    // If it has numeric indices, use indexed update
+                    if (hasNumericIndices) {
+                        return updateCollectionWithIndices(this, updates);
+                    }
+
+                    // Otherwise, use the original update method if it exists
+                    if (originalUpdate && typeof originalUpdate === 'function') {
+                        return originalUpdate.call(this, updates);
+                    }
+
+                    // Fallback: apply updates to all elements in standard mode
                     return updateCollectionWithIndices(this, updates);
                 },
                 writable: false,
                 enumerable: false,
                 configurable: true
             });
+
             Object.defineProperty(collection, "_hasIndexedUpdateSupport", {
                 value: true,
                 writable: false,
@@ -181,17 +242,40 @@
                 configurable: false
             });
         } catch (e) {
+            // Fallback if defineProperty fails
             collection.update = function(updates = {}) {
+                const updateKeys = Object.keys(updates);
+                const hasNumericIndices = updateKeys.some(key => {
+                    if (typeof key === 'symbol') return false;
+                    const asNumber = Number(key);
+                    return Number.isFinite(asNumber) && 
+                           Number.isInteger(asNumber) && 
+                           String(asNumber) === key;
+                });
+
+                if (hasNumericIndices) {
+                    return updateCollectionWithIndices(this, updates);
+                }
+
+                if (originalUpdate && typeof originalUpdate === 'function') {
+                    return originalUpdate.call(this, updates);
+                }
+
                 return updateCollectionWithIndices(this, updates);
             };
             collection._hasIndexedUpdateSupport = true;
         }
+
         return collection;
     }
+
+    // ===== PATCH GLOBAL QUERY FUNCTIONS =====
+
     const originalQS = global.querySelector;
     const originalQSA = global.querySelectorAll;
     const originalQSShort = global.qs;
     const originalQSAShort = global.qsa;
+
     function enhancedQuerySelectorAll(selector, context = document) {
         let collection;
         if (originalQSA) {
@@ -202,19 +286,31 @@
             console.warn("[Indexed Updates] No querySelectorAll function found");
             return null;
         }
-        return patchCollectionUpdate(collection);
+
+        // Only patch if collection doesn't already have indexed update support
+        if (collection && !collection._hasIndexedUpdateSupport) {
+            return patchCollectionUpdate(collection);
+        }
+        
+        return collection;
     }
+
     function enhancedQSA(selector, context = document) {
         return enhancedQuerySelectorAll(selector, context);
     }
+
     if (originalQSA) {
         global.querySelectorAll = enhancedQuerySelectorAll;
         console.log("[Indexed Updates] Enhanced querySelectorAll");
     }
+
     if (originalQSAShort) {
         global.qsa = enhancedQSA;
         console.log("[Indexed Updates] Enhanced qsa");
     }
+
+    // ===== PATCH COLLECTIONS HELPER =====
+
     if (global.Collections) {
         const originalCollectionsUpdate = global.Collections.update;
         global.Collections.update = function(updates = {}) {
@@ -227,6 +323,9 @@
         };
         console.log("[Indexed Updates] Patched Collections.update");
     }
+
+    // ===== PATCH SELECTOR HELPER =====
+
     if (global.Selector) {
         const originalSelectorUpdate = global.Selector.update;
         global.Selector.update = function(updates = {}) {
@@ -240,6 +339,9 @@
         };
         console.log("[Indexed Updates] Patched Selector.update");
     }
+
+    // ===== PATCH ENHANCED UPDATE UTILITY =====
+
     if (hasEnhancedUpdateUtility && global.EnhancedUpdateUtility.enhanceCollectionWithUpdate) {
         const originalEnhance = global.EnhancedUpdateUtility.enhanceCollectionWithUpdate;
         global.EnhancedUpdateUtility.enhanceCollectionWithUpdate = function(collection) {
@@ -248,8 +350,11 @@
         };
         console.log("[Indexed Updates] Patched EnhancedUpdateUtility.enhanceCollectionWithUpdate");
     }
+
+    // ===== EXPORTS =====
+
     const IndexedUpdates = {
-        version: "1.0.0",
+        version: "1.0.1",
         updateCollectionWithIndices: updateCollectionWithIndices,
         patchCollectionUpdate: patchCollectionUpdate,
         patch(collection) {
@@ -264,6 +369,7 @@
             console.log("[Indexed Updates] Restored original functions");
         }
     };
+
     if (typeof module !== "undefined" && module.exports) {
         module.exports = IndexedUpdates;
     } else if (typeof define === "function" && define.amd) {
@@ -273,8 +379,10 @@
     } else {
         global.IndexedUpdates = IndexedUpdates;
     }
+
     if (typeof global.DOMHelpers !== "undefined") {
         global.DOMHelpers.IndexedUpdates = IndexedUpdates;
     }
-    console.log("[DOM Helpers] Indexed collection updates loaded - v1.0.0");
-})(typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : this);
+
+    console.log("[DOM Helpers] Indexed collection updates loaded - v1.0.1");
+})(typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this);
