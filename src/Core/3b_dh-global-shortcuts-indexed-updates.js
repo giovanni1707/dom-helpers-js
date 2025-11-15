@@ -218,6 +218,9 @@
     });
   }
 
+
+
+
   // ===== ENHANCED COLLECTION WRAPPER WITH UPDATE =====
 
   /**
@@ -314,6 +317,8 @@
     return enhancedCollection;
   }
 
+
+  
   // ===== PATCH GLOBAL COLLECTION SHORTCUTS =====
 
   /**

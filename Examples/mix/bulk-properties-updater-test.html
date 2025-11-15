@@ -68,8 +68,10 @@
   <button onclick="demo7()">Demo 7: Selector.queryAll</button>
   <button onclick="reset()">Reset</button>
 
-<script src="../../src/Core/01_dh-core.js"></script>
-
+  <script src="../../src/Core/03_combined/01_dom-helpers.js"></script>
+  <script src="../../src/Core/03_combined/02_dh-core-index-enhancers.js"></script>
+  <script src="../../src/Core/01_individual/06_dh-bulk-properties-updater-global-query.js"></script>
+ 
   <script>
     // Demo 1: Simple text and value updates
     function demo1() {
@@ -182,7 +184,7 @@
 
     // Demo 6: Collections (index-based updates)
     function demo6() {
-      const items = Collections.ClassName.item;
+      const items = ClassName.item;
 
       // Update by index
 
@@ -208,7 +210,7 @@
 
     // Demo 7: Selector.queryAll (using Selector with bulk property patch)
     function demo7() {
-      const items = Selector.queryAll('.item');
+      const items = querySelectorAll('.item');
       // or "const items = querySelectorAll('.item');"
       items
         .textContent({

@@ -34,10 +34,24 @@
   <div class="card">Card 3</div>
   <p id="status">Click a card...</p>
 
-  <script src="../../src/Core/01_dh-core.js"></script>
+  <script src="../../src/Core/01_dom-helpers.js"></script>
+  <script src="../../src/Core/2b_dh-collection-shortcuts.js"></script>
+  <script src="../../src/Core/2c_dh-global-query.js"></script>
+  <script src="../../src/Core/2d_global-query-2.js"></script>
+  <script src="../../src/Core/03_dh-index-selection.js"></script>
+  <script src="../../src/Core/3b_dh-global-shortcuts-indexed-updates.js"></script>
+  <script src="../../src/Core/4a_dh-conditional-rendering.js"></script>
+  <script src="../../src/Core/4b_dh-conditions-default.js"></script>
+  <script src="../../src/Core/05_dh-selector-update-patch.js"></script>
+  <script src="../../src/Core/06_dh-bulk-properties-updater-global-query.js"></script>
+  
+ 
+ 
+
+
   <script>
     // Apply updates to all elements with class "card"
-    Collections.ClassName("card").update({
+    ClassName("card").update({
       textContent: "I am a card ",
       style: { color: "white", backgroundColor: "blue", padding: "15px" },
       classList: { add: ["fancy", "highlight"] },

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Global Query with Index Selection</title>
 </head>
+
 <body>
   <div class="container">
     <button class="btn">Button 1</button>
@@ -13,58 +15,59 @@
   </div>
 
   <!-- LOAD ORDER IS CRITICAL! -->
-  
+
   <!-- 1. Load main DOM helpers FIRST -->
- <script src="../../src/Core/Modular/01_dh-core.js"></script>
- <script src="../../src/Core/Modular/03_global-query-functions.js"></script>
-  
+  <script src="../../src/Core/03_combined/01_dom-helpers.js"></script>
+  <script src="../../src/Core/03_combined/02_dh-core-index-enhancers.js"></script>
+
   <!-- 3. Now use them -->
   <script>
     // ✅ Now this works with index selection!
     const buttons = querySelectorAll('.btn'); // or qsa('.btn')
 
-  
-  // Update specific buttons by index
-  buttons.update({
-    [0]: {
-      textContent: 'First Button',
-      style: {
-        backgroundColor: 'red',
-        color: 'white',
-        padding: '10px 20px',
-        border: 'none',
-        borderRadius: '5px'
-      }
-    },
 
-    [1]: {
-      textContent: 'Second Button',
-      style: {
-        backgroundColor: 'blue',
-        color: 'white',
-        padding: '10px 20px'
-      }
-    },
+    // Update specific buttons by index
+    buttons.update({
+      [0]: {
+        textContent: 'First Button',
+        style: {
+          backgroundColor: 'red',
+          color: 'white',
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: '5px'
+        }
+      },
 
-    [2]: {
-      textContent: 'Third Button',
-      style: {
-        backgroundColor: 'green',
-        color: 'white',
-        padding: '10px 20px'
-      }
-    },
+      [1]: {
+        textContent: 'Second Button',
+        style: {
+          backgroundColor: 'blue',
+          color: 'white',
+          padding: '10px 20px'
+        }
+      },
 
-    [-1]: {
-      textContent: 'Last Button',
-      style: {
-        backgroundColor: 'purple',
-        color: 'white',
-        padding: '10px 20px'
+      [2]: {
+        textContent: 'Third Button',
+        style: {
+          backgroundColor: 'green',
+          color: 'white',
+          padding: '10px 20px'
+        }
+      },
+
+      [-1]: {
+        textContent: 'Last Button',
+        style: {
+          backgroundColor: 'purple',
+          color: 'white',
+          padding: '10px 20px'
+        }
       }
-    }
-  });
+    });
 
   </script>
 </body>
+
 </html>
