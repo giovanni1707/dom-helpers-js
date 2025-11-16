@@ -1,5 +1,8 @@
 /**
- * DOM Helpers - Index Selection Enhancement v2
+ * 09_dh-selector-update-patch
+ * 
+ * 
+ * DOM Helpers - Selector Update Patch
  * Adds index-based access and update capabilities
  * 
  * @version 2.0.0

@@ -1,4 +1,8 @@
 /**
+ * 08_dh-bulk-properties-updater-global-query
+ * 
+ * bulk-properties-updater-global-query
+ * 
  * DOM Helpers - Enhanced Query Selectors Extension
  * Adds querySelector/querySelectorAll with .update() support and bulk property methods
  * 

@@ -1,3 +1,7 @@
+/** 
+*06_dh-index-selection
+*/
+
 (function patchSelectorForBulkUpdates() {
   if (typeof Selector === 'undefined' || typeof BulkPropertyUpdaters === 'undefined') return;
 

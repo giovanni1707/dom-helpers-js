@@ -1,6 +1,8 @@
 /**
+ * 10a_dh-conditional-rendering
+ * 
  * Conditions.whenState() - Works with or without Reactive State
- * @version 4.0.0 - Refactored for clarity, scalability, and maintainability
+ * @version 4.0.1 - Fixed Proxy/Symbol iterator issue with Collections
  * @license MIT
  */
 
@@ -399,8 +401,46 @@
   }
 
   // ============================================================================
-  // ELEMENT SELECTOR & RETRIEVAL
+  // ELEMENT SELECTOR & RETRIEVAL - FIXED FOR PROXY COLLECTIONS
   // ============================================================================
+
+  /**
+   * Safely convert array-like or collection to array (handles Proxy objects)
+   */
+  function toArray(collection) {
+    if (!collection) return [];
+    
+    // Already an array
+    if (Array.isArray(collection)) {
+      return collection;
+    }
+    
+    // Native collections - use Array.from safely
+    if (collection instanceof NodeList || collection instanceof HTMLCollection) {
+      return Array.from(collection);
+    }
+    
+    // Proxy or array-like object with length property
+    if (typeof collection === 'object' && 'length' in collection) {
+      try {
+        // First try Array.from in case it works
+        return Array.from(collection);
+      } catch (e) {
+        // If Array.from fails (due to Symbol iterator issues with Proxy),
+        // manually iterate using numeric indices
+        const arr = [];
+        const len = collection.length;
+        for (let i = 0; i < len; i++) {
+          if (i in collection) {
+            arr.push(collection[i]);
+          }
+        }
+        return arr;
+      }
+    }
+    
+    return [];
+  }
 
   /**
    * Get elements from various selector types
@@ -433,7 +473,10 @@
         const className = selector.slice(1);
         if (hasCollections && global.Collections.ClassName) {
           const collection = global.Collections.ClassName[className];
-          return collection ? Array.from(collection) : [];
+          // Use safe toArray conversion to handle Proxy objects
+          if (collection) {
+            return toArray(collection);
+          }
         }
         return Array.from(document.getElementsByClassName(className));
       }
@@ -441,7 +484,7 @@
       // Use Selector helper if available
       if (hasSelector && global.Selector.queryAll) {
         const result = global.Selector.queryAll(selector);
-        return result ? Array.from(result) : [];
+        return result ? toArray(result) : [];
       }
 
       // Fallback to native querySelectorAll
@@ -695,12 +738,13 @@
   }
 
   // Log successful initialization
-  console.log('[Conditions] v4.0.0 loaded successfully');
+  console.log('[Conditions] v4.0.1 loaded successfully');
   console.log('[Conditions] Mode:', hasReactivity ? 'Reactive + Static' : 'Static only');
   console.log('[Conditions] Features:');
   console.log('  - Declarative condition matching with strategy pattern');
   console.log('  - Extensible via registerMatcher() and registerHandler()');
   console.log('  - Full backward compatibility maintained');
   console.log('  - Production-ready with enhanced error handling');
+  console.log('  - Fixed: Proxy/Symbol iterator compatibility');
 
 })(typeof window !== 'undefined' ? window : global);

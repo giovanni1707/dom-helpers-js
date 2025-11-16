@@ -1,5 +1,7 @@
 /**
- * DOM Helpers - Indexed Collection Updates Enhancement
+ * 05_dh-indexed-collection-updates
+ * 
+ * DOM Helpers - Indexed Collection Updates 
  * Standalone module that adds indexed update support to collections
  * 
  * IMPORTANT: Load this AFTER the main DOM helpers bundle AND global-query.js!

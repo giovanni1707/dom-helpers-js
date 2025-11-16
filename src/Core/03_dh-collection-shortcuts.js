@@ -1,5 +1,7 @@
 /**
- * Global Collection Shortcuts for DOM Helpers (Enhanced with Index Support)
+ * 03_dh-collection-shortcuts
+ * 
+ * Collection Shortcuts for DOM Helpers (Enhanced with Index Support)
  * Provides ClassName, TagName, Name globally with index selection
  * 
  * Usage:

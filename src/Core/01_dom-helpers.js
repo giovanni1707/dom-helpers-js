@@ -1,5 +1,7 @@
 /**
- * DOM Helpers - Combined Bundle (Unminified)
+ * 01_dom-helpers
+ * 
+ * DOM Helpers 
  * High-performance vanilla JavaScript DOM utilities with intelligent caching
  * 
  * Includes:
