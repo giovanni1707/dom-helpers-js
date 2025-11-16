@@ -6,7 +6,8 @@
  *   ClassName.button.update({
  *     [0]: { textContent: 'First', style: { color: 'red' } },
  *     [1]: { textContent: 'Second', style: { color: 'blue' } },
- *     [-1]: { textContent: 'Last', style: { color: 'green' } }
+ *     [-1]: { textContent: 'Last', style: { color: 'green' } },
+ *     classList: { add: ['shared-class'] }  // Applied to ALL elements
  *   })
  * 
  * IMPORTANT: Load this AFTER:
@@ -14,7 +15,7 @@
  *   2. Global Collection Shortcuts
  *   3. EnhancedUpdateUtility (main DOM helpers)
  * 
- * @version 1.0.0
+ * @version 1.1.0 - FIXED: Now applies both bulk and index updates
  * @license MIT
  */
 
@@ -42,10 +43,11 @@
     console.warn('[Global Shortcuts Indexed Updates] EnhancedUpdateUtility not found. Basic update functionality will be limited.');
   }
 
-  // ===== CORE UPDATE LOGIC =====
+  // ===== CORE UPDATE LOGIC (FIXED) =====
 
   /**
    * Apply updates to a collection with index support
+   * FIXED: Now applies BOTH bulk and index-specific updates
    * @param {Object} collection - The collection to update
    * @param {Object} updates - Update object with numeric indices or properties
    * @returns {Object} - The collection (for chaining)
@@ -77,55 +79,71 @@
     try {
       const updateKeys = Object.keys(updates);
       
-      // Check if we have numeric indices
-      const hasNumericIndices = updateKeys.some(key => {
-        const num = parseInt(key);
-        return !isNaN(num) && key === String(num);
+      // FIXED: Separate numeric indices from bulk properties
+      const indexUpdates = {};
+      const bulkUpdates = {};
+      let hasNumericIndices = false;
+      let hasBulkUpdates = false;
+
+      updateKeys.forEach(key => {
+        const num = parseInt(key, 10);
+        
+        // Check if it's a valid numeric index
+        if (!isNaN(num) && key === String(num)) {
+          indexUpdates[key] = updates[key];
+          hasNumericIndices = true;
+        } else {
+          bulkUpdates[key] = updates[key];
+          hasBulkUpdates = true;
+        }
       });
 
-      if (hasNumericIndices) {
-        // INDEX-BASED UPDATE MODE
-        console.log('[Global Shortcuts Indexed Updates] Using index-based update mode');
-        
-        updateKeys.forEach(key => {
-          const num = parseInt(key);
-          
-          if (!isNaN(num) && key === String(num)) {
-            // It's a numeric index
-            let index = num;
-            
-            // Handle negative indices
-            if (index < 0) {
-              index = elements.length + index;
-            }
+      // FIXED: Apply BOTH types of updates
 
-            // Get the element at this index
-            const element = elements[index];
-
-            if (element && element.nodeType === Node.ELEMENT_NODE) {
-              const elementUpdates = updates[key];
-              
-              if (elementUpdates && typeof elementUpdates === 'object') {
-                // Apply updates to this specific element
-                applyUpdatesToElement(element, elementUpdates);
-              }
-            } else if (index >= 0 && index < elements.length) {
-              console.warn(`[Global Shortcuts Indexed Updates] Element at index ${key} is not a valid DOM element`);
-            } else {
-              console.warn(`[Global Shortcuts Indexed Updates] No element at index ${key} (resolved to ${index}, collection has ${elements.length} elements)`);
-            }
-          }
-        });
-      } else {
-        // STANDARD UPDATE MODE - Apply to all elements
-        console.log('[Global Shortcuts Indexed Updates] Using standard update mode (all elements)');
+      // 1. First, apply bulk updates to ALL elements
+      if (hasBulkUpdates) {
+        console.log('[Global Shortcuts Indexed Updates] Applying bulk updates to all elements');
         
         elements.forEach(element => {
           if (element && element.nodeType === Node.ELEMENT_NODE) {
-            applyUpdatesToElement(element, updates);
+            applyUpdatesToElement(element, bulkUpdates);
           }
         });
       }
+
+      // 2. Then, apply index-specific updates (these can override bulk)
+      if (hasNumericIndices) {
+        console.log('[Global Shortcuts Indexed Updates] Applying index-specific updates');
+        
+        Object.entries(indexUpdates).forEach(([key, elementUpdates]) => {
+          let index = parseInt(key, 10);
+          
+          // Handle negative indices
+          if (index < 0) {
+            index = elements.length + index;
+          }
+
+          // Get the element at this index
+          const element = elements[index];
+
+          if (element && element.nodeType === Node.ELEMENT_NODE) {
+            if (elementUpdates && typeof elementUpdates === 'object') {
+              // Apply updates to this specific element
+              applyUpdatesToElement(element, elementUpdates);
+            }
+          } else if (index >= 0 && index < elements.length) {
+            console.warn(`[Global Shortcuts Indexed Updates] Element at index ${key} is not a valid DOM element`);
+          } else {
+            console.warn(`[Global Shortcuts Indexed Updates] No element at index ${key} (resolved to ${index}, collection has ${elements.length} elements)`);
+          }
+        });
+      }
+
+      // Log summary
+      if (!hasNumericIndices && !hasBulkUpdates) {
+        console.log('[Global Shortcuts Indexed Updates] No updates applied');
+      }
+
     } catch (error) {
       console.error(`[Global Shortcuts Indexed Updates] Error in collection .update(): ${error.message}`);
     }
@@ -264,7 +282,7 @@
       });
     }
 
-    // Add .update() method
+    // Add .update() method with FIXED logic
     Object.defineProperty(enhancedCollection, 'update', {
       value: function(updates = {}) {
         return updateCollectionWithIndices(this, updates);
@@ -394,7 +412,7 @@
   // ===== EXPORT MODULE =====
 
   const GlobalShortcutsIndexedUpdates = {
-    version: '1.0.0',
+    version: '1.1.0',
     updateCollectionWithIndices: updateCollectionWithIndices,
     createEnhancedCollectionWithUpdate: createEnhancedCollectionWithUpdate,
     patchGlobalShortcut: patchGlobalShortcut,
@@ -427,7 +445,8 @@
 
   // ===== LOGGING =====
 
-  console.log(`[Global Shortcuts Indexed Updates] v1.0.0 loaded - ${patchCount} shortcuts patched`);
-  console.log('[Global Shortcuts Indexed Updates] Usage: ClassName.button.update({ [0]: {...}, [1]: {...} })');
+  console.log(`[Global Shortcuts Indexed Updates] v1.1.0 loaded - ${patchCount} shortcuts patched (FIXED)`);
+  console.log('[Global Shortcuts Indexed Updates] ✓ Now supports BOTH bulk and index-specific updates');
+  console.log('[Global Shortcuts Indexed Updates] Usage: ClassName.button.update({ [0]: {...}, classList: {...} })');
 
 })(typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this);

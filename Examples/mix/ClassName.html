@@ -38,33 +38,43 @@
   <script src="../../src/Core/02_dh-bulk-property-updaters.js"></script>
   <script src="../../src/Core/03_dh-collection-shortcuts.js"></script>
   <script src="../../src/Core/04_dh-global-query.js"></script>
-  <script src="../../src/Core/05_global-query-2.js"></script>
+  <script src="../../src/Core/05_dh-indexed-collection-updates.js"></script>
   <script src="../../src/Core/06_dh-index-selection.js"></script>
-  <script src="../../src/Core/07_dh-global-shortcuts-indexed-updates.js"></script>
+  <script src="../../src/Core/07_dh-global-collection-indexed-updates.js"></script>
   <script src="../../src/Core/08_dh-conditional-rendering.js"></script>
   <script src="../../src/Core/09_dh-conditions-default.js"></script>
   <script src="../../src/Core/10_dh-selector-update-patch.js"></script>
   <script src="../../src/Core/11_dh-bulk-properties-updater-global-query.js"></script>
 
   <script>
-    // Apply updates to all elements with class "card"
-    ClassName("card").update({
-      textContent: "I am a card ",
-      style: { color: "white", backgroundColor: "blue", padding: "15px" },
-      classList: { add: ["fancy", "highlight"] },
+  
+  // Apply different updates to each card by index
+Selector.queryAll(".card").update({
+    // Index-based updates for specific cards
+    [0]: {
+      textContent: "I am card 1",
+      style: { color: "white", backgroundColor: "red", padding: "15px" }
+    },
+    [1]: {
+      textContent: "I am card 2", 
+      style: { color: "white", backgroundColor: "green", padding: "15px" }
+    },
+    [2]: {
+      textContent: "I am card 3",
+      style: { color: "white", backgroundColor: "purple", padding: "15px" }
+    },
+    
+    // Shared properties applied to ALL cards (no index)
+    style: { fontSize: "18px" },
+    classList: { add: ["fancy", "highlight"] },
+    onclick: function() {
+      this.classList.toggle("active");
+      Elements.status.update({
+        textContent: `${this.textContent} was clicked!`
+      });
+    }
+  });
 
-      // use regular function so `this` is the clicked element
-      onclick: function () {
-        // Toggle "active" class on the clicked element
-        this.classList.toggle("active");
-
-
-        // Update the status element
-        Elements.status.update({
-          textContent: `${this.textContent} was clicked!`
-        });
-      }
-    });
   </script>
 </body>
 

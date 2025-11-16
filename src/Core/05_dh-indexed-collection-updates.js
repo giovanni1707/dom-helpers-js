@@ -7,10 +7,11 @@
  * Enables syntax like:
  * querySelectorAll('.btn').update({
  *   [0]: { textContent: 'First', style: { color: 'red' } },
- *   [1]: { textContent: 'Second', style: { color: 'blue' } }
+ *   [1]: { textContent: 'Second', style: { color: 'blue' } },
+ *   classList: { add: ['shared-class'] }  // Applied to ALL elements
  * })
  * 
- * @version 1.0.1
+ * @version 1.1.0 - FIXED: Now applies both bulk and index updates
  * @license MIT
  */
 (function(global) {
@@ -98,9 +99,10 @@
         });
     }
 
-    // ===== CORE: INDEXED UPDATE FUNCTION =====
+    // ===== CORE: INDEXED UPDATE FUNCTION (FIXED) =====
     /**
-     * Updates collection with support for indexed updates
+     * Updates collection with support for indexed updates AND bulk updates
+     * FIXED: Now applies both types of updates correctly
      */
     function updateCollectionWithIndices(collection, updates) {
         if (!collection) {
@@ -136,54 +138,70 @@
         try {
             const updateKeys = Object.keys(updates);
             
-            // Check for numeric indices (properly filter out Symbol keys and non-numeric strings)
-            const hasNumericIndices = updateKeys.some(key => {
-                if (typeof key === 'symbol') return false;
+            // FIXED: Separate numeric indices from bulk properties
+            const indexUpdates = {};
+            const bulkUpdates = {};
+            let hasIndexUpdates = false;
+            let hasBulkUpdates = false;
+
+            updateKeys.forEach(key => {
+                // Skip Symbol keys
+                if (typeof key === 'symbol') return;
+                
                 const asNumber = Number(key);
-                // A key is numeric if it's a finite integer and converting back gives the same string
-                return Number.isFinite(asNumber) && 
-                       Number.isInteger(asNumber) && 
-                       String(asNumber) === key;
+                // Check if it's a valid numeric index
+                if (Number.isFinite(asNumber) && 
+                    Number.isInteger(asNumber) && 
+                    String(asNumber) === key) {
+                    indexUpdates[key] = updates[key];
+                    hasIndexUpdates = true;
+                } else {
+                    bulkUpdates[key] = updates[key];
+                    hasBulkUpdates = true;
+                }
             });
 
-            if (hasNumericIndices) {
-                console.log("[Indexed Updates] Using index-based update mode");
-                updateKeys.forEach(key => {
-                    // Skip Symbol keys
-                    if (typeof key === 'symbol') return;
-                    
-                    const asNumber = Number(key);
-                    // Only process actual numeric keys
-                    if (Number.isFinite(asNumber) && 
-                        Number.isInteger(asNumber) && 
-                        String(asNumber) === key) {
-                        
-                        let index = asNumber;
-                        if (index < 0) {
-                            index = elements.length + index;
-                        }
+            // FIXED: Apply BOTH bulk and index updates
 
-                        const element = elements[index];
-                        if (element && element.nodeType === Node.ELEMENT_NODE) {
-                            const elementUpdates = updates[key];
-                            if (elementUpdates && typeof elementUpdates === "object") {
-                                applyUpdatesToElement(element, elementUpdates);
-                            }
-                        } else if (index >= 0 && index < elements.length) {
-                            console.warn(`[Indexed Updates] Element at index ${key} is not a valid DOM element`);
-                        } else {
-                            console.warn(`[Indexed Updates] No element at index ${key} (resolved to ${index}, collection has ${elements.length} elements)`);
-                        }
-                    }
-                });
-            } else {
-                console.log("[Indexed Updates] Using standard update mode (all elements)");
+            // 1. First, apply bulk updates to ALL elements
+            if (hasBulkUpdates) {
+                console.log("[Indexed Updates] Applying bulk updates to all elements");
                 elements.forEach(element => {
                     if (element && element.nodeType === Node.ELEMENT_NODE) {
-                        applyUpdatesToElement(element, updates);
+                        applyUpdatesToElement(element, bulkUpdates);
                     }
                 });
             }
+
+            // 2. Then, apply index-specific updates (these can override bulk)
+            if (hasIndexUpdates) {
+                console.log("[Indexed Updates] Applying index-specific updates");
+                Object.entries(indexUpdates).forEach(([key, elementUpdates]) => {
+                    let index = Number(key);
+                    
+                    // Handle negative indices
+                    if (index < 0) {
+                        index = elements.length + index;
+                    }
+
+                    const element = elements[index];
+                    if (element && element.nodeType === Node.ELEMENT_NODE) {
+                        if (elementUpdates && typeof elementUpdates === "object") {
+                            applyUpdatesToElement(element, elementUpdates);
+                        }
+                    } else if (index >= 0 && index < elements.length) {
+                        console.warn(`[Indexed Updates] Element at index ${key} is not a valid DOM element`);
+                    } else {
+                        console.warn(`[Indexed Updates] No element at index ${key} (resolved to ${index}, collection has ${elements.length} elements)`);
+                    }
+                });
+            }
+
+            // Log summary
+            if (!hasIndexUpdates && !hasBulkUpdates) {
+                console.log("[Indexed Updates] No updates applied");
+            }
+
         } catch (error) {
             console.warn(`[Indexed Updates] Error in collection .update(): ${error.message}`);
             console.error(error);
@@ -207,27 +225,7 @@
         try {
             Object.defineProperty(collection, "update", {
                 value: function(updates = {}) {
-                    // Check if this is an indexed update or standard update
-                    const updateKeys = Object.keys(updates);
-                    const hasNumericIndices = updateKeys.some(key => {
-                        if (typeof key === 'symbol') return false;
-                        const asNumber = Number(key);
-                        return Number.isFinite(asNumber) && 
-                               Number.isInteger(asNumber) && 
-                               String(asNumber) === key;
-                    });
-
-                    // If it has numeric indices, use indexed update
-                    if (hasNumericIndices) {
-                        return updateCollectionWithIndices(this, updates);
-                    }
-
-                    // Otherwise, use the original update method if it exists
-                    if (originalUpdate && typeof originalUpdate === 'function') {
-                        return originalUpdate.call(this, updates);
-                    }
-
-                    // Fallback: apply updates to all elements in standard mode
+                    // Always use the fixed indexed update logic
                     return updateCollectionWithIndices(this, updates);
                 },
                 writable: false,
@@ -244,23 +242,6 @@
         } catch (e) {
             // Fallback if defineProperty fails
             collection.update = function(updates = {}) {
-                const updateKeys = Object.keys(updates);
-                const hasNumericIndices = updateKeys.some(key => {
-                    if (typeof key === 'symbol') return false;
-                    const asNumber = Number(key);
-                    return Number.isFinite(asNumber) && 
-                           Number.isInteger(asNumber) && 
-                           String(asNumber) === key;
-                });
-
-                if (hasNumericIndices) {
-                    return updateCollectionWithIndices(this, updates);
-                }
-
-                if (originalUpdate && typeof originalUpdate === 'function') {
-                    return originalUpdate.call(this, updates);
-                }
-
                 return updateCollectionWithIndices(this, updates);
             };
             collection._hasIndexedUpdateSupport = true;
@@ -314,10 +295,13 @@
     if (global.Collections) {
         const originalCollectionsUpdate = global.Collections.update;
         global.Collections.update = function(updates = {}) {
+            // Check if using colon-based selector syntax (e.g., ".btn:0")
             const hasColonKeys = Object.keys(updates).some(key => key.includes(":"));
-            if (hasColonKeys) {
+            if (hasColonKeys && originalCollectionsUpdate) {
+                // Use original Collections update for selector syntax
                 return originalCollectionsUpdate.call(this, updates);
             } else {
+                // Use new indexed update logic
                 return updateCollectionWithIndices(this, updates);
             }
         };
@@ -330,8 +314,9 @@
         const originalSelectorUpdate = global.Selector.update;
         global.Selector.update = function(updates = {}) {
             const firstKey = Object.keys(updates)[0];
+            // Check if using selector-based syntax
             const looksLikeSelector = firstKey && (firstKey.startsWith("#") || firstKey.startsWith(".") || firstKey.includes("["));
-            if (looksLikeSelector) {
+            if (looksLikeSelector && originalSelectorUpdate) {
                 return originalSelectorUpdate.call(this, updates);
             } else {
                 return updateCollectionWithIndices(this, updates);
@@ -354,7 +339,7 @@
     // ===== EXPORTS =====
 
     const IndexedUpdates = {
-        version: "1.0.1",
+        version: "1.1.0",
         updateCollectionWithIndices: updateCollectionWithIndices,
         patchCollectionUpdate: patchCollectionUpdate,
         patch(collection) {
@@ -384,5 +369,6 @@
         global.DOMHelpers.IndexedUpdates = IndexedUpdates;
     }
 
-    console.log("[DOM Helpers] Indexed collection updates loaded - v1.0.1");
+    console.log("[DOM Helpers] Indexed collection updates loaded - v1.1.0 (FIXED)");
+    console.log("[Indexed Updates] ✓ Now supports BOTH bulk and index-specific updates");
 })(typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this);
