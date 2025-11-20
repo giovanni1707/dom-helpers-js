@@ -1,5 +1,5 @@
 /**
- * Conditions.apply() - Standalone Collection-Aware Implementation
+ * 10d_Conditions.apply() - Standalone Collection-Aware Implementation
  * Works independently without requiring DOM Helpers
  * Supports index-specific updates + shared properties
  * 
