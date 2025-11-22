@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conditions - Multiple Data Monitor Demo</title>
+  <title>Conditions - Multiple Data Monitor Demo (Unified)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -76,8 +76,8 @@
 </head>
 <body>
 
-  <h1>🎯 Multiple Data Monitor Demo</h1>
-  <p>This demo monitors multiple data points (age, role, status) simultaneously and updates UI based on combined conditions.</p>
+  <h1>🎯 Multiple Data Monitor Demo (Unified Modules)</h1>
+  <p>This demo uses the <strong>unified Conditions + Reactive modules</strong> to monitor multiple data points simultaneously.</p>
 
   <!-- Controls -->
   <div class="controls">
@@ -127,39 +127,38 @@
     </div>
   </div>
 
-  <!-- Load YOUR Libraries -->
-  
-   
-<script src="../../src/Conditions/dh-conditional-updater.js"></script> 
+  <!-- 
+    IMPORTANT: Load order matters!
+    1. Unified Reactive FIRST
+    2. Unified Conditions SECOND
+  -->
+  <script src="../../src/Conditions/dh-conditional-updater.js"></script> 
 <script src="../../src/Reactive/dh-reactivity.js" ></script>
-  
 
   <!-- Demo Application -->
   <script>
-    // Create reactive state (using YOUR reactive library)
+    // Create reactive state
     const state = ReactiveUtils.state({
       age: 25,
       role: 'user',
       status: 'active'
     });
 
-    console.log('Initial state:', state);
+    console.log('✅ State created:', state);
+    console.log('✅ Conditions available:', !!window.Conditions);
+    console.log('✅ ReactiveUtils available:', !!window.ReactiveUtils);
 
     // ========================================================================
-    // TECHNIQUE 1: Combined String Key
-    // Monitor all 3 values by combining them into a single condition string
+    // Main Status Display: Combined String Key
     // ========================================================================
     
     Conditions.whenState(
       () => {
-        // Combine multiple values into one key
         const ageCategory = state.age >= 18 ? 'adult' : 'minor';
         const key = `${state.role}-${state.status}-${ageCategory}`;
-        console.log('Combined key:', key);
         return key;
       },
       {
-        // Exact matches for all combinations
         'admin-active-adult': {
           style: { 
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -280,7 +279,7 @@
           textContent: '🚫 Moderator Suspended'
         },
         
-        // Default fallback
+        // Explicit default fallback
         'default': {
           style: { 
             background: '#ecf0f1',
@@ -293,11 +292,9 @@
     );
 
     // ========================================================================
-    // TECHNIQUE 2: Multiple Separate Conditions
-    // Each monitors different aspects independently
+    // Card 1: Access Level (role + status)
     // ========================================================================
 
-    // Monitor 1: Access Level (role + status)
     Conditions.whenState(
       () => `${state.role}-${state.status}`,
       {
@@ -365,7 +362,10 @@
       '#card-access'
     );
 
-    // Monitor 2: Permissions (role + age)
+    // ========================================================================
+    // Card 2: Permissions (role + age)
+    // ========================================================================
+
     Conditions.whenState(
       () => {
         const ageCategory = state.age >= 18 ? 'adult' : 'minor';
@@ -416,14 +416,16 @@
       '#card-permissions'
     );
 
-    // Monitor 3: User Category (complex computed value from all 3)
+    // ========================================================================
+    // Card 3: User Category (complex computed)
+    // ========================================================================
+
     Conditions.whenState(
       () => {
         const isAdult = state.age >= 18;
         const isActive = state.status === 'active';
         const isPremium = state.role === 'admin' || state.role === 'moderator';
         
-        // Create category based on all conditions
         if (state.status === 'suspended') return 'suspended';
         if (state.status === 'pending') return 'pending-verification';
         if (!isActive) return 'inactive-user';
@@ -478,26 +480,17 @@
 
     document.getElementById('age').addEventListener('input', (e) => {
       state.age = parseInt(e.target.value) || 0;
-      console.log('Age changed to:', state.age);
     });
 
     document.getElementById('role').addEventListener('change', (e) => {
       state.role = e.target.value;
-      console.log('Role changed to:', state.role);
     });
 
     document.getElementById('status').addEventListener('change', (e) => {
       state.status = e.target.value;
-      console.log('Status changed to:', state.status);
     });
 
     console.log('✅ Demo ready! Change the controls to see reactive updates.');
-    console.log('📊 4 separate conditions monitoring:', {
-      main: 'role + status + age',
-      card1: 'role + status',
-      card2: 'role + age',
-      card3: 'complex logic from all 3'
-    });
   </script>
 
 </body>

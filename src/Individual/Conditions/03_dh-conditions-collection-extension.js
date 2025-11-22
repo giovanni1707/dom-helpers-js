@@ -1,5 +1,5 @@
 /**
- * 10c_dh-conditions-collection-extension
+ * 03_dh-conditions-collection-extension
  * 
  * Conditions Collection Extension
  * Adds collection-level conditional updates with index support
