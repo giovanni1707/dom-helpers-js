@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conditions.js Default Branch Demo</title>
+  <title>Conditions.js Default Branch Demo - Fixed</title>
   <style>
     * {
       margin: 0;
@@ -256,34 +256,10 @@
       color: #0d47a1;
     }
 
-    .code-preview {
-      background: #282c34;
-      color: #abb2bf;
-      padding: 15px;
-      border-radius: 6px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
-      overflow-x: auto;
-      margin-top: 15px;
-    }
-
-    .code-preview .keyword {
-      color: #c678dd;
-    }
-
-    .code-preview .string {
-      color: #98c379;
-    }
-
-    .code-preview .function {
-      color: #61afef;
-    }
-
     @media (max-width: 768px) {
       .demo-grid {
         grid-template-columns: 1fr;
       }
-
       h1 {
         font-size: 1.8rem;
       }
@@ -319,7 +295,7 @@
 
       <!-- Demo 2: Status with Wildcard -->
       <div class="demo-card">
-        <h2>2. Status Indicator (Using *)</h2>
+        <h2>2. Status Indicator</h2>
         <div class="controls">
           <div class="control-group">
             <label>Select Status:</label>
@@ -334,7 +310,7 @@
         </div>
         <div id="statusDisplay" class="display">Select a status</div>
         <div class="info-box">
-          💡 "Maintenance" and "Offline" will use <strong>*</strong> (wildcard/default).
+          💡 "Maintenance" and "Offline" will use <strong>default</strong> styling.
         </div>
       </div>
 
@@ -366,7 +342,7 @@
         </div>
         <div id="tempDisplay" class="display">Adjust temperature</div>
         <div class="info-box">
-          💡 Out of range values use <strong>default</strong> styling.
+          💡 Temperature ranges trigger different styles dynamically.
         </div>
       </div>
 
@@ -381,7 +357,7 @@
         </div>
         <div id="gradeDisplay" class="display">Enter score</div>
         <div class="info-box">
-          💡 Invalid scores use <strong>default</strong> grade display.
+          💡 Different score ranges show different grade displays.
         </div>
       </div>
 
@@ -402,88 +378,21 @@
         </div>
       </div>
     </div>
-
-    <!-- Code Preview Section -->
-    <div class="demo-card">
-      <h2>📝 Example Code</h2>
-      <div class="code-preview">
-<span class="keyword">Conditions</span>.<span class="function">whenState</span>(
-  () => <span class="keyword">userRole</span>.<span class="keyword">value</span>,
-  {
-    <span class="string">'admin'</span>: { <span class="keyword">classList</span>: { <span class="keyword">add</span>: <span class="string">'role-admin'</span> }, <span class="keyword">textContent</span>: <span class="string">'👑 Administrator'</span> },
-    <span class="string">'moderator'</span>: { <span class="keyword">classList</span>: { <span class="keyword">add</span>: <span class="string">'role-moderator'</span> }, <span class="keyword">textContent</span>: <span class="string">'⚡ Moderator'</span> },
-    <span class="string">'user'</span>: { <span class="keyword">classList</span>: { <span class="keyword">add</span>: <span class="string">'role-user'</span> }, <span class="keyword">textContent</span>: <span class="string">'👤 User'</span> },
-    <span class="string">'guest'</span>: { <span class="keyword">classList</span>: { <span class="keyword">add</span>: <span class="string">'role-guest'</span> }, <span class="keyword">textContent</span>: <span class="string">'🚶 Guest'</span> },
-    <span class="string">'default'</span>: { <span class="keyword">classList</span>: { <span class="keyword">add</span>: <span class="string">'role-guest'</span> }, <span class="keyword">textContent</span>: <span class="string">'❓ Unknown Role'</span> }
-  },
-  <span class="string">'#roleDisplay'</span>
-);
-      </div>
-    </div>
   </div>
-
-  <!-- Load Conditions.js (You need to include your actual conditions.js file) -->
-  <script>
-    // ============================================================================
-    // MINIMAL REACTIVE STATE IMPLEMENTATION (For Demo)
-    // ============================================================================
-    const ReactiveUtils = {
-      effects: [],
-      currentEffect: null,
-      
-      createSignal(initialValue) {
-        let value = initialValue;
-        const subscribers = new Set();
-        
-        return {
-          get value() {
-            if (ReactiveUtils.currentEffect) {
-              subscribers.add(ReactiveUtils.currentEffect);
-            }
-            return value;
-          },
-          set value(newValue) {
-            if (value !== newValue) {
-              value = newValue;
-              subscribers.forEach(effect => effect());
-            }
-          }
-        };
-      },
-      
-      effect(fn) {
-        ReactiveUtils.currentEffect = fn;
-        fn();
-        ReactiveUtils.currentEffect = null;
-        return fn;
-      },
-      
-      batch(fn) {
-        return fn();
-      },
-      
-      isReactive(value) {
-        return value && typeof value === 'object' && 'value' in value;
-      }
-    };
-    
-    window.ReactiveUtils = ReactiveUtils;
-  </script>
   
 <script src="../../src/DOMHelpers/03_dh-reactive.js"></script>
-<script src="../../src/DOMHelpers/05_dh-conditions.js"></script>
-  
-  <!-- Demo Application Logic -->
-  <script>
+  <script src="../../src/DOMHelpers/05_dh-conditions.js"></script>
+   
+ <script>
     // ============================================================================
-    // REACTIVE STATE
+    // REACTIVE STATE - FIXED: Initialize with objects containing 'value' property
     // ============================================================================
-    const userRole = ReactiveUtils.createSignal('guest');
-    const status = ReactiveUtils.createSignal('active');
-    const theme = ReactiveUtils.createSignal('light');
-    const temperature = ReactiveUtils.createSignal(20);
-    const score = ReactiveUtils.createSignal(0);
-    const apiResponse = ReactiveUtils.createSignal('idle');
+    const userRole = ReactiveUtils.state({ value: 'guest' });
+    const status = ReactiveUtils.state({ value: 'active' });
+    const theme = ReactiveUtils.state({ value: 'light' });
+    const temperature = ReactiveUtils.state({ value: 20 });
+    const score = ReactiveUtils.state({ value: 0 });
+    const apiResponse = ReactiveUtils.state({ value: 'idle' });
 
     // ============================================================================
     // DEMO 1: USER ROLE WITH DEFAULT
@@ -516,7 +425,7 @@
     );
 
     // ============================================================================
-    // DEMO 2: STATUS WITH WILDCARD (*)
+    // DEMO 2: STATUS WITH DEFAULT
     // ============================================================================
     Conditions.whenState(
       () => status.value,
@@ -533,7 +442,7 @@
           classList: { add: 'status-error', remove: ['status-active', 'status-pending', 'status-unknown'] },
           textContent: '❌ Error Occurred'
         },
-        '*': {
+        'default': {
           classList: { add: 'status-unknown', remove: ['status-active', 'status-pending', 'status-error'] },
           textContent: '❓ Unknown Status'
         }
@@ -568,11 +477,11 @@
     );
 
     // ============================================================================
-    // DEMO 4: TEMPERATURE MONITOR
+    // DEMO 4: TEMPERATURE MONITOR - FIXED: Dynamic text content
     // ============================================================================
     Conditions.whenState(
       () => temperature.value,
-      {
+      () => ({
         '<=0': {
           classList: { add: 'temp-freezing', remove: ['temp-cold', 'temp-comfortable', 'temp-warm', 'temp-hot'] },
           textContent: `🥶 Freezing: ${temperature.value}°C`
@@ -597,16 +506,16 @@
           classList: { remove: ['temp-freezing', 'temp-cold', 'temp-comfortable', 'temp-warm', 'temp-hot'] },
           textContent: `📊 Temperature: ${temperature.value}°C`
         }
-      },
+      }),
       '#tempDisplay'
     );
 
     // ============================================================================
-    // DEMO 5: GRADE CALCULATOR
+    // DEMO 5: GRADE CALCULATOR - FIXED: Dynamic text content
     // ============================================================================
     Conditions.whenState(
       () => score.value,
-      {
+      () => ({
         '>=90': {
           style: { background: '#d4edda', borderColor: '#28a745', color: '#155724' },
           textContent: `Grade: A (${score.value}%) - Excellent! 🌟`
@@ -631,7 +540,7 @@
           style: { background: '#e2e3e5', borderColor: '#6c757d', color: '#383d41' },
           textContent: 'Enter a score to calculate grade'
         }
-      },
+      }),
       '#gradeDisplay'
     );
 
@@ -665,22 +574,19 @@
     // EVENT HANDLERS
     // ============================================================================
 
-    // Role selector
     document.getElementById('roleSelector').addEventListener('change', (e) => {
       userRole.value = e.target.value;
     });
 
-    // Status selector
     document.getElementById('statusSelector').addEventListener('change', (e) => {
       status.value = e.target.value;
     });
 
-    // Theme buttons
     function setTheme(themeName) {
       theme.value = themeName;
     }
+    window.setTheme = setTheme;
 
-    // Temperature slider
     const tempSlider = document.getElementById('tempSlider');
     const tempValue = document.getElementById('tempValue');
     tempSlider.addEventListener('input', (e) => {
@@ -689,7 +595,6 @@
       temperature.value = value;
     });
 
-    // Score slider
     const scoreSlider = document.getElementById('scoreSlider');
     const scoreValue = document.getElementById('scoreValue');
     scoreSlider.addEventListener('input', (e) => {
@@ -698,19 +603,15 @@
       score.value = value;
     });
 
-    // API simulation
     function simulateAPI(response) {
       apiResponse.value = 'loading';
       setTimeout(() => {
         apiResponse.value = response;
       }, 500);
     }
+    window.simulateAPI = simulateAPI;
 
-    // Initialize displays
-    window.addEventListener('DOMContentLoaded', () => {
-      console.log('✅ Demo loaded successfully!');
-      console.log('📦 Conditions.js version:', Conditions.extensions?.defaultBranch || 'N/A');
-    });
+    console.log('✅ Demo loaded successfully!');
   </script>
 </body>
 </html>

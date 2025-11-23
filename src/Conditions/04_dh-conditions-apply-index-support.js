@@ -1,9 +1,9 @@
 /**
  * 04_Conditions.apply() - Standalone Collection-Aware Implementation
  * Works independently without requiring DOM Helpers
- * Supports index-specific updates + shared properties
+ * Supports index-specific updates + shared properties + DEFAULT BRANCH
  * 
- * @version 1.0.0
+ * @version 2.0.0 - Added default branch support
  * @license MIT
  */
 
@@ -362,14 +362,14 @@
   }
 
   // ============================================================================
-  // PUBLIC API
+  // PUBLIC API WITH DEFAULT BRANCH SUPPORT
   // ============================================================================
 
   const ConditionsApply = {
     /**
-     * Apply conditions to elements (collection-aware)
+     * Apply conditions to elements (collection-aware + default branch)
      * @param {*} value - Current value to match against
-     * @param {Object} conditions - Condition mappings
+     * @param {Object} conditions - Condition mappings (can include 'default')
      * @param {string|Element|NodeList|Array} selector - Target elements
      */
     apply(value, conditions, selector) {
@@ -389,17 +389,26 @@
         return this;
       }
       
-      // Find matching condition
+      // ✅ NEW: Extract default branch if present
+      const { default: defaultConfig, ...regularConditions } = conditionsObj;
+      
+      // Find matching condition from regular conditions
       let matchingConfig = null;
-      for (const [condition, config] of Object.entries(conditionsObj)) {
+      for (const [condition, config] of Object.entries(regularConditions)) {
         if (matchesCondition(value, condition)) {
           matchingConfig = config;
           break;
         }
       }
       
+      // ✅ NEW: Fall back to default if no match found
+      if (!matchingConfig && defaultConfig) {
+        matchingConfig = defaultConfig;
+        console.log('[Conditions] Using default branch for value:', value);
+      }
+      
       if (!matchingConfig) {
-        console.info('[Conditions] No matching condition for value:', value);
+        console.info('[Conditions] No matching condition or default for value:', value);
         return this;
       }
       
@@ -450,8 +459,9 @@
   // Also export standalone
   global.ConditionsApply = ConditionsApply;
 
-  console.log('[Conditions.apply] Standalone v1.0.0 loaded');
+  console.log('[Conditions.apply] Standalone v2.0.0 loaded');
   console.log('[Conditions.apply] ✓ Collection-aware with index support');
+  console.log('[Conditions.apply] ✓ Default branch support enabled');
   console.log('[Conditions.apply] ✓ Works independently');
 
 })(typeof window !== 'undefined' ? window : global);

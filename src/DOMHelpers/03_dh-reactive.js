@@ -1103,3 +1103,352 @@
     console.log("  - collection.clear()");
     console.log("  - Plus: find, filter, map, forEach, sort, toggle, and more!");
 })(typeof window !== "undefined" ? window : global);
+
+/**
+ * Forms Extension for DOM Helpers Reactive State
+ * Standalone file - no library modifications needed
+ * @license MIT
+ */
+(function(global) {
+    "use strict";
+    if (!global.ReactiveUtils) {
+        console.error("[Forms] ReactiveUtils not found. Please load the reactive library first.");
+        return;
+    }
+    const {state: createState, batch: batch} = global.ReactiveUtils;
+    function createForm(initialValues = {}, options = {}) {
+        const formObj = {
+            values: {
+                ...initialValues
+            },
+            errors: {},
+            touched: {},
+            isSubmitting: false,
+            submitCount: 0
+        };
+        const form = createState(formObj);
+        form.$computed("isValid", function() {
+            const errorKeys = Object.keys(this.errors);
+            return errorKeys.length === 0 || errorKeys.every(k => !this.errors[k]);
+        });
+        form.$computed("isDirty", function() {
+            return Object.keys(this.touched).length > 0;
+        });
+        form.$computed("hasErrors", function() {
+            return Object.keys(this.errors).some(k => this.errors[k]);
+        });
+        form.$computed("touchedFields", function() {
+            return Object.keys(this.touched);
+        });
+        form.$computed("errorFields", function() {
+            return Object.keys(this.errors).filter(k => this.errors[k]);
+        });
+        const validators = options.validators || {};
+        const onSubmitCallback = options.onSubmit;
+        const methods = {
+            setValue(field, value) {
+                this.values[field] = value;
+                this.touched[field] = true;
+                if (validators[field]) {
+                    this.validateField(field);
+                }
+                return this;
+            },
+            setValues(values) {
+                return batch(() => {
+                    Object.entries(values).forEach(([field, value]) => {
+                        this.setValue(field, value);
+                    });
+                    return this;
+                });
+            },
+            setError(field, error) {
+                if (error) {
+                    this.errors[field] = error;
+                } else {
+                    delete this.errors[field];
+                }
+                return this;
+            },
+            setErrors(errors) {
+                return batch(() => {
+                    Object.entries(errors).forEach(([field, error]) => {
+                        this.setError(field, error);
+                    });
+                    return this;
+                });
+            },
+            clearError(field) {
+                delete this.errors[field];
+                return this;
+            },
+            clearErrors() {
+                this.errors = {};
+                return this;
+            },
+            setTouched(field, touched = true) {
+                if (touched) {
+                    this.touched[field] = true;
+                } else {
+                    delete this.touched[field];
+                }
+                return this;
+            },
+            setTouchedFields(fields) {
+                return batch(() => {
+                    fields.forEach(field => this.setTouched(field));
+                    return this;
+                });
+            },
+            touchAll() {
+                return batch(() => {
+                    Object.keys(this.values).forEach(field => {
+                        this.touched[field] = true;
+                    });
+                    return this;
+                });
+            },
+            validateField(field) {
+                const validator = validators[field];
+                if (!validator) return true;
+                const error = validator(this.values[field], this.values);
+                if (error) {
+                    this.errors[field] = error;
+                    return false;
+                } else {
+                    delete this.errors[field];
+                    return true;
+                }
+            },
+            validate() {
+                return batch(() => {
+                    let isValid = true;
+                    Object.keys(validators).forEach(field => {
+                        const valid = this.validateField(field);
+                        if (!valid) isValid = false;
+                    });
+                    return isValid;
+                });
+            },
+            reset(newValues = initialValues) {
+                return batch(() => {
+                    this.values = {
+                        ...newValues
+                    };
+                    this.errors = {};
+                    this.touched = {};
+                    this.isSubmitting = false;
+                    return this;
+                });
+            },
+            resetField(field) {
+                return batch(() => {
+                    this.values[field] = initialValues[field];
+                    delete this.errors[field];
+                    delete this.touched[field];
+                    return this;
+                });
+            },
+            async submit(customHandler) {
+                const handler = customHandler || onSubmitCallback;
+                if (!handler) {
+                    console.warn("[Forms] No submit handler provided");
+                    return;
+                }
+                this.touchAll();
+                const isValid = this.validate();
+                if (!isValid) {
+                    console.log("[Forms] Validation failed");
+                    return {
+                        success: false,
+                        errors: this.errors
+                    };
+                }
+                this.isSubmitting = true;
+                try {
+                    const result = await handler(this.values, this);
+                    this.submitCount++;
+                    this.isSubmitting = false;
+                    return {
+                        success: true,
+                        result: result
+                    };
+                } catch (error) {
+                    this.isSubmitting = false;
+                    console.error("[Forms] Submit error:", error);
+                    return {
+                        success: false,
+                        error: error
+                    };
+                }
+            },
+            handleChange(event) {
+                const target = event.target;
+                const field = target.name || target.id;
+                const value = target.type === "checkbox" ? target.checked : target.value;
+                this.setValue(field, value);
+            },
+            handleBlur(event) {
+                const target = event.target;
+                const field = target.name || target.id;
+                this.setTouched(field);
+                if (validators[field]) {
+                    this.validateField(field);
+                }
+            },
+            getFieldProps(field) {
+                return {
+                    name: field,
+                    value: this.values[field] || "",
+                    onChange: e => this.handleChange(e),
+                    onBlur: e => this.handleBlur(e)
+                };
+            },
+            hasError(field) {
+                return !!this.errors[field];
+            },
+            isTouched(field) {
+                return !!this.touched[field];
+            },
+            getError(field) {
+                return this.errors[field] || null;
+            },
+            getValue(field) {
+                return this.values[field];
+            },
+            shouldShowError(field) {
+                return this.isTouched(field) && this.hasError(field);
+            },
+            bindToInputs(selector) {
+                const inputs = typeof selector === "string" ? document.querySelectorAll(selector) : selector;
+                inputs.forEach(input => {
+                    const field = input.name || input.id;
+                    if (!field) return;
+                    if (input.type === "checkbox") {
+                        input.checked = !!this.values[field];
+                    } else {
+                        input.value = this.values[field] || "";
+                    }
+                    input.addEventListener("input", e => this.handleChange(e));
+                    input.addEventListener("blur", e => this.handleBlur(e));
+                });
+                return this;
+            },
+            toObject() {
+                return {
+                    values: {
+                        ...this.values
+                    },
+                    errors: {
+                        ...this.errors
+                    },
+                    touched: {
+                        ...this.touched
+                    },
+                    isValid: this.isValid,
+                    isDirty: this.isDirty,
+                    isSubmitting: this.isSubmitting,
+                    submitCount: this.submitCount
+                };
+            }
+        };
+        Object.keys(methods).forEach(key => {
+            form[key] = methods[key].bind(form);
+        });
+        return form;
+    }
+    const Validators = {
+        required(message = "This field is required") {
+            return value => {
+                if (!value || typeof value === "string" && value.trim() === "") {
+                    return message;
+                }
+                return null;
+            };
+        },
+        email(message = "Invalid email address") {
+            return value => {
+                if (!value) return null;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value) ? null : message;
+            };
+        },
+        minLength(min, message) {
+            return value => {
+                if (!value) return null;
+                const msg = message || `Must be at least ${min} characters`;
+                return value.length >= min ? null : msg;
+            };
+        },
+        maxLength(max, message) {
+            return value => {
+                if (!value) return null;
+                const msg = message || `Must be no more than ${max} characters`;
+                return value.length <= max ? null : msg;
+            };
+        },
+        pattern(regex, message = "Invalid format") {
+            return value => {
+                if (!value) return null;
+                return regex.test(value) ? null : message;
+            };
+        },
+        min(min, message) {
+            return value => {
+                if (value === "" || value == null) return null;
+                const msg = message || `Must be at least ${min}`;
+                return Number(value) >= min ? null : msg;
+            };
+        },
+        max(max, message) {
+            return value => {
+                if (value === "" || value == null) return null;
+                const msg = message || `Must be no more than ${max}`;
+                return Number(value) <= max ? null : msg;
+            };
+        },
+        match(fieldName, message) {
+            return (value, allValues) => {
+                const msg = message || `Must match ${fieldName}`;
+                return value === allValues[fieldName] ? null : msg;
+            };
+        },
+        custom(validatorFn) {
+            return validatorFn;
+        },
+        combine(...validators) {
+            return (value, allValues) => {
+                for (const validator of validators) {
+                    const error = validator(value, allValues);
+                    if (error) return error;
+                }
+                return null;
+            };
+        }
+    };
+    const FormsAPI = {
+        create: createForm,
+        form: createForm,
+        validators: Validators,
+        v: Validators
+    };
+    global.Forms = global.Forms || {};
+    Object.assign(global.Forms, FormsAPI);
+    if (global.ReactiveUtils) {
+        global.ReactiveUtils.form = createForm;
+        global.ReactiveUtils.createForm = createForm;
+        global.ReactiveUtils.validators = Validators;
+    }
+    if (global.ReactiveState) {
+        global.ReactiveState.form = createForm;
+    }
+    console.log("[Forms Extension] v1.0.0 loaded successfully");
+    console.log("[Forms Extension] Available methods:");
+    console.log("  - ReactiveUtils.form(initialValues, options)");
+    console.log("  - form.setValue(field, value)");
+    console.log("  - form.setError(field, error)");
+    console.log("  - form.validate()");
+    console.log("  - form.submit(handler)");
+    console.log("  - form.reset()");
+    console.log("  - Plus many more validation and binding helpers!");
+})(typeof window !== "undefined" ? window : global);

@@ -1,5 +1,5 @@
 /**
- * 10a_dh-conditional-rendering
+ * 01_dh-conditional-rendering
  * 
  * Conditions.whenState() - Works with or without Reactive State
  * @version 4.0.1 - Fixed Proxy/Symbol iterator issue with Collections
@@ -594,7 +594,7 @@
 })(typeof window !== "undefined" ? window : global);
 
 /**
- * 10c_dh-conditions-collection-extension
+ * 03_dh-conditions-collection-extension
  * 
  * Conditions Collection Extension
  * Adds collection-level conditional updates with index support
@@ -735,11 +735,11 @@
 })(typeof window !== "undefined" ? window : global);
 
 /**
- * 10d_Conditions.apply() - Standalone Collection-Aware Implementation
+ * 04_Conditions.apply() - Standalone Collection-Aware Implementation
  * Works independently without requiring DOM Helpers
- * Supports index-specific updates + shared properties
+ * Supports index-specific updates + shared properties + DEFAULT BRANCH
  * 
- * @version 1.0.0
+ * @version 2.0.0 - Added default branch support
  * @license MIT
  */
 (function(global) {
@@ -987,15 +987,20 @@
                 console.error("[Conditions] Conditions must be an object");
                 return this;
             }
+            const {default: defaultConfig, ...regularConditions} = conditionsObj;
             let matchingConfig = null;
-            for (const [condition, config] of Object.entries(conditionsObj)) {
+            for (const [condition, config] of Object.entries(regularConditions)) {
                 if (matchesCondition(value, condition)) {
                     matchingConfig = config;
                     break;
                 }
             }
+            if (!matchingConfig && defaultConfig) {
+                matchingConfig = defaultConfig;
+                console.log("[Conditions] Using default branch for value:", value);
+            }
             if (!matchingConfig) {
-                console.info("[Conditions] No matching condition for value:", value);
+                console.info("[Conditions] No matching condition or default for value:", value);
                 return this;
             }
             applyToCollection(elements, matchingConfig);
@@ -1020,7 +1025,8 @@
     global.Conditions.apply = ConditionsApply.apply.bind(ConditionsApply);
     global.Conditions.batch = ConditionsApply.batch.bind(ConditionsApply);
     global.ConditionsApply = ConditionsApply;
-    console.log("[Conditions.apply] Standalone v1.0.0 loaded");
+    console.log("[Conditions.apply] Standalone v2.0.0 loaded");
     console.log("[Conditions.apply] ✓ Collection-aware with index support");
+    console.log("[Conditions.apply] ✓ Default branch support enabled");
     console.log("[Conditions.apply] ✓ Works independently");
 })(typeof window !== "undefined" ? window : global);

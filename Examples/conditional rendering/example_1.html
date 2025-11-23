@@ -10,7 +10,7 @@
   </style>
 </head>
 <body>
-  <h1>Static Demo (No Reactivity)</h1>
+  <h1>Static Demo (No Reactive/)</h1>
   
   <button onclick="updateColor('red')">Red</button>
   <button onclick="updateColor('green')">Green</button>
@@ -18,8 +18,8 @@
   
   <div id="box" class="box">Click a button</div>
 
- <script src="../../src/DOMHelpers/05_dh-conditions.js"></script>
- 
+<script src="../../src/DOMHelpers/05_dh-conditions.js"></script> 
+
   <script>
 
     let currentColor = '';
@@ -28,7 +28,7 @@
       currentColor = color;
       
 
-      // Manual update - no reactivity
+      // Manual update - no Reactive/
       Conditions.apply(
         currentColor,
        
