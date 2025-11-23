@@ -189,26 +189,6 @@ if (isPatched) {
 
 ---
 
-## 🔗 **Load Order**
-
-```html
-<!-- CRITICAL: Load in this exact order -->
-
-<!-- 1. Core DOM Helpers -->
-<script src="01_dom-helpers.js"></script>
-
-<!-- 2. Selector Module -->
-<script src="03_dh-selector.js"></script>
-
-<!-- 3. BulkPropertyUpdaters Module (you need to provide this) -->
-<script src="bulk-property-updaters.js"></script>
-
-<!-- 4. Index Selection Patcher (this module) -->
-<script src="06_dh-index-selection.js"></script>
-```
-
----
-
 ## ⚠️ **Important Notes**
 
 ### 1. **Silent Failure**

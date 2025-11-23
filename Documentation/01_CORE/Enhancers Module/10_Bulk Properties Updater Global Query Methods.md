@@ -2,7 +2,7 @@
 
 ## Available Methods & Usage Guide
 
-Based on the provided code, here's a comprehensive list of all available methods in the `bulk-properties-updater-global-query` module:
+Here's a comprehensive list of all available methods in the `bulk-properties-updater-global-query` module:
 
 ---
 
