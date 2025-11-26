@@ -7,14 +7,14 @@ Based on the provided code, here's a comprehensive list of all available methods
 ## 🎯 **Core Query Functions**
 
 ### 1. **`querySelector(selector, context)`**
-**Alias:** `qs(selector, context)`
+**Alias:** `query(selector, context)`
 
 Selects a single element matching the CSS selector, with `.update()` support.
 
 ```javascript
 // Basic usage
 const button = querySelector('#myButton');
-const link = qs('.nav-link'); // Using alias
+const link = query('.nav-link'); // Using alias
 
 // With custom context
 const item = querySelector('.item', containerElement);
@@ -35,14 +35,14 @@ querySelector('#title').update({
 ---
 
 ### 2. **`querySelectorAll(selector, context)`**
-**Alias:** `qsa(selector, context)`
+**Alias:** `queryAll(selector, context)`
 
 Selects all elements matching the CSS selector, returns enhanced collection with `.update()` support.
 
 ```javascript
 // Basic usage
 const buttons = querySelectorAll('.btn');
-const items = qsa('li'); // Using alias
+const items = queryAll('li'); // Using alias
 
 // With custom context
 const links = querySelectorAll('a', navElement);
@@ -171,11 +171,11 @@ enhancedList.update({
 
 ## 📦 **Enhanced Collection Methods**
 
-When you use `querySelectorAll()` or `qsa()`, you get an enhanced collection with these additional methods:
+When you use `querySelectorAll()` or `queryAll()`, you get an enhanced collection with these additional methods:
 
 ### Array-Like Methods
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 // Standard iteration
 items.forEach((el, index) => console.log(el));
@@ -198,7 +198,7 @@ items.isEmpty(); // Check if empty
 
 ### DOM Manipulation Helpers
 ```javascript
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 // Class manipulation
 buttons.addClass('btn-primary');
@@ -227,13 +227,13 @@ buttons.off('click', handleClick);
 ### Example 1: Simple Query and Update
 ```javascript
 // Query single element
-qs('#header').update({
+query('#header').update({
   textContent: 'Welcome!',
   style: { fontSize: '32px', color: '#333' }
 });
 
 // Query multiple elements
-qsa('.card').update({
+queryAll('.card').update({
   classList: { add: ['shadow', 'rounded'] },
   style: { padding: '20px' }
 });
@@ -259,7 +259,7 @@ queryAllWithin('#modal', 'input').update({
 ### Example 3: Chaining with Enhanced Collections
 ```javascript
 // Get collection and manipulate
-qsa('.product')
+queryAll('.product')
   .filter(el => parseFloat(el.dataset.price) > 50)
   .forEach(el => {
     el.update({
@@ -272,7 +272,7 @@ qsa('.product')
 ### Example 4: Working with Enhanced Elements
 ```javascript
 // Every element returned has .update()
-const button = qs('#submitBtn');
+const button = query('#submitBtn');
 
 button.update({
   textContent: 'Submit Form',
@@ -291,7 +291,7 @@ button.update({
 ## 🔑 **Key Features**
 
 1. **Auto-Enhancement**: All returned elements/collections automatically have `.update()` method
-2. **Global Access**: Functions available globally (`querySelector`, `qs`, etc.)
+2. **Global Access**: Functions available globally (`querySelector`, `query`, etc.)
 3. **Context Support**: Query within specific containers
 4. **Array Methods**: Enhanced collections work like arrays
 5. **Chainable**: Most methods return the element/collection for chaining
@@ -304,16 +304,16 @@ button.update({
 ```javascript
 // Global functions (recommended)
 querySelector('#myId');
-qs('.myClass');
-qsa('div');
+query('.myClass');
+queryAll('div');
 
 // Via GlobalQuery object
 GlobalQuery.querySelector('#myId');
-GlobalQuery.qs('.myClass');
+GlobalQuery.query('.myClass');
 
 // Via DOMHelpers (if main bundle loaded)
 DOMHelpers.querySelector('#myId');
-DOMHelpers.qs('.myClass');
+DOMHelpers.query('.myClass');
 ```
 
 ---

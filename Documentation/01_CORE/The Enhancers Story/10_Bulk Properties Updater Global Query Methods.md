@@ -8,7 +8,7 @@ Here's a comprehensive list of all available methods in the `bulk-properties-upd
 
 ## 🔍 **Core Query Functions**
 
-### 1. `querySelector(selector, context)` / `qs(selector, context)`
+### 1. `querySelector(selector, context)` / `query(selector, context)`
 
 **Purpose:** Enhanced version of native `querySelector` that returns an element with `.update()` method attached.
 
@@ -17,14 +17,14 @@ Here's a comprehensive list of all available methods in the `bulk-properties-upd
 ```javascript
 // Basic usage
 const button = querySelector("#myButton");
-const button = qs("#myButton"); // Shorthand
+const button = query("#myButton"); // Shorthand
 
 // With context
 const container = document.getElementById("container");
 const button = querySelector(".btn", container);
 
 // Chained update
-qs("#title").update({
+query("#title").update({
   textContent: "New Title",
   style: { color: "red", fontSize: "24px" },
 });
@@ -32,7 +32,7 @@ qs("#title").update({
 
 ---
 
-### 2. `querySelectorAll(selector, context)` / `qsa(selector, context)`
+### 2. `querySelectorAll(selector, context)` / `queryAll(selector, context)`
 
 **Purpose:** Enhanced version of native `querySelectorAll` that returns a collection with `.update()` and bulk property methods.
 
@@ -41,7 +41,7 @@ qs("#title").update({
 ```javascript
 // Basic usage
 const buttons = querySelectorAll(".btn");
-const buttons = qsa(".btn"); // Shorthand
+const buttons = queryAll(".btn"); // Shorthand
 
 // With context
 const form = document.getElementById("myForm");
@@ -105,7 +105,7 @@ enhanced.update({
 **Usage:**
 
 ```javascript
-const button = qs("#myButton");
+const button = query("#myButton");
 
 button.update({
   textContent: "Click Me",
@@ -144,7 +144,7 @@ button.update({
 #### **Mode 1: Index-Based Updates** (Different updates per element)
 
 ```javascript
-const items = qsa(".item");
+const items = queryAll(".item");
 
 items.update({
   0: { textContent: "First", style: { color: "red" } },
@@ -156,7 +156,7 @@ items.update({
 #### **Mode 2: Property-Wide Updates** (Same update to all elements)
 
 ```javascript
-const buttons = qsa(".btn");
+const buttons = queryAll(".btn");
 
 buttons.update({
   style: { padding: "10px" },
@@ -178,7 +178,7 @@ All bulk methods follow the pattern: `collection.method({ index: value })`
 **Usage:**
 
 ```javascript
-const paragraphs = qsa("p");
+const paragraphs = queryAll("p");
 
 paragraphs.textContent({
   0: "First paragraph",
@@ -196,7 +196,7 @@ paragraphs.textContent({
 **Usage:**
 
 ```javascript
-const divs = qsa(".content");
+const divs = queryAll(".content");
 
 divs.innerHTML({
   0: "<strong>Bold text</strong>",
@@ -213,7 +213,7 @@ divs.innerHTML({
 **Usage:**
 
 ```javascript
-const spans = qsa(".label");
+const spans = queryAll(".label");
 
 spans.innerText({
   0: "Label 1",
@@ -230,7 +230,7 @@ spans.innerText({
 **Usage:**
 
 ```javascript
-const inputs = qsa('input[type="text"]');
+const inputs = queryAll('input[type="text"]');
 
 inputs.value({
   0: "John Doe",
@@ -248,7 +248,7 @@ inputs.value({
 **Usage:**
 
 ```javascript
-const inputs = qsa("input");
+const inputs = queryAll("input");
 
 inputs.placeholder({
   0: "Enter your name",
@@ -266,7 +266,7 @@ inputs.placeholder({
 **Usage:**
 
 ```javascript
-const buttons = qsa(".btn");
+const buttons = queryAll(".btn");
 
 buttons.title({
   0: "Save document",
@@ -284,7 +284,7 @@ buttons.title({
 **Usage:**
 
 ```javascript
-const buttons = qsa(".btn");
+const buttons = queryAll(".btn");
 
 buttons.disabled({
   0: true, // Disable first button
@@ -302,7 +302,7 @@ buttons.disabled({
 **Usage:**
 
 ```javascript
-const checkboxes = qsa('input[type="checkbox"]');
+const checkboxes = queryAll('input[type="checkbox"]');
 
 checkboxes.checked({
   0: true, // Check first
@@ -320,7 +320,7 @@ checkboxes.checked({
 **Usage:**
 
 ```javascript
-const inputs = qsa("input");
+const inputs = queryAll("input");
 
 inputs.readonly({
   0: true, // Make readonly
@@ -337,7 +337,7 @@ inputs.readonly({
 **Usage:**
 
 ```javascript
-const sections = qsa(".section");
+const sections = queryAll(".section");
 
 sections.hidden({
   0: false, // Show
@@ -355,7 +355,7 @@ sections.hidden({
 **Usage:**
 
 ```javascript
-const options = qsa("option");
+const options = queryAll("option");
 
 options.selected({
   0: false,
@@ -373,7 +373,7 @@ options.selected({
 **Usage:**
 
 ```javascript
-const images = qsa("img");
+const images = queryAll("img");
 
 images.src({
   0: "image1.jpg",
@@ -391,7 +391,7 @@ images.src({
 **Usage:**
 
 ```javascript
-const links = qsa("a");
+const links = queryAll("a");
 
 links.href({
   0: "/page1",
@@ -409,7 +409,7 @@ links.href({
 **Usage:**
 
 ```javascript
-const images = qsa("img");
+const images = queryAll("img");
 
 images.alt({
   0: "Product image 1",
@@ -427,7 +427,7 @@ images.alt({
 **Usage:**
 
 ```javascript
-const divs = qsa(".box");
+const divs = queryAll(".box");
 
 divs.style({
   0: {
@@ -454,7 +454,7 @@ divs.style({
 **Usage:**
 
 ```javascript
-const items = qsa(".item");
+const items = queryAll(".item");
 
 items.dataset({
   0: {
@@ -477,7 +477,7 @@ items.dataset({
 **Usage:**
 
 ```javascript
-const inputs = qsa("input");
+const inputs = queryAll("input");
 
 inputs.attrs({
   0: {
@@ -504,7 +504,7 @@ inputs.attrs({
 #### **Format 1: String replacement**
 
 ```javascript
-const divs = qsa(".box");
+const divs = queryAll(".box");
 
 divs.classes({
   0: "new-class another-class",
@@ -515,7 +515,7 @@ divs.classes({
 #### **Format 2: classList operations**
 
 ```javascript
-const divs = qsa(".box");
+const divs = queryAll(".box");
 
 divs.classes({
   0: {
@@ -540,7 +540,7 @@ divs.classes({
 #### **Simple property:**
 
 ```javascript
-const inputs = qsa("input");
+const inputs = queryAll("input");
 
 inputs.prop("maxLength", {
   0: 50,
@@ -552,7 +552,7 @@ inputs.prop("maxLength", {
 #### **Nested property:**
 
 ```javascript
-const divs = qsa(".box");
+const divs = queryAll(".box");
 
 divs.prop("style.backgroundColor", {
   0: "red",
@@ -572,10 +572,10 @@ divs.prop("dataset.userId", {
 
 ```javascript
 // Query elements
-const form = qs("#myForm");
-const inputs = qsa('input[type="text"]', form);
-const buttons = qsa(".btn");
-const images = qsa("img.gallery");
+const form = query("#myForm");
+const inputs = queryAll('input[type="text"]', form);
+const buttons = queryAll(".btn");
+const images = queryAll("img.gallery");
 
 // Update form
 form.update({

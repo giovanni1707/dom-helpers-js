@@ -618,22 +618,22 @@
   }
 
   /**
-   * Shorthand alias: qs
+   * Shorthand alias: query
    */
-  const qs = querySelector;
+  const query = querySelector;
 
   /**
-   * Shorthand alias: qsa
+   * Shorthand alias: queryAll
    */
-  const qsa = querySelectorAll;
+  const queryAll = querySelectorAll;
 
   // ===== EXPORT AND GLOBAL REGISTRATION =====
 
   const EnhancedQuerySelectors = {
     querySelector,
     querySelectorAll,
-    qs,
-    qsa,
+    query,
+    queryAll,
     enhanceElement,
     enhanceNodeList,
     version: '1.0.0'
@@ -643,8 +643,8 @@
   if (typeof global !== 'undefined') {
     global.querySelector = querySelector;
     global.querySelectorAll = querySelectorAll;
-    global.qs = qs;
-    global.qsa = qsa;
+    global.query = query;
+    global.queryAll = queryAll;
   }
 
   // Register with DOMHelpers if available

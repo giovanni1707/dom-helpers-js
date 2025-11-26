@@ -816,12 +816,12 @@ Functions that find elements using CSS selectors (like `document.querySelector`)
 
 #### The Four Functions:
 
-**1. querySelector / qs (Single Element):**
+**1. querySelector / query (Single Element):**
 ```javascript
 // Find one element
 const button = querySelector('#myButton');
 // or shorthand:
-const button = qs('#myButton');
+const button = query('#myButton');
 
 button.update({
   textContent: 'Click Me',
@@ -829,12 +829,12 @@ button.update({
 });
 ```
 
-**2. querySelectorAll / qsa (Multiple Elements):**
+**2. querySelectorAll / queryAll (Multiple Elements):**
 ```javascript
 // Find multiple elements
 const buttons = querySelectorAll('.btn');
 // or shorthand:
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 buttons.textContent({
   0: 'First',
@@ -2030,14 +2030,14 @@ ClassName.card.update({
 
 // Single element
 const el = querySelector('#id');
-const el = qs('.class');
+const el = query('.class');
 
 // Multiple elements
 const els = querySelectorAll('.class');
-const els = qsa('.class');
+const els = queryAll('.class');
 
 // Index updates on query results
-qsa('.items').textContent({
+queryAll('.items').textContent({
   0: 'First',
   1: 'Second'
 });

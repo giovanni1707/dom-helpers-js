@@ -1,6 +1,6 @@
 # Indexed Collection Updates Module - Available Methods
 
-This module enhances collections (from `querySelectorAll`, `qsa`, etc.) to support **index-specific updates** alongside bulk updates.
+This module enhances collections (from `querySelectorAll`, `queryAll`, etc.) to support **index-specific updates** alongside bulk updates.
 
 ---
 
@@ -15,7 +15,7 @@ The module patches collection `.update()` to support **two types of updates simu
 
 ```javascript
 // BOTH bulk AND indexed updates in one call!
-qsa('.btn').update({
+queryAll('.btn').update({
   // Bulk: Applied to ALL buttons
   classList: { add: 'btn-base' },
   style: { padding: '10px' },
@@ -36,7 +36,7 @@ qsa('.btn').update({
 The core function that processes indexed updates on collections.
 
 ```javascript
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 IndexedUpdates.updateCollectionWithIndices(buttons, {
   disabled: true,              // Bulk: all buttons disabled
@@ -85,7 +85,7 @@ items.update({
 Check if a collection already has indexed update support.
 
 ```javascript
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 if (IndexedUpdates.hasSupport(buttons)) {
   console.log('Collection supports indexed updates!');
@@ -103,14 +103,14 @@ if (IndexedUpdates.hasSupport(buttons)) {
 
 ### 4. **`restore()`**
 
-Restore original `querySelectorAll` and `qsa` functions (remove patching).
+Restore original `querySelectorAll` and `queryAll` functions (remove patching).
 
 ```javascript
 // Remove indexed update patches
 IndexedUpdates.restore();
 
-// Now querySelectorAll/qsa work as before the module loaded
-const items = qsa('.item');
+// Now querySelectorAll/queryAll work as before the module loaded
+const items = queryAll('.item');
 // items.update() will NOT support indexed updates anymore
 ```
 
@@ -126,7 +126,7 @@ The module **automatically patches** these functions when loaded:
 
 ### Patched Functions:
 1. ✅ `querySelectorAll()` - Enhanced with indexed update support
-2. ✅ `qsa()` - Enhanced with indexed update support
+2. ✅ `queryAll()` - Enhanced with indexed update support
 3. ✅ `Collections.update()` - Works with indexed updates
 4. ✅ `Selector.update()` - Works with indexed updates
 5. ✅ `EnhancedUpdateUtility.enhanceCollectionWithUpdate()` - Auto-patches collections
@@ -138,7 +138,7 @@ The module **automatically patches** these functions when loaded:
 ### Example 1: Basic Indexed Updates
 ```javascript
 // Get collection
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 // Update with indices
 buttons.update({
@@ -166,7 +166,7 @@ buttons.update({
 
 ### Example 2: Negative Indices
 ```javascript
-const items = qsa('.list-item');
+const items = queryAll('.list-item');
 
 items.update({
   classList: { add: 'list-item-base' },
@@ -181,7 +181,7 @@ items.update({
 
 ### Example 3: Override Bulk with Index
 ```javascript
-const cards = qsa('.card');
+const cards = queryAll('.card');
 
 cards.update({
   // ALL cards get this style
@@ -205,7 +205,7 @@ cards.update({
 
 ### Example 4: Form Field Updates
 ```javascript
-const inputs = qsa('input[type="text"]');
+const inputs = queryAll('input[type="text"]');
 
 inputs.update({
   // All inputs
@@ -223,7 +223,7 @@ inputs.update({
 
 ### Example 5: Event Handlers with Indices
 ```javascript
-const buttons = qsa('.action-btn');
+const buttons = queryAll('.action-btn');
 
 buttons.update({
   // All buttons
@@ -263,7 +263,7 @@ Selector.queryAll('.item').update({
 
 ### Pattern 1: Alternating Styles
 ```javascript
-const rows = qsa('tr');
+const rows = queryAll('tr');
 
 rows.update({
   style: { backgroundColor: '#fff' },
@@ -279,7 +279,7 @@ rows.update({
 
 ### Pattern 2: Progressive Enhancements
 ```javascript
-const cards = qsa('.card');
+const cards = queryAll('.card');
 
 cards.update({
   // Base styles for all
@@ -301,7 +301,7 @@ cards.update({
 
 ### Pattern 3: Dynamic Configuration
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 const config = {
   // Bulk config
@@ -369,7 +369,7 @@ Only **pure numeric indices** are treated as indexed updates:
 ### 3. **Negative Indices**
 Supports Python-style negative indices:
 ```javascript
-const items = qsa('.item'); // 5 items
+const items = queryAll('.item'); // 5 items
 
 items.update({
   [-1]: { ... },  // Last item (index 4)

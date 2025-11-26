@@ -21,7 +21,7 @@
 
     // ===== DEPENDENCY CHECKS =====
     const hasEnhancedUpdateUtility = typeof global.EnhancedUpdateUtility !== "undefined";
-    const hasGlobalQuery = typeof global.querySelectorAll === "function" || typeof global.qsa === "function";
+    const hasGlobalQuery = typeof global.querySelectorAll === "function" || typeof global.queryAll === "function";
 
     if (!hasEnhancedUpdateUtility) {
         console.warn("[Indexed Updates] EnhancedUpdateUtility not found. Load main DOM helpers first!");
@@ -256,8 +256,8 @@
 
     const originalQS = global.querySelector;
     const originalQSA = global.querySelectorAll;
-    const originalQSShort = global.qs;
-    const originalQSAShort = global.qsa;
+    const originalQSShort = global.query;
+    const originalQSAShort = global.queryAll;
 
     function enhancedQuerySelectorAll(selector, context = document) {
         let collection;
@@ -288,8 +288,8 @@
     }
 
     if (originalQSAShort) {
-        global.qsa = enhancedQSA;
-        console.log("[Indexed Updates] Enhanced qsa");
+        global.queryAll = enhancedQSA;
+        console.log("[Indexed Updates] Enhanced queryAll");
     }
 
     // ===== PATCH COLLECTIONS HELPER =====
@@ -352,7 +352,7 @@
         },
         restore() {
             if (originalQSA) global.querySelectorAll = originalQSA;
-            if (originalQSAShort) global.qsa = originalQSAShort;
+            if (originalQSAShort) global.queryAll = originalQSAShort;
             console.log("[Indexed Updates] Restored original functions");
         }
     };

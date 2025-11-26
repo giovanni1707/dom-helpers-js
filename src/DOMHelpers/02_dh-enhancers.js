@@ -863,8 +863,8 @@
             return createEmptyCollection();
         }
     }
-    const qs = querySelector;
-    const qsa = querySelectorAll;
+    const query = querySelector;
+    const queryAll = querySelectorAll;
     function queryWithin(container, selector) {
         const containerEl = typeof container === "string" ? document.querySelector(container) : container;
         if (!containerEl) {
@@ -883,16 +883,16 @@
     }
     global.querySelector = querySelector;
     global.querySelectorAll = querySelectorAll;
-    global.qs = qs;
-    global.qsa = qsa;
+    global.query = query;
+    global.queryAll = queryAll;
     global.queryWithin = queryWithin;
     global.queryAllWithin = queryAllWithin;
     const GlobalQuery = {
         version: "1.0.1",
         querySelector: querySelector,
         querySelectorAll: querySelectorAll,
-        qs: qs,
-        qsa: qsa,
+        query: query,
+        queryAll: queryAll,
         queryWithin: queryWithin,
         queryAllWithin: queryAllWithin,
         enhanceElement: enhanceElement,
@@ -911,8 +911,8 @@
         global.DOMHelpers.GlobalQuery = GlobalQuery;
         global.DOMHelpers.querySelector = querySelector;
         global.DOMHelpers.querySelectorAll = querySelectorAll;
-        global.DOMHelpers.qs = qs;
-        global.DOMHelpers.qsa = qsa;
+        global.DOMHelpers.query = query;
+        global.DOMHelpers.queryAll = queryAll;
         global.DOMHelpers.queryWithin = queryWithin;
         global.DOMHelpers.queryAllWithin = queryAllWithin;
     }
@@ -940,7 +940,7 @@
 (function(global) {
     "use strict";
     const hasEnhancedUpdateUtility = typeof global.EnhancedUpdateUtility !== "undefined";
-    const hasGlobalQuery = typeof global.querySelectorAll === "function" || typeof global.qsa === "function";
+    const hasGlobalQuery = typeof global.querySelectorAll === "function" || typeof global.queryAll === "function";
     if (!hasEnhancedUpdateUtility) {
         console.warn("[Indexed Updates] EnhancedUpdateUtility not found. Load main DOM helpers first!");
     }
@@ -1115,8 +1115,8 @@
     }
     const originalQS = global.querySelector;
     const originalQSA = global.querySelectorAll;
-    const originalQSShort = global.qs;
-    const originalQSAShort = global.qsa;
+    const originalQSShort = global.query;
+    const originalQSAShort = global.queryAll;
     function enhancedQuerySelectorAll(selector, context = document) {
         let collection;
         if (originalQSA) {
@@ -1140,8 +1140,8 @@
         console.log("[Indexed Updates] Enhanced querySelectorAll");
     }
     if (originalQSAShort) {
-        global.qsa = enhancedQSA;
-        console.log("[Indexed Updates] Enhanced qsa");
+        global.queryAll = enhancedQSA;
+        console.log("[Indexed Updates] Enhanced queryAll");
     }
     if (global.Collections) {
         const originalCollectionsUpdate = global.Collections.update;
@@ -1188,7 +1188,7 @@
         },
         restore() {
             if (originalQSA) global.querySelectorAll = originalQSA;
-            if (originalQSAShort) global.qsa = originalQSAShort;
+            if (originalQSAShort) global.queryAll = originalQSAShort;
             console.log("[Indexed Updates] Restored original functions");
         }
     };
@@ -2008,13 +2008,13 @@
             return enhanceNodeList([]);
         }
     }
-    const qs = querySelector;
-    const qsa = querySelectorAll;
+    const query = querySelector;
+    const queryAll = querySelectorAll;
     const EnhancedQuerySelectors = {
         querySelector: querySelector,
         querySelectorAll: querySelectorAll,
-        qs: qs,
-        qsa: qsa,
+        query: query,
+        queryAll: queryAll,
         enhanceElement: enhanceElement,
         enhanceNodeList: enhanceNodeList,
         version: "1.0.0"
@@ -2022,8 +2022,8 @@
     if (typeof global !== "undefined") {
         global.querySelector = querySelector;
         global.querySelectorAll = querySelectorAll;
-        global.qs = qs;
-        global.qsa = qsa;
+        global.query = query;
+        global.queryAll = queryAll;
     }
     if (typeof global.DOMHelpers !== "undefined") {
         global.DOMHelpers.EnhancedQuerySelectors = EnhancedQuerySelectors;

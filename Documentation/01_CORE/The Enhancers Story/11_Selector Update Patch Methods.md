@@ -80,7 +80,7 @@ if (IndexSelection.isEnhanced(items)) {
 
 **Usage:**
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 // Positive index
 const first = IndexSelection.at(items, 0);
@@ -101,7 +101,7 @@ secondLast.update({ textContent: 'Second to last' });
 
 **Usage:**
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 IndexSelection.update(items, {
   0: { textContent: 'First' },
@@ -120,13 +120,13 @@ Once this module is loaded, **all collections** from DOM Helpers automatically g
 
 **Before Patch:**
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 items[0].textContent = 'Hello'; // Standard access
 ```
 
 **After Patch:**
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 // Element at index has .update() method automatically
 items[0].update({
@@ -146,7 +146,7 @@ items[1].update({
 
 **Usage:**
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 // Access last element
 items.at(-1).update({
@@ -178,7 +178,7 @@ The enhanced `.update()` method can handle **three types of updates simultaneous
 
 **Usage:**
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 items.update({
   // Index-specific updates
@@ -217,7 +217,7 @@ items.update({
 
 ### Example 1: Basic Index Access
 ```javascript
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 // Access and update individual buttons
 buttons[0].update({
@@ -241,7 +241,7 @@ buttons.at(-1).update({
 
 ### Example 2: Mixed Updates
 ```javascript
-const listItems = qsa('li');
+const listItems = queryAll('li');
 
 listItems.update({
   // First item gets special styling
@@ -276,7 +276,7 @@ listItems.update({
 
 ### Example 3: Form Field Updates
 ```javascript
-const inputs = qsa('input[type="text"]');
+const inputs = queryAll('input[type="text"]');
 
 inputs.update({
   // First input
@@ -314,7 +314,7 @@ inputs.update({
 
 ### Example 4: Dynamic List Styling
 ```javascript
-const products = qsa('.product');
+const products = queryAll('.product');
 
 products.update({
   // First product - featured
@@ -391,7 +391,7 @@ cards[0].update({
 
 ### Example 6: Working with Empty Collections
 ```javascript
-const items = qsa('.non-existent');
+const items = queryAll('.non-existent');
 
 // Safe to call - no errors
 items.update({
@@ -408,7 +408,7 @@ const last = items.at(-1); // null
 
 ### Example 7: Check Enhancement Status
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 if (IndexSelection.isEnhanced(items)) {
   console.log('✅ Collection has index selection features');
@@ -516,7 +516,7 @@ IndexSelection.reinitialize();
 5. **Compatibility:**
    - Works with `Collections.ClassName`, `Collections.TagName`, `Collections.Name`
    - Works with `Selector.query`, `Selector.queryAll`
-   - Works with `qsa()` and `querySelectorAll()`
+   - Works with `queryAll()` and `querySelectorAll()`
 
 ---
 

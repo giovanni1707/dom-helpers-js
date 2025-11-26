@@ -467,7 +467,7 @@ querySelector('.btn').update({
 **JavaScript:**
 ```javascript
 // Select and update in one go
-qs('.submit-btn').update({
+query('.submit-btn').update({
   textContent: 'Submit',
   style: {
     backgroundColor: 'blue',
@@ -478,7 +478,7 @@ qs('.submit-btn').update({
 ```
 
 **Step-by-step:**
-1. `qs()` is short for `querySelector()` - finds the button
+1. `query()` is short for `querySelector()` - finds the button
 2. `.update()` applies all changes at once
 3. Text changes to "Submit"
 4. Styles are applied
@@ -498,7 +498,7 @@ qs('.submit-btn').update({
 **JavaScript:**
 ```javascript
 // Select all cards and update them
-qsa('.card').update({
+queryAll('.card').update({
   style: {
     border: '1px solid #ccc',
     padding: '20px',
@@ -511,7 +511,7 @@ qsa('.card').update({
 ```
 
 **What happens:**
-1. `qsa()` (short for `querySelectorAll()`) finds all cards
+1. `queryAll()` (short for `querySelectorAll()`) finds all cards
 2. `.update()` applies the same changes to ALL cards
 3. Each card gets the border, padding, and margin
 4. Each card gets the 'styled-card' class added
@@ -536,7 +536,7 @@ qsa('.card').update({
 **JavaScript:**
 ```javascript
 // Find buttons only in sidebar
-const sidebar = qs('#sidebar');
+const sidebar = query('#sidebar');
 queryWithin(sidebar, '.btn').update({
   style: { backgroundColor: 'gray' }
 });
@@ -572,7 +572,7 @@ queryAllWithin('#main', '.btn').update({
 **JavaScript:**
 ```javascript
 // Get items, filter, and update
-qsa('.item')
+queryAll('.item')
   .filter(item => parseInt(item.dataset.price) > 15)
   .forEach(item => {
     item.update({
@@ -583,7 +583,7 @@ qsa('.item')
 ```
 
 **Step-by-step:**
-1. `qsa('.item')` gets all items
+1. `queryAll('.item')` gets all items
 2. `.filter()` keeps only items with price > 15 (Item 2 and Item 3)
 3. `.forEach()` loops through filtered items
 4. Each filtered item gets yellow background and text update
@@ -602,7 +602,7 @@ qsa('.item')
 
 **JavaScript:**
 ```javascript
-const items = qsa('.menu-item');
+const items = queryAll('.menu-item');
 
 // Update first item
 items.first().update({
@@ -669,8 +669,8 @@ queryWithin('#signup', 'button').update({
 
 | Function | Shorthand | What it does |
 |----------|-----------|-------------|
-| `querySelector()` | `qs()` | Finds one element |
-| `querySelectorAll()` | `qsa()` | Finds all matching elements |
+| `querySelector()` | `query()` | Finds one element |
+| `querySelectorAll()` | `queryAll()` | Finds all matching elements |
 | `queryWithin()` | - | Finds one element within a container |
 | `queryAllWithin()` | - | Finds all elements within a container |
 
@@ -678,13 +678,13 @@ queryWithin('#signup', 'button').update({
 
 | Method | What it does | Example |
 |--------|-------------|---------|
-| `.first()` | Gets first element | `qsa('.btn').first()` |
-| `.last()` | Gets last element | `qsa('.btn').last()` |
-| `.at(index)` | Gets element at index | `qsa('.btn').at(-1)` |
-| `.isEmpty()` | Checks if empty | `qsa('.btn').isEmpty()` |
-| `.addClass()` | Adds class to all | `qsa('.btn').addClass('active')` |
-| `.removeClass()` | Removes class from all | `qsa('.btn').removeClass('old')` |
-| `.toggleClass()` | Toggles class on all | `qsa('.btn').toggleClass('visible')` |
+| `.first()` | Gets first element | `queryAll('.btn').first()` |
+| `.last()` | Gets last element | `queryAll('.btn').last()` |
+| `.at(index)` | Gets element at index | `queryAll('.btn').at(-1)` |
+| `.isEmpty()` | Checks if empty | `queryAll('.btn').isEmpty()` |
+| `.addClass()` | Adds class to all | `queryAll('.btn').addClass('active')` |
+| `.removeClass()` | Removes class from all | `queryAll('.btn').removeClass('old')` |
+| `.toggleClass()` | Toggles class on all | `queryAll('.btn').toggleClass('visible')` |
 
 ---
 
@@ -696,7 +696,7 @@ queryWithin('#signup', 'button').update({
 
 ```javascript
 // Update specific elements by index AND apply shared styles
-qsa('.btn').update({
+queryAll('.btn').update({
   // Index-specific updates
   [0]: { textContent: 'First', style: { color: 'red' } },
   [1]: { textContent: 'Second', style: { color: 'blue' } },
@@ -721,7 +721,7 @@ qsa('.btn').update({
 
 **JavaScript:**
 ```javascript
-qsa('.btn').update({
+queryAll('.btn').update({
   // First button gets special treatment
   [0]: {
     textContent: 'Primary Action',
@@ -771,7 +771,7 @@ qsa('.btn').update({
 **JavaScript:**
 ```javascript
 // Simulate validation: first field valid, second field error
-qsa('.field').update({
+queryAll('.field').update({
   // Valid field (first one)
   [0]: {
     style: {
@@ -829,7 +829,7 @@ qsa('.field').update({
 
 **JavaScript:**
 ```javascript
-qsa('.row').update({
+queryAll('.row').update({
   // Highlight first row (header-like)
   [0]: {
     style: {
@@ -871,7 +871,7 @@ qsa('.row').update({
 
 **JavaScript:**
 ```javascript
-qsa('.gallery-img').update({
+queryAll('.gallery-img').update({
   // First image is featured (larger)
   [0]: {
     style: {
@@ -916,7 +916,7 @@ qsa('.gallery-img').update({
 
 **JavaScript:**
 ```javascript
-qsa('.task').update({
+queryAll('.task').update({
   // High priority (first task)
   [0]: {
     style: {
@@ -973,7 +973,7 @@ qsa('.task').update({
 **JavaScript:**
 ```javascript
 // Make second link active
-qsa('.nav-link').update({
+queryAll('.nav-link').update({
   // Active link (index 1)
   [1]: {
     style: {
@@ -1032,7 +1032,7 @@ collection.update({
 
 ```javascript
 // When you select a collection
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 // And access an individual element by index
 const firstButton = buttons[0];
@@ -1057,7 +1057,7 @@ firstButton.update({
 
 **JavaScript:**
 ```javascript
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 // Access first button and update it
 buttons[0].update({
@@ -1080,7 +1080,7 @@ buttons[-1].update({
 ```
 
 **Step-by-step:**
-1. `qsa('.btn')` gets all buttons
+1. `queryAll('.btn')` gets all buttons
 2. `buttons[0]` accesses the first button
 3. The `.update()` method is automatically available
 4. Same for `buttons[-1]` (last button)
@@ -1101,7 +1101,7 @@ buttons[-1].update({
 
 **JavaScript:**
 ```javascript
-const cards = qsa('.card');
+const cards = queryAll('.card');
 
 // Update cards based on their position
 cards.forEach((card, index) => {
@@ -1140,7 +1140,7 @@ cards.forEach((card, index) => {
 
 **JavaScript:**
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 // Access using .at() method
 items.at(0).update({
@@ -1172,7 +1172,7 @@ items.at(middleIndex).update({
 
 **JavaScript:**
 ```javascript
-const inputs = qsa('.input');
+const inputs = queryAll('.input');
 
 // Function to validate and style
 function validateInput(index, isValid) {
@@ -1207,7 +1207,7 @@ validateInput(2, true);   // Third input valid
 
 **JavaScript:**
 ```javascript
-const thumbnails = qsa('.thumb');
+const thumbnails = queryAll('.thumb');
 let currentIndex = 0;
 
 function selectThumbnail(index) {
@@ -1265,7 +1265,7 @@ selectThumbnail(0);
 
 **JavaScript:**
 ```javascript
-const steps = qsa('.step');
+const steps = queryAll('.step');
 let currentStep = 0;
 
 function goToStep(stepIndex) {
@@ -1586,19 +1586,19 @@ TagName.input.update({
 
 ## 7. Bulk Properties for Global Query
 
-**What it does:** Adds convenient methods to update specific properties across multiple elements selected with `qsa()`.
+**What it does:** Adds convenient methods to update specific properties across multiple elements selected with `queryAll()`.
 
 ### Basic Concept
 
 ```javascript
 // Instead of using .update() for everything
-qsa('.btn').update({
+queryAll('.btn').update({
   [0]: { textContent: 'One' },
   [1]: { textContent: 'Two' }
 });
 
 // You can use specific property methods
-qsa('.btn').textContent({
+queryAll('.btn').textContent({
   [0]: 'One',
   [1]: 'Two'
 });
@@ -1618,14 +1618,14 @@ qsa('.btn').textContent({
 **JavaScript:**
 ```javascript
 // Method 1: Using textContent()
-qsa('.label').textContent({
+queryAll('.label').textContent({
   [0]: 'Name:',
   [1]: 'Email:',
   [2]: 'Phone:'
 });
 
 // Method 2: Using innerHTML() for HTML content
-qsa('.label').innerHTML({
+queryAll('.label').innerHTML({
   [0]: '<strong>Name:</strong>',
   [1]: '<strong>Email:</strong>',
   [2]: '<strong>Phone:</strong>'
@@ -1646,21 +1646,21 @@ qsa('.label').innerHTML({
 **JavaScript:**
 ```javascript
 // Set values
-qsa('.field').value({
+queryAll('.field').value({
   [0]: 'John Doe',
   [1]: 'john@example.com',
   [2]: '+1234567890'
 });
 
 // Set placeholders
-qsa('.field').placeholder({
+queryAll('.field').placeholder({
   [0]: 'Enter your name',
   [1]: 'Enter your email',
   [2]: 'Enter your phone'
 });
 
 // Disable specific fields
-qsa('.field').disabled({
+queryAll('.field').disabled({
   [0]: false,  // Enabled
   [1]: false,  // Enabled
   [2]: true    // Disabled
@@ -1681,7 +1681,7 @@ qsa('.field').disabled({
 **JavaScript:**
 ```javascript
 // Update styles for specific boxes
-qsa('.box').style({
+queryAll('.box').style({
   [0]: {
     backgroundColor: 'red',
     color: 'white',
@@ -1715,7 +1715,7 @@ qsa('.box').style({
 
 **JavaScript:**
 ```javascript
-qsa('.product').dataset({
+queryAll('.product').dataset({
   [0]: {
     productId: '101',
     price: '29.99',
@@ -1749,7 +1749,7 @@ qsa('.product').dataset({
 
 **JavaScript:**
 ```javascript
-qsa('.card').classes({
+queryAll('.card').classes({
   // Add classes to specific cards
   [0]: { add: ['featured', 'highlight'] },
   
@@ -1761,7 +1761,7 @@ qsa('.card').classes({
 });
 
 // Or replace classes entirely
-qsa('.card').classes({
+queryAll('.card').classes({
   [0]: 'card featured',  // String replacement
   [1]: 'card normal',
   [2]: 'card archived'
@@ -1781,7 +1781,7 @@ qsa('.card').classes({
 
 **JavaScript:**
 ```javascript
-qsa('.photo').attrs({
+queryAll('.photo').attrs({
   [0]: {
     src: 'photo1.jpg',
     alt: 'Photo 1',
@@ -1803,7 +1803,7 @@ qsa('.photo').attrs({
 });
 
 // Remove attributes
-qsa('.photo').attrs({
+queryAll('.photo').attrs({
   [0]: {
     width: null,   // Removes width attribute
     height: null   // Removes height attribute
@@ -1825,14 +1825,14 @@ qsa('.photo').attrs({
 **JavaScript:**
 ```javascript
 // Set checked state
-qsa('.input').prop('checked', {
+queryAll('.input').prop('checked', {
   [0]: true,
   [1]: false,
   [2]: true
 });
 
 // Even nested properties work!
-qsa('.input').prop('style.backgroundColor', {
+queryAll('.input').prop('style.backgroundColor', {
   [0]: 'yellow',
   [1]: 'lightblue',
   [2]: 'lightgreen'
@@ -1854,7 +1854,7 @@ qsa('.input').prop('style.backgroundColor', {
 **JavaScript:**
 ```javascript
 // Mark specific tasks as complete
-qsa('.todo').style({
+queryAll('.todo').style({
   [0]: {
     textDecoration: 'line-through',
     opacity: '0.5'
@@ -1865,13 +1865,13 @@ qsa('.todo').style({
   }
 });
 
-qsa('.todo').dataset({
+queryAll('.todo').dataset({
   [0]: { completed: 'true' },
   [2]: { completed: 'true' }
 });
 
 // Add checkmark to completed
-qsa('.todo').innerHTML({
+queryAll('.todo').innerHTML({
   [0]: '✓ Buy groceries',
   [2]: '✓ Finish report'
 });
@@ -1883,22 +1883,22 @@ qsa('.todo').innerHTML({
 
 | Method | What it updates | Example |
 |--------|----------------|---------|
-| `.textContent()` | Text content | `qsa('.el').textContent({[0]: 'text'})` |
-| `.innerHTML()` | HTML content | `qsa('.el').innerHTML({[0]: '<b>bold</b>'})` |
-| `.innerText()` | Inner text | `qsa('.el').innerText({[0]: 'text'})` |
-| `.value()` | Input values | `qsa('input').value({[0]: 'value'})` |
-| `.placeholder()` | Input placeholders | `qsa('input').placeholder({[0]: 'hint'})` |
-| `.disabled()` | Disabled state | `qsa('input').disabled({[0]: true})` |
-| `.checked()` | Checkbox state | `qsa('input').checked({[0]: true})` |
-| `.readonly()` | Readonly state | `qsa('input').readonly({[0]: true})` |
-| `.hidden()` | Hidden state | `qsa('.el').hidden({[0]: true})` |
-| `.src()` | Image/media source | `qsa('img').src({[0]: 'img.jpg'})` |
-| `.href()` | Link href | `qsa('a').href({[0]: 'url.com'})` |
-| `.style()` | CSS styles | `qsa('.el').style({[0]: {color: 'red'}})` |
-| `.dataset()` | Data attributes | `qsa('.el').dataset({[0]: {key: 'val'}})` |
-| `.attrs()` | HTML attributes | `qsa('.el').attrs({[0]: {attr: 'val'}})` |
-| `.classes()` | CSS classes | `qsa('.el').classes({[0]: {add: 'cls'}})` |
-| `.prop()` | Generic properties | `qsa('.el').prop('prop', {[0]: val})` |
+| `.textContent()` | Text content | `queryAll('.el').textContent({[0]: 'text'})` |
+| `.innerHTML()` | HTML content | `queryAll('.el').innerHTML({[0]: '<b>bold</b>'})` |
+| `.innerText()` | Inner text | `queryAll('.el').innerText({[0]: 'text'})` |
+| `.value()` | Input values | `queryAll('input').value({[0]: 'value'})` |
+| `.placeholder()` | Input placeholders | `queryAll('input').placeholder({[0]: 'hint'})` |
+| `.disabled()` | Disabled state | `queryAll('input').disabled({[0]: true})` |
+| `.checked()` | Checkbox state | `queryAll('input').checked({[0]: true})` |
+| `.readonly()` | Readonly state | `queryAll('input').readonly({[0]: true})` |
+| `.hidden()` | Hidden state | `queryAll('.el').hidden({[0]: true})` |
+| `.src()` | Image/media source | `queryAll('img').src({[0]: 'img.jpg'})` |
+| `.href()` | Link href | `queryAll('a').href({[0]: 'url.com'})` |
+| `.style()` | CSS styles | `queryAll('.el').style({[0]: {color: 'red'}})` |
+| `.dataset()` | Data attributes | `queryAll('.el').dataset({[0]: {key: 'val'}})` |
+| `.attrs()` | HTML attributes | `queryAll('.el').attrs({[0]: {attr: 'val'}})` |
+| `.classes()` | CSS classes | `queryAll('.el').classes({[0]: {add: 'cls'}})` |
+| `.prop()` | Generic properties | `queryAll('.el').prop('prop', {[0]: val})` |
 
 ---
 
@@ -1910,7 +1910,7 @@ qsa('.todo').innerHTML({
 
 ```javascript
 // Get a collection
-const items = qsa('.item');
+const items = queryAll('.item');
 
 // Access individual element by index
 const firstItem = items[0];
@@ -1940,7 +1940,7 @@ items.at(-1).update({
 
 **JavaScript:**
 ```javascript
-const messages = qsa('.message');
+const messages = queryAll('.message');
 
 // Each individual access gets .update() automatically
 messages[0].update({
@@ -1977,7 +1977,7 @@ messages[2].update({
 
 **JavaScript:**
 ```javascript
-const buttons = qsa('.btn');
+const buttons = queryAll('.btn');
 
 buttons.forEach((button, index) => {
   button.addEventListener('click', function() {
@@ -2011,7 +2011,7 @@ buttons.forEach((button, index) => {
 
 **JavaScript:**
 ```javascript
-const items = qsa('.item');
+const items = queryAll('.item');
 
 // Function to mark item as complete
 function completeItem(index) {
@@ -2061,7 +2061,7 @@ completeItem(-1);     // Mark last as complete (negative index!)
 
 **JavaScript:**
 ```javascript
-const scores = qsa('.score');
+const scores = queryAll('.score');
 
 scores.forEach((scoreElement, index) => {
   const score = parseInt(scoreElement.textContent);
@@ -2136,7 +2136,7 @@ scores.forEach((scoreElement, index) => {
 
 **JavaScript:**
 ```javascript
-const posts = qsa('.post');
+const posts = queryAll('.post');
 
 // Style first post
 posts.at(0).update({
@@ -2230,7 +2230,7 @@ tags[-1].update({
 - Elements in `.forEach()` have `.update()`
 
 ✅ **Works with all collection types**
-- `qsa()` collections
+- `queryAll()` collections
 - `ClassName` collections
 - `TagName` collections
 - `Name` collections
@@ -2272,19 +2272,19 @@ Elements.textContent({ title: 'New Title' });
 ClassName.button.update({ style: { color: 'red' } });
 
 // Update by selector
-qsa('.item').update({ style: { padding: '10px' } });
+queryAll('.item').update({ style: { padding: '10px' } });
 
 // Update specific index
-qsa('.item').update({
+queryAll('.item').update({
   [0]: { style: { color: 'red' } },
   [-1]: { style: { color: 'blue' } }
 });
 
 // Update individual element
-qsa('.item')[0].update({ textContent: 'First' });
+queryAll('.item')[0].update({ textContent: 'First' });
 
 // Bulk + Index combined
-qsa('.btn').update({
+queryAll('.btn').update({
   // All buttons
   style: { padding: '10px' },
   // Specific buttons

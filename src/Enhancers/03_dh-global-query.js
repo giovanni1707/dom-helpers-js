@@ -192,8 +192,8 @@
             return createEmptyCollection();
         }
     }
-    const qs = querySelector;
-    const qsa = querySelectorAll;
+    const query = querySelector;
+    const queryAll = querySelectorAll;
     function queryWithin(container, selector) {
         const containerEl = typeof container === "string" ? document.querySelector(container) : container;
         if (!containerEl) {
@@ -212,16 +212,16 @@
     }
     global.querySelector = querySelector;
     global.querySelectorAll = querySelectorAll;
-    global.qs = qs;
-    global.qsa = qsa;
+    global.query = query;
+    global.queryAll = queryAll;
     global.queryWithin = queryWithin;
     global.queryAllWithin = queryAllWithin;
     const GlobalQuery = {
         version: "1.0.1",
         querySelector: querySelector,
         querySelectorAll: querySelectorAll,
-        qs: qs,
-        qsa: qsa,
+        query: query,
+        queryAll: queryAll,
         queryWithin: queryWithin,
         queryAllWithin: queryAllWithin,
         enhanceElement: enhanceElement,
@@ -240,8 +240,8 @@
         global.DOMHelpers.GlobalQuery = GlobalQuery;
         global.DOMHelpers.querySelector = querySelector;
         global.DOMHelpers.querySelectorAll = querySelectorAll;
-        global.DOMHelpers.qs = qs;
-        global.DOMHelpers.qsa = qsa;
+        global.DOMHelpers.query = query;
+        global.DOMHelpers.queryAll = queryAll;
         global.DOMHelpers.queryWithin = queryWithin;
         global.DOMHelpers.queryAllWithin = queryAllWithin;
     }

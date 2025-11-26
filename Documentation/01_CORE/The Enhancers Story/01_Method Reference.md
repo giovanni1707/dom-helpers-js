@@ -383,12 +383,12 @@ ClassName.button.update({
 
 ### querySelector/querySelectorAll Enhancements
 
-#### `querySelector(selector)` / `qs(selector)`
+#### `querySelector(selector)` / `query(selector)`
 Enhanced single element query with `.update()` support.
 ```javascript
 const element = querySelector('#myElement');
 // or
-const element = qs('#myElement');
+const element = query('#myElement');
 
 element.update({
   textContent: 'New Text',
@@ -396,12 +396,12 @@ element.update({
 });
 ```
 
-#### `querySelectorAll(selector)` / `qsa(selector)`
+#### `querySelectorAll(selector)` / `queryAll(selector)`
 Enhanced collection query with bulk updates.
 ```javascript
 const elements = querySelectorAll('.items');
 // or
-const elements = qsa('.items');
+const elements = queryAll('.items');
 
 // Index-based updates
 elements.update({
@@ -565,8 +565,8 @@ Same as Elements, but with index-based updates:
 3. `Name` - With index support `[0]`, `[-1]`
 
 ### Global Query Functions (4)
-1. `querySelector(selector)` / `qs(selector)`
-2. `querySelectorAll(selector)` / `qsa(selector)`
+1. `querySelector(selector)` / `query(selector)`
+2. `querySelectorAll(selector)` / `queryAll(selector)`
 3. `queryWithin(container, selector)`
 4. `queryAllWithin(container, selector)`
 
