@@ -1,5 +1,5 @@
 /**
- * 07_dh-global-collection-indexed-updates
+ * 06_dh-global-collection-indexed-updates
  * 
  * Global Collection Indexed Updates 
  * Adds bulk indexed update support to Global Collection Shortcuts

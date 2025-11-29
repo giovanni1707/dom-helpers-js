@@ -1,5 +1,5 @@
 /**
- * 04_dh-global-query
+ * 03_dh-global-query
  * 
  * DOM Helpers - Global Query
  * Adds global querySelector and querySelectorAll functions with .update() support

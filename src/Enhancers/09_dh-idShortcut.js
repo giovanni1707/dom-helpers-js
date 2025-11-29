@@ -1,5 +1,5 @@
 /**
- * 02_dh-idShortcut.js
+ * 09_dh-idShortcut.js
  *  DOM Helpers - Id Shortcut Module
  * 
  * Provides a shortcut function Id() that wraps Elements helper

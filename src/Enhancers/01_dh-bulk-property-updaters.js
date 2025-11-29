@@ -1,5 +1,5 @@
 /**
- * 02_dh-bulk-property-updaters
+ * 01_dh-bulk-property-updaters
  * 
  * DOM Helpers - Bulk Property Updates Extension
  * Adds convenient shorthand methods for bulk element updates

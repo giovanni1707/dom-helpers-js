@@ -1,4 +1,6 @@
 /**
+ * 02_dh-reactive-array-patch
+ * 
  * Reactive Array Patch v1.0.0
  * Makes array methods (push, pop, sort, etc.) work with reactive state
  * Load this AFTER reactive-state.js

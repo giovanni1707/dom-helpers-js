@@ -1,5 +1,5 @@
 /**
- * 05_dh-indexed-collection-updates
+ * 04_dh-indexed-collection-updates
  * 
  * DOM Helpers - Indexed Collection Updates 
  * Standalone module that adds indexed update support to collections

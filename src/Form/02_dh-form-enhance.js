@@ -1,4 +1,6 @@
 /**
+ * 02_dh-form-enhance
+ * 
  * DOM Helpers - Form Enhancement Module
  * Adds advanced features and bridges DOM Forms with Reactive Forms
  * 

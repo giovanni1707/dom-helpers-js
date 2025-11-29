@@ -1,5 +1,5 @@
 /** 
-*06_dh-index-selection
+*05_dh-index-selection
 */
 
 (function patchSelectorForBulkUpdates() {

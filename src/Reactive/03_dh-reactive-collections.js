@@ -1,4 +1,6 @@
 /**
+ * 03_dh-reactive-collections
+ * 
  * Collections Extension for DOM Helpers Reactive State
  * Standalone file - no library modifications needed
  * @license MIT

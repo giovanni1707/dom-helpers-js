@@ -1,5 +1,5 @@
 /**
- * 08_dh-bulk-properties-updater-global-query
+ * 07_dh-bulk-properties-updater-global-query
  * 
  * bulk-properties-updater-global-query
  * 
