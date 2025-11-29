@@ -134,7 +134,7 @@ Same as Collections: `.visible()`, `.hidden()`, `.enabled()`, `.disabled()`, plu
 
 ---
 
-## 🔄 Universal `.update()` Method
+## 4. 🔄 Universal `.update()` Method
 Available on all elements and collections.
 
 ### Property Updates
@@ -192,7 +192,7 @@ click: []
 
 ---
 
-## 🏗️ createElement Enhancement
+## 5. 🏗️ createElement Enhancement
 
 ### Basic Creation
 - `document.createElement(tagName, options)` - Enhanced if enabled
@@ -223,7 +223,7 @@ click: []
 
 ---
 
-## 🌐 DOMHelpers Global Object
+## 6. 🌐 DOMHelpers Global Object
 
 ### Properties
 - `DOMHelpers.Elements` - Elements helper
@@ -243,7 +243,7 @@ click: []
 
 ---
 
-## 📊 Statistics & Cache Management
+## 7. 📊 Statistics & Cache Management
 
 ### Available on all helpers:
 - `.stats()` - Get performance statistics (hits, misses, hit rate, cache size)
