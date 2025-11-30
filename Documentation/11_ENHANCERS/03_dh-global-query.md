@@ -1,7 +1,5 @@
 # Global Query Module - Available Methods
 
-Based on the provided code, here's a comprehensive list of all available methods in the **Global Query** module:
-
 ---
 
 ## 🎯 **Core Query Functions**

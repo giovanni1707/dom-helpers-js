@@ -26,17 +26,7 @@ A high-performance vanilla JavaScript DOM utilities library with intelligent cac
 
 ---
 
-## Installation & Setup
-
-### Include the Library
-
-```html
-<!-- Via CDN -->
-<script src="path/to/dom-helpers.js"></script>
-
-<!-- Or via npm -->
-<script src="node_modules/dom-helpers-js/src/dom-helpers.js"></script>
-```
+`
 
 ### Basic Usage
 

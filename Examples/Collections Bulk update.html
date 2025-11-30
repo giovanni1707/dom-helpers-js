@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 100px;
+        background-color: #f0f0f0;
+    }
+
+    .styled-button {
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .styled-button:hover {
+        background-color: #0056b3;
+    }
+
+    .card {
+        background-color: white;
+        margin: 20px auto;
+        width: 300px;
+        text-align: left;
+    }
+
+    .alert {
+        margin: 20px auto;
+        width: 300px;
+        text-align: left;
+    }
+</style>
+
+<body>
+
+    <button class="btn styled-button">Enhanced Button</button>
+    <div class="card">This is a card element 1.</div>
+    <div class="card">This is a card element 2.</div>
+    <div class="alert">This is an alert message.</div>
+
+</body>
+
+<script src="../../src/modules/collections-helper.js"></script>
+
+
+
+
+
+<script>
+    ClassName.update({
+        'btn': {
+            style: {
+                padding: '12px 24px',
+                backgroundColor: '#007bff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px'
+            },
+            classList: { add: ['enhanced', 'interactive'] },
+
+        },
+
+        'card': {
+            style: {
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                padding: '20px',
+                borderRadius: '8px'
+            },
+            classList: { add: 'elevated' },
+            [0]: { textContent: 'This is the first card with updated content.'},
+            [1]: { textContent: 'This is the second card with updated content.'},
+        },
+
+        'alert': {
+            textContent: 'Warning: Please check your input!',
+            style: {
+                backgroundColor: '#fff3cd',
+                border: '1px solid #ffc107',
+                padding: '15px'
+            }
+        }
+    });
+
+</script>
+
+</html>

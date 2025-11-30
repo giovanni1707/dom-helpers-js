@@ -37,7 +37,7 @@ DOM Helpers is a high-performance vanilla JavaScript library that provides intel
 
 ### Why DOM Helpers?
 
-**Before:**
+**Without Dom Helpers code is Imperative ,Repetitive ,Verbose and Error Prone:**
 ```javascript
 // Repetitive, verbose, error-prone
 const button = document.getElementById('submit-btn');
@@ -53,7 +53,8 @@ for (let i = 0; i < items.length; i++) {
 }
 ```
 
-**After:**
+****With Dom Helpers code is Declarative ,Simpler , Cleaner , Readable and Maintainable:**
+:**
 ```javascript
 // Clean, declarative, optimized
 Elements.submitBtn.update({

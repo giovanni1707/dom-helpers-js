@@ -69,6 +69,12 @@ Elements.update({
 
 #### Example: Complex Updates with Event Listeners
 
+```html
+  <p id="statusMessage">Status: Not saved</p>
+    <button id="saveBtn">Save</button>
+    <button id="cancelBtn">Cancel</button>
+```
+
 ```javascript
 Elements.update({
   saveBtn: {
@@ -138,6 +144,9 @@ Collections.update({
 Collections.update({
   "class:btn": {
     style: { padding: "10px 20px", borderRadius: "4px" },
+    onclick: function() {
+      alert("Button clicked!");
+    }
   },
   "tag:p": {
     style: { lineHeight: "1.6", marginBottom: "15px" },
@@ -405,34 +414,7 @@ if (failed.length > 0) {
 
 ## Real-World Examples
 
-### Example 1: Form Validation Feedback
-
-```javascript
-function showValidationErrors(errors) {
-  const updates = {};
-
-  Object.entries(errors).forEach(([fieldId, errorMsg]) => {
-    updates[fieldId] = {
-      style: { borderColor: "#dc3545", backgroundColor: "#fff5f5" },
-      setAttribute: { "aria-invalid": "true" },
-    };
-    updates[`${fieldId}Error`] = {
-      textContent: errorMsg,
-      style: { color: "#dc3545", display: "block" },
-    };
-  });
-
-  Elements.update(updates);
-}
-
-// Usage
-showValidationErrors({
-  email: "Please enter a valid email",
-  password: "Password must be at least 8 characters",
-});
-```
-
-### Example 2: Theme Switcher
+### Example 1: Theme Switcher
 
 ```javascript
 function applyTheme(theme) {
@@ -473,7 +455,7 @@ function applyTheme(theme) {
 }
 ```
 
-### Example 3: Dynamic Dashboard Update
+### Example 2: Dynamic Dashboard Update
 
 ```javascript
 function updateDashboard(data) {
@@ -498,7 +480,7 @@ function updateDashboard(data) {
 }
 ```
 
-### Example 4: Bulk Form Reset
+### Example 3: Bulk Form Reset
 
 ```javascript
 function resetForm() {
@@ -579,16 +561,6 @@ Elements.update({
   submitBtn: { textContent: "Submit", disabled: false },
 });
 ```
-
-## Browser Support
-
-The bulk update feature works in all modern browsers and environments that support the base DOM Helpers library:
-
-- Chrome 15+
-- Firefox 4+
-- Safari 5+
-- Edge (all versions)
-- IE 9+
 
 ## Conclusion
 

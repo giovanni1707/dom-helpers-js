@@ -4954,6 +4954,7 @@
     // Also expose directly on window for easy access
     global.createElement = enhancedCreateElement;
   })();
+  
 })(
   typeof window !== "undefined"
     ? window

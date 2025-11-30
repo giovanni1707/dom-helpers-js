@@ -21,22 +21,7 @@ DOM Helpers is a comprehensive suite of utilities that extends native DOM functi
 - **🔧 Zero Dependencies**: Pure vanilla JavaScript with no external dependencies
 - **📱 Browser Compatible**: Works across all modern browsers with progressive enhancement
 
-## 📦 Installation
 
-### CDN 
-```html
-<!-- Core library only -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
-```
-
-### Module Import
-```javascript
-// ES6 Modules
-import { Elements, Collections, Selector, DOMHelpers } from './dom-helpers.js';
-
-// CommonJS
-const { Elements, Collections, Selector, DOMHelpers } = require('./dom-helpers.js');
-```
 
 ## 🎯 Quick Start
 
@@ -54,7 +39,7 @@ const { Elements, Collections, Selector, DOMHelpers } = require('./dom-helpers.j
     </div>
     
     <!-- Core library only -->
-<script src="https://cdn.jsdelivr.net/npm/@giovanni1707/dom-helpers@2.3.1/dist/dom-helpers.min.js"></script>
+<script src="dom helpers.js"></script>
 
     <script>
         // Access element by ID - automatically enhanced with .update() method
@@ -964,13 +949,13 @@ function setupNewWay() {
         addEventListener: ['click', handleClick]
     });
 }
-
+```
 // Use both approaches in the same project
-setupO
+setup
 
 ## 🎯 Fine-Grained Control System
 
-**NEW!** DOM Helpers now includes an advanced fine-grained control system that minimizes DOM writes and maximizes performance across all helper modules.
+** DOM Helpers includes an advanced fine-grained control system that minimizes DOM writes and maximizes performance across all helper modules.
 
 ### What is Fine-Grained Control?
 
@@ -980,7 +965,9 @@ Fine-grained control means DOM Helpers intelligently compares new values with pr
 
 #### 1. **Smart Property Comparison**
 ```javascript
+
 // Only updates if value actually changed
+
 Elements.myButton.update({
     textContent: "Click Me"  // ✅ Updates DOM
 });

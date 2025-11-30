@@ -1,6 +1,5 @@
 # DOM Helpers - Bulk Property Updaters Methods
 
-Based on the code you've provided, here's a comprehensive list of all available methods in the **Bulk Property Updaters** module:
 
 ## 🎯 Elements Helper - Bulk Methods
 
