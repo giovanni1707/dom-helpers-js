@@ -747,6 +747,19 @@
   }
 
   // ===== API EXPORT =====
+
+  // Attach bulk as a property of createElement function
+createElement.bulk = createElementsBulk;
+/*
+*createElement.bulk({}) is now available to use 
+
+const elements = createElement.bulk({
+  DIV: { className: 'container' },
+  P: { textContent: 'Hello' }
+}); 
+*/
+
+  
   const API = {
     createElement,
     createElementsBulk,
