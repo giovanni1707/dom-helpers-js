@@ -29,6 +29,10 @@
     // Browser globals
     root.DOMHelpersCreateElement = factory();
 
+     // ADD THESE LINES:
+  root.createElement = factory().createElement;
+  root.createElementsBulk = factory().createElementsBulk;
+
     // Also attach to DOMHelpers if it exists
     if (typeof root.DOMHelpers === 'object') {
       root.DOMHelpers.createElement = factory().createElement;
@@ -749,7 +753,7 @@
   // ===== API EXPORT =====
 
   // Attach bulk as a property of createElement function
-createElement.bulk = createElementsBulk;
+  createElement.bulk = createElementsBulk;
 /*
 *createElement.bulk({}) is now available to use 
 
